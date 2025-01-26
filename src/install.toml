@@ -23,25 +23,25 @@ execution = ['./a.out']
         { name = 'Apache-2.0', url = 'https://github.com/abseil/abseil-cpp/blob/master/LICENSE' },
     ]
 
-[library.AC-Library]
+[library.ac-library]
     version = '1.5.1'
     license = [
         { name = 'CC0-1.0', url = 'https://github.com/atcoder/ac-library/blob/master/LICENSE' }
     ]
 
-[library.Boost]
+[library.boost]
     version = '1.86.0'
     license = [
         { name = 'BSL-1.0', url = 'https://www.boost.org/LICENSE_1_0.txt' }
     ]
 
-[library.Eigen]
+[library.eigen]
     version = '3.4.0-4'
     license = [
         { name = 'MPL-2.0-no-copyleft-exception', url = 'https://www.mozilla.org/en-US/MPL/2.0/' },
     ]
 
-[library.GMP]
+[library.gmp]
     version = '2:6.3.0+dfsg-2ubuntu6'
     license = [
         { name = 'LGPL-3.0-only', url = 'https://www.gnu.org/licenses/lgpl-3.0.html' },
@@ -85,15 +85,14 @@ execution = ['./a.out']
     url = 'https://github.com/pytorch/pytorch/blob/main/NOTICE#L420-L456'
 
 
-[library.LightGBM]
+[library.light-gbm]
     version = '4.5.0'
     license = [
-        { name = 'MIT', url = 'https://github.com/microsoft/LightGBM/blob/master/LICENSE' }
+        { name = 'MIT', url = 'https://github.com/microsoft/light-gbm/blob/master/LICENSE' }
     ]
 
 
 [library.compute]
-    version = '36350b7de849300bd3d72a05d8bf890ca405a014'
     indirect = true
 
 [[library.compute.license]]
@@ -102,7 +101,6 @@ execution = ['./a.out']
 
 
 [library.fast_double_parser]
-    version = 'efec03532ef65984786e5e32dbc81f6e6a55a115'
     indirect = true
 
 [[library.fast_double_parser.license]]
@@ -115,7 +113,6 @@ execution = ['./a.out']
 
 
 [library.fmt]
-    version = 'f5e54359df4c26b6230fc61d38aa294581393084'
     indirect = true
 
 [[library.fmt.license]]
@@ -158,7 +155,6 @@ execution = ['./a.out']
 
 
 [library.zlib]
-    version = '1.3.1'
     indirect = true
 
 [[library.zlib.license]]
@@ -167,7 +163,6 @@ execution = ['./a.out']
 
 
 [library.protobuf]
-    version = '26.1'
     indirect = true
 
 [[library.protobuf.license]]
@@ -176,7 +171,6 @@ execution = ['./a.out']
 
 
 [library.re2]
-    version = '2024-04-01'
     indirect = true
 
 [[library.re2.license]]
@@ -185,7 +179,6 @@ execution = ['./a.out']
 
 
 [library.coin-utils]
-    version = '2.11.6'
     indirect = true
 
 [[library.coin-utils.license]]
@@ -193,70 +186,63 @@ execution = ['./a.out']
     url = 'https://github.com/coin-or/CoinUtils/blob/master/LICENSE'
 
 
-[library.Osi]
-    version = '0.108.7'
+[library.osi]
     indirect = true
 
-[[library.Osi.license]]
+[[library.osi.license]]
     name = 'EPL-2.0'
     url = 'https://github.com/coin-or/Osi/blob/master/LICENSE'
 
 
-[library.Clp]
-    version = '1.17.7'
+[library.clp]
     indirect = true
 
-[[library.Clp.license]]
+[[library.clp.license]]
     name = 'EPL-2.0'
     url = 'https://github.com/coin-or/Clp/blob/master/LICENSE'
 
 
-[library.Cgl]
-    version = '0.60.5'
+[library.cgl]
     indirect = true
 
-[[library.Cgl.license]]
+[[library.cgl.license]]
     name = 'EPL-2.0'
     url = 'https://github.com/coin-or/Cgl/blob/master/LICENSE'
 
 
-[library.Cbc]
-    version = '0.60.5'
+[library.cbc]
     indirect = true
 
-[[library.Cbc.license]]
+[[library.cbc.license]]
     name = 'EPL-2.0'
     url = 'https://github.com/coin-or/Cbc/blob/master/LICENSE'
 
 
-[library.GLPK]
-    version = '1.7.2'
+[library.glpk]
     indirect = true
 
-[[library.GLPK.license]]
+[[library.glpk.license]]
     name = 'GPL-3.0-or-later'
     url = 'https://www.gnu.org/licenses/gpl-3.0.html'
 
 
-[library.HiGHS]
-    version = '1.7.2'
+[library.highs]
     indirect = true
 
-[[library.HiGHS.license]]
+[[library.highs.license]]
     name = 'MIT'
     url = 'https://github.com/ERGO-Code/HiGHS/blob/master/LICENSE.txt'
 
 
-[library.SCIP]
-    version = '900'
+[library.scip]
     indirect = true
 
-[[library.SCIP.license]]
+[[library.scip.license]]
     name = 'Apache-2.0'
     url = 'https://www.scipopt.org/scip/doc/html/LICENSE.php'
 
 
-[library.Z3]
+[library.z3]
     version = '4.13.3'
     license = [
         { name = 'MIT', url = 'https://github.com/Z3Prover/z3/blob/z3-4.13.3/LICENSE.txt' }
