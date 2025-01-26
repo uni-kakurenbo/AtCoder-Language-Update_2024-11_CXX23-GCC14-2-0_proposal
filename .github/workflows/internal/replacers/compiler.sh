@@ -4,10 +4,15 @@ set -eu
 SHEBANG='#!/bin/bash'
 
 {
+    format() { sed 's/^/    "/' | sed 's/$/"/'; }
+
     echo "${SHEBANG}"
     cat ./assets/warning.txt
+
     echo
-    cat ./src/build-flags.sh
+    echo "BUILD_FLAGS=("
+    format <./dist/user.flags.txt
+    echo ")"
 
     TARGET="$(cat ./src/compile.sh)"
     echo "${TARGET//"${SHEBANG}"/}"
