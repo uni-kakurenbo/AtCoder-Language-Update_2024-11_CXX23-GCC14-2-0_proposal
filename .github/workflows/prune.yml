@@ -1,4 +1,4 @@
-name: Prune branches
+name: Prune Branches
 run-name: ${{ github.workflow }} (${{ github.ref_name }})
 
 on:
@@ -11,7 +11,7 @@ jobs:
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
         steps:
-            - name: Git checkout
+            - name: Checkout
               uses: actions/checkout@v4
 
             - name: Remove test branches
