@@ -11,16 +11,25 @@ SHEBANG='#!/bin/bash'
 HEADER="$(cat ./dist/install.sh)"
 
 VERSION="$(dasel -r toml -w json <./src/install.toml | jq '.version')"
+
 {
-    echo
-    cat ./src/build-flags.sh
+    format() { sed 's/^/    "/' | sed 's/$/"/'; }
+
+    INSTALLER="$(sed -e '/^\#/d' ./src/install.sh)"
+
     echo
     cat ./assets/parallel.sh
-    echo -e "\nVERSION=${VERSION}"
-} >>./dist/install.sh
 
-INSTALLER="$(sed -e '/^\#/d' ./src/install.sh)"
-echo -e "${INSTALLER//${SHEBANG}/}" >>./dist/install.sh
+    echo
+    echo "BUILD_FLAGS=("
+    format <./dist/internal.flags.txt
+    echo ")"
+
+    echo -e "\nVERSION=${VERSION}"
+
+    echo
+    echo -e "${INSTALLER//${SHEBANG}/}"
+} >>./dist/install.sh
 
 mkdir -p ./dist/
 
@@ -30,13 +39,13 @@ function replace() {
     name="${name//.sh/}"
 
     local content
-    content="$(cat "$1")"
+    content="($(cat "$1")\n)"
     content="${content//"$2"/}"
 
     local target
     target=$(cat ./install.sh)
 
-    echo -e "${target//"$1"/"\n# ${name}${content}\n"}" >./install.sh
+    echo -e "${target//"$1"/"\n# ${name}\n${content}\n"}" >./install.sh
 }
 
 export -f replace

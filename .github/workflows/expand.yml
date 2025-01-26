@@ -1,54 +1,497 @@
-name: Expand template
+name: Expand Template
 run-name: ${{ github.workflow }} (${{ github.ref_name }})
 
 on:
     push:
         branches:
             - main
+            - test/**
+        paths-ignore:
+            - ./pages/
+
+    pull_request:
+        paths-ignore:
+            - ./pages/
+
     workflow_dispatch:
+        inputs:
+            test-mode:
+                description: "Test mode"
+                required: true
+                default: "normal"
+                type: choice
+                options:
+                    - none
+                    - normal
+                    - strict
+
+defaults:
+    run:
+        shell: bash
 
 concurrency:
-    group: expand-${{ github.ref_name }}
+    group: |
+        test-${{
+            startsWith(github.ref_name, 'test') && github.ref_name ||
+            github.run_id
+        }}
+
     cancel-in-progress: true
 
 jobs:
-    replace:
+    prepare-tools:
+        name: Prepare Tools
+
+        runs-on: ${{ vars.RUNNER_IMAGE }}
+
+        outputs:
+            cache-primary-key: ${{ steps.load-cached-binary.outputs.cache-primary-key }}
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.head_ref || github.ref_name }}
+
+            - name: Load Cached Binary
+              id: load-cached-binary
+              uses: actions/cache/restore@v4
+              with:
+                  path: /opt/ac_tools/
+                  key: >
+                      tools-${{
+                        hashFiles(
+                          './.github/workflows/internal/tools.sh',
+                          './.github/workflows/internal/tools/*'
+                        )
+                      }}
+                  restore-keys: tools-
+
+            - name: Build
+              run: |
+                  set -eu
+
+                  mkdir -p /opt/ac_tools/bin/
+                  mkdir -p /opt/ac_tools/lib/
+
+                  sudo cp -rf /opt/ac_tools/* /usr/ || :
+
+                  ./.github/workflows/internal/tools.sh
+
+            - name: Cache Binary
+              uses: actions/cache/save@v4
+              if: (!cancelled()) && steps.load-cached-binary.outputs.cache-hit != 'true'
+              with:
+                  path: /opt/ac_tools/
+                  key: ${{ steps.load-cached-binary.outputs.cache-primary-key }}
+
+    config-matrix:
+        name: Configure Matrix
+
+        runs-on: ${{ vars.RUNNER_IMAGE }}
+
+        outputs:
+            libraries: ${{ steps.gen-lib-list.outputs.list }}
+            execlude-libraries: ${{ steps.gen-lib-list.outputs.execlude }}
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.head_ref || github.ref_name }}
+
+            - name: Generate Library List
+              id: gen-lib-list
+              run: |
+                  set -eu
+
+                  EXCLUDE='["abseil", "eigen", "gmp"]'
+
+                  {
+                    echo -n "list="
+                    {
+                      echo -n "["
+                      ls ./src/sub-installers/ | sed -e s/^/\"/g -e s/\.sh$/\"/g | tr '\n' ',' | sed s/,$//g
+                      echo -n "]"
+                    } | jq -c --argjson exclude "${EXCLUDE}" '. - $exclude'
+                  } >>"${GITHUB_OUTPUT}"
+
+                  echo "execlude=${EXCLUDE}" >>"${GITHUB_OUTPUT}"
+
+    gen-installer:
+        name: Generate Installers
+
+        needs: prepare-tools
+
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
         steps:
-            - uses: actions/checkout@v4
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.head_ref || github.ref_name }}
+
+            - name: Load Cached Tools
+              uses: actions/cache/restore@v4
+              with:
+                  path: /opt/ac_tools/
+                  key: ${{ needs.prepare-tools.outputs.cache-primary-key }}
+                  fail-on-cache-miss: true
+
+            - name: Apply Tools
+              run: sudo cp -rf /opt/* /usr/
+
+            - name: Expand
+              run: |
+                  set -eu
+
+                  sudo rm -rf ./dist/ && mkdir -p ./dist/
+                  ./.github/workflows/internal/expanders/installer.sh
+
+            - name: Upload
+              uses: actions/upload-artifact@v4
+              with:
+                  name: dist-installers
+                  path: ./dist/
+
+    install:
+        name: Install Libraries
+
+        needs:
+            - prepare-tools
+            - gen-installer
+            - config-matrix
+
+        runs-on: ${{ vars.RUNNER_IMAGE }}
+
+        strategy:
+            matrix:
+                target: ${{ fromJson(needs.config-matrix.outputs.libraries) }}
+            fail-fast: false
+
+        steps:
+            - name: Collect Workflow Telemetry
+              uses: catchpoint/workflow-telemetry-action@v2
+              with:
+                  theme: dark
+                  comment_on_pr: false
+                  proc_trace_sys_enable: false
+
+            - name: Configure Installation
+              run: |
+                  set -eu
+
+                  TARGET='${{ matrix.target }}'
+
+                  LIBRARIES='${{ needs.config-matrix.outputs.libraries }}'
+                  EXECLUDE_LIBRARIES='${{ needs.config-matrix.outputs.execlude-libraries }}'
+
+                  echo "${LIBRARIES}" | jq -c -r '.[]' |
+                    while read -r lib_id; do
+                      if [ "${TARGET}" != "${lib_id}" ]; then
+                        echo "AC_NO_BUILD_${lib_id//-/_}=true" >>"${GITHUB_ENV}"
+                      fi
+                    done
+
+                  echo "${EXECLUDE_LIBRARIES}" | jq -c -r '.[]' |
+                    while read -r lib_id; do
+                        echo "AC_NO_BUILD_${lib_id//-/_}=true" >>"${GITHUB_ENV}"
+                    done
+
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.head_ref || github.ref_name }}
+
+            - name: Download Installers
+              uses: actions/download-artifact@v4
+              with:
+                  name: dist-installers
+                  path: ./dist/
+
+            - name: Load Cached Tools
+              uses: actions/cache/restore@v4
+              with:
+                  path: /opt/ac_tools/
+                  key: ${{ needs.prepare-tools.outputs.cache-primary-key }}
+                  fail-on-cache-miss: true
+
+            - name: Apply Tools
+              run: sudo cp -rf /opt/* /usr/
+
+            - name: Load CCache
+              if: ${{ github.event.inputs.test-mode != 'strict' }}
+              uses: hendrikmuhs/ccache-action@v1.2
+              with:
+                  key: >
+                      ${{ matrix.target }}-${{
+                        hashFiles(
+                          './src/install.sh',
+                          './src/install.toml',
+                          './config/internal/ac_basic.pc',
+                          './config/internal/ac_internal.pc',
+                          format('./src/sub-installers/{0}.sh', matrix.target),
+                          format('./config/library/ac_{0}.pc', matrix.target)
+                        )
+                      }}
+                  restore-keys: ${{ matrix.target }}-
+
+            - name: Install
+              env:
+                  TARGET: ${{ matrix.target }}
+                  RUN_TEST: ${{ github.event.inputs.test-mode == 'strict' }}
+              run: |
+                  set -eu
+
+                  chmod +x ./dist/install.sh
+                  ./dist/install.sh
+
+                  find /tmp/ac_install/ -iname *.tar.* -or -iname *.zip -print0 |
+                    xargs -0 -I {} sudo rm -rf {}
+
+            - name: Collect Pkgconfig Files
+              run: |
+                  set -eu
+
+                  mkdir -p ./config/libs/
+                  find /opt/ac_install/ -name '*.pc' -type f -print0 |
+                    xargs -0 -I {} sudo cp {} ./config/libs/
+
+            - name: Upload Pkgconfig Files
+              uses: actions/upload-artifact@v4
+              with:
+                  name: pkgconfig-${{ matrix.target }}
+                  path: ./config/libs/
+                  if-no-files-found: ignore
+
+            - name: Clean Up
+              run: |
+                  set -eu
+
+                  find /opt/ac_install/ -name cmake -or -name pkgconfig -or -name bin -or -name share -type d -print0 |
+                    xargs -0 sudo rm -rf
+
+            - name: Upload
+              uses: actions/upload-artifact@v4
+              with:
+                  name: library-${{ matrix.target }}
+                  path: /opt/ac_install/
+                  compression-level: 0
+
+    gen-compiler:
+        name: Generate Compiler
+
+        needs:
+            - prepare-tools
+            - install
+
+        runs-on: ${{ vars.RUNNER_IMAGE }}
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.head_ref || github.ref_name }}
+
+            - name: Download Pkgconfig Files
+              uses: actions/download-artifact@v4
+              with:
+                  pattern: pkgconfig-*
+                  path: ./config/libs/
+                  merge-multiple: true
+
+            - name: Expand
+              run: |
+                  set -eu
+
+                  sudo rm -rf ./dist/ && mkdir -p ./dist/
+                  ./.github/workflows/internal/expanders/compiler.sh
+
+            - name: Upload
+              uses: actions/upload-artifact@v4
+              with:
+                  name: dist-compiler
+                  path: ./dist/
+
+    test:
+        name: Test
+
+        needs: gen-compiler
+
+        runs-on: ${{ vars.RUNNER_IMAGE }}
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.head_ref || github.ref_name }}
+
+            - name: Download Libraries
+              uses: actions/download-artifact@v4
+              with:
+                  pattern: library-*
+                  path: /opt/ac_install/
+                  merge-multiple: true
+
+            - name: Download Compiler
+              uses: actions/download-artifact@v4
+              with:
+                  name: dist-compiler
+                  path: ./dist/
+
+            - name: Test
+              if: github.event.inputs.test-mode != 'none'
+              run: ./.github/workflows/internal/test.sh
+
+    gen-config:
+        name: Generate Configuration File
+
+        needs:
+            - prepare-tools
+            - gen-compiler
+
+        runs-on: ${{ vars.RUNNER_IMAGE }}
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.head_ref || github.ref_name }}
+
+            - name: Load Cached Tools
+              uses: actions/cache/restore@v4
+              with:
+                  path: /opt/ac_tools/
+                  key: ${{ needs.prepare-tools.outputs.cache-primary-key }}
+                  fail-on-cache-miss: true
+
+            - name: Apply Tools
+              run: sudo cp -rf /opt/* /usr/
+
+            - name: Download Installer
+              uses: actions/download-artifact@v4
+              with:
+                  pattern: dist-*
+                  path: ./dist/
+                  merge-multiple: true
+
+            - name: Expand Configuration File
+              run: |
+                  set -eu
+
+                  ./.github/workflows/internal/expanders/config.sh
+
+            - name: Lint
+              run: ./.github/workflows/internal/lint.sh
+
+            - name: Upload
+              uses: actions/upload-artifact@v4
+              with:
+                  name: dist-config
+                  path: ./dist/
+
+    push:
+        name: Push to Repository
+
+        needs:
+            - gen-config
+            - test
+
+        if: >
+            (!cancelled()) &&
+            github.ref_name == github.event.repository.default_branch &&
+            needs.test.result == 'success'
+
+        runs-on: ${{ vars.RUNNER_IMAGE }}
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
               with:
                   ref: ${{ github.head_ref || github.ref_name }}
                   fetch-depth: 0
                   ssh-key: ${{ secrets.SSH_KEY }}
 
-            - name: Replace template
-              run: ./.github/workflows/internal/replace.sh
+            - name: Download Installers
+              uses: actions/download-artifact@v4
+              with:
+                  pattern: dist-*
+                  path: ./dist/
+                  merge-multiple: true
 
-            - name: Lint
-              run: ./.github/workflows/internal/lint.sh
+            - name: Commit & Push
+              uses: stefanzweifel/git-auto-commit-action@v5
+              with:
+                  add_options: "-f"
+                  file_pattern: "./dist/*"
+                  commit_user_name: Template Expander
+                  commit_user_email: template-expander@example.com
+                  commit_message: "[workflow] expand templates (${GITHUB_SHA})"
+                  commit_options: "--no-verify --signoff"
 
-            - name: Push
-              if: ${{ !cancelled() && !startsWith(github.ref_name, 'test') }}
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    deploy-pages:
+        name: Deploy to GitHub Pages
+
+        needs:
+            - gen-config
+            - test
+
+        if: >
+            (!cancelled()) &&
+            github.ref_name == github.event.repository.default_branch &&
+            needs.test.result == 'success'
+
+        runs-on: ${{ vars.RUNNER_IMAGE }}
+
+        permissions:
+            contents: write
+            pages: write
+            id-token: write
+
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+
+        steps:
+            - name: Download Outputs
+              uses: actions/download-artifact@v4
+              with:
+                  pattern: dist-*
+                  path: ./pages/
+                  merge-multiple: true
+
+            - name: Merge data
               run: |
-                  set -eu
+                  {
+                    if [ -f ./dist/install.sh ]; then
+                        echo '# `install.sh`'
+                        echo '```bash'
+                        cat ./dist/install.sh
+                        echo '```'
+                    fi
 
-                  git remote set-url origin git@github.com:${GITHUB_REPOSITORY}.git
+                    if [ -f ./dist/compile.sh ]; then
+                        echo '# `compile.sh`'
+                        echo '```bash'
+                        cat ./dist/compile.sh
+                        echo '```'
+                    fi
 
-                  git config --global user.name "Template Expander"
-                  git config --global user.email "noreply@example.com"
+                    if [ -f ./dist/install.toml ]; then
+                        echo '# `install.toml`'
+                        echo '```toml'
+                        cat ./dist/install.toml
+                        echo '```'
+                    fi
+                  } >>./pages/index.md
 
-                  git add -f ./dist/
+            - name: Build with Jekyll
+              uses: actions/jekyll-build-pages@v1
+              with:
+                  source: ./pages/
 
-                  if (git diff --cached --shortstat | grep '[0-9]'); then
-                    git commit -m "[workflow] expand templates ${GITHUB_SHA}"
+            - name: Upload Pages artifact
+              uses: actions/upload-pages-artifact@v3
 
-                    REPOSITORY_NAME="${{ github.head_ref || github.ref_name }}"
-
-                    git pull --rebase origin "${REPOSITORY_NAME}"
-                    git push origin "HEAD:${REPOSITORY_NAME}"
-                  else
-                    echo "No updated files."
-                  fi
+            - name: Deploy to GitHub Pages
+              uses: actions/deploy-pages@v4
