@@ -5,31 +5,140 @@ on:
     push:
         branches:
             - main
+            - test/**
+    pull_request:
     workflow_dispatch:
+        inputs:
+            test-mode:
+                description: "Test mode"
+                required: true
+                default: "normal"
+                type: choice
+                options:
+                    - none
+                    - normal
+                    - strict
 
 concurrency:
-    group: expand-${{ github.ref_name }}
+    group: |
+        test-${{
+            startsWith(github.ref_name, 'test') && github.ref_name ||
+            github.run_id
+        }}
     cancel-in-progress: true
 
 jobs:
-    replace:
+    run:
+        name: Generate & Test
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
         steps:
-            - uses: actions/checkout@v4
+            - name: Checkout
+              uses: actions/checkout@v4
               with:
                   ref: ${{ github.head_ref || github.ref_name }}
                   fetch-depth: 0
                   ssh-key: ${{ secrets.SSH_KEY }}
 
-            - name: Replace template
-              run: ./.github/workflows/internal/replace.sh
+            - name: Collect Workflow Telemetry
+              uses: catchpoint/workflow-telemetry-action@v2
+              with:
+                  theme: dark
+
+            - name: Load Cached Tools
+              id: load-cached-tools
+              uses: actions/cache/restore@v4
+              with:
+                  path: |
+                      /opt/ac_tools/
+                      /usr/bin/dasel
+                      /usr/bin/jq
+                      /usr/local/bin/taplo
+                  key: tools-${{ hashFiles('./.github/workflows/internal/tools/**') }}
+                  restore-keys: tools-
+
+            - name: Prepare
+              run: |
+                  ./.github/workflows/internal/prepare.sh
+
+            - name: Cache Tools
+              uses: actions/cache/save@v4
+              if: always() && steps.load-cached-tools.outputs.cache-hit != 'true'
+              with:
+                  path: |
+                      /opt/ac_tools/
+                      /usr/bin/dasel
+                      /usr/bin/jq
+                      /usr/local/bin/taplo
+                  key: ${{ steps.load-cached-tools.outputs.cache-primary-key }}
+
+            - name: Expand Installer
+              run: ./.github/workflows/internal/expanders/installer.sh
+
+            - name: Load CCache
+              if: ${{ github.event.inputs.test-mode != 'strict' }}
+              uses: hendrikmuhs/ccache-action@v1.2
+              with:
+                  create-symlink: true
+
+            - name: Load Cached Installation
+              id: load-cached-install
+              if: ${{ github.event.inputs.test-mode != 'strict' }}
+              uses: actions/cache/restore@v4
+              with:
+                  path: /tmp/ac_install/
+                  key: build-${{ hashFiles('./src/**') }}
+                  restore-keys: build-
+
+            - name: Install Libraries
+              env:
+                  RUN_TEST: ${{ github.event.inputs.test-mode == 'strict' }}
+              run: |
+                  ./dist/install.sh
+
+                  ls /opt/
+                  ls /opt/ac_install/
+
+                  du -sh /opt/ac_install/
+
+            - name: Cache Installation
+              uses: actions/cache/save@v4
+              if: always() && steps.load-cached-install.outputs.cache-hit != 'true'
+              with:
+                  path: /tmp/ac_install/
+                  key: ${{ steps.load-cached-install.outputs.cache-primary-key }}
+
+            - name: Upload Libraries
+              uses: actions/upload-artifact@v4
+              with:
+                  name: install-directory
+                  path: /opt/ac_install/
+                  compression-level: 8
+
+            - name: Expand Compiler
+              run: ./.github/workflows/internal/expanders/compiler.sh
+
+            - name: Expand Configuration File
+              run: |
+                  ./.github/workflows/internal/expanders/config.sh
+
+                  {
+                    echo '`install.toml`'
+
+                    echo '```toml'
+                    cat ./dist/install.toml
+                    echo '```'
+                  }> ${GITHUB_STEP_SUMMARY}
 
             - name: Lint
               run: ./.github/workflows/internal/lint.sh
 
+            - name: Test
+              if: ${{ github.event.inputs.test-mode != 'none' }}
+              run: ./.github/workflows/internal/test.sh
+
             - name: Push
-              if: ${{ !cancelled() && !startsWith(github.ref_name, 'test') }}
+              if: ${{ !cancelled() && github.ref_name == 'main' }}
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: |

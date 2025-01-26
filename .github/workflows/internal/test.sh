@@ -13,17 +13,15 @@ function run-test() {
     local directory="./tmp/${name}"
 
     mkdir -p "${directory}"
-    cp ../dist/compile.sh "${directory}/compile.sh"
-    cp "$1" "${directory}/Main.cpp"
+    cp -f ../dist/compile.sh "${directory}/compile.sh"
+    cp -f "$1" "${directory}/Main.cpp"
 
     cd "${directory}/"
-    chmod +x ./compile.sh
 
     local exit_status
     exit_status=0
 
     {
-
         set +e
         local header="================ ${name} ================"
 
