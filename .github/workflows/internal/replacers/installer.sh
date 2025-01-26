@@ -12,15 +12,23 @@ HEADER="$(cat ./dist/install.sh)"
 
 VERSION="$(dasel -r toml -w json <./src/install.toml | jq '.version')"
 {
-    echo
-    cat ./src/build-flags.sh
+    format() { sed 's/^/    "/' | sed 's/$/"/'; }
+
+    INSTALLER="$(sed -e '/^\#/d' ./src/install.sh)"
+
     echo
     cat ./assets/parallel.sh
-    echo -e "\nVERSION=${VERSION}"
-} >>./dist/install.sh
 
-INSTALLER="$(sed -e '/^\#/d' ./src/install.sh)"
-echo -e "${INSTALLER//${SHEBANG}/}" >>./dist/install.sh
+    echo
+    echo "BUILD_FLAGS=("
+    format <./dist/internal.flags.txt
+    echo ")"
+
+    echo -e "\nVERSION=${VERSION}"
+
+    echo
+    echo -e "${INSTALLER//${SHEBANG}/}"
+} >>./dist/install.sh
 
 mkdir -p ./dist/
 
