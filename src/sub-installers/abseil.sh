@@ -1,6 +1,8 @@
 #!/bin/bash
 set -eu
 
+if [ BUILD_]
+
 cd /tmp/ac_install/
 
 echo "::group::abseil"

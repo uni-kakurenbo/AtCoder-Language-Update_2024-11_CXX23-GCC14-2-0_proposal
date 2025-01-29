@@ -1,8 +1,6 @@
 #!/bin/bash
 set -eu
 
-export PATH="${PATH}:/opt/ac_tools/bin/"
-
 if pkg-config --version; then exit 0; fi
 
 VERSION="0.29.2"
@@ -16,7 +14,7 @@ sudo tar -xf pkg-config-${VERSION}.tar.gz
 
 cd ./pkg-config-${VERSION}
 
-sudo ./configure --with-internal-glib --prefix=/opt/ac_tools/
+sudo ./configure --with-internal-glib
 
 sudo make
 sudo make install "-j$(nproc)"
