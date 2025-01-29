@@ -28,7 +28,7 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
-    gen-installer:
+    run:
         name: Generate Installer
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
@@ -156,12 +156,6 @@ jobs:
                   else
                     echo "No updated files."
                   fi
-
-    install:
-
-    gen-compiler:
-
-    test:
 
     dump:
         needs: run
