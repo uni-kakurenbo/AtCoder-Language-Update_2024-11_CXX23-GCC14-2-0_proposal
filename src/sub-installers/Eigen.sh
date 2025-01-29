@@ -1,6 +1,8 @@
 #!/bin/bash
 set -eu
 
+if [[ ! ${AC_NO_BUILD_Eigen} && ${AC_NO_BUILD_LightGBM} && ${AC_NO_BUILD_OrTools} ]]; then exit 0; fi
+
 echo "::group::Eigen3"
 
 sudo apt-get install -y "libeigen3-dev=${VERSION}"

@@ -1,6 +1,8 @@
 #!/bin/bash
 set -eu
 
+if [[ ! ${AC_NO_BUILD_Boost} ]]; then exit 0; fi
+
 cd /tmp/ac_install/
 
 echo "::group::Boost"
