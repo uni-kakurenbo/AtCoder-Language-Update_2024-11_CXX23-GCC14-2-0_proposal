@@ -32,30 +32,38 @@ jobs:
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
         steps:
-            - uses: actions/checkout@v4
+            - name: Checkout
+              uses: actions/checkout@v4
               with:
                   ref: ${{ github.head_ref || github.ref_name }}
                   fetch-depth: 0
                   ssh-key: ${{ secrets.SSH_KEY }}
 
-            - name: Cache tools
+            - name: Collect Workflow Telemetry
+              uses: catchpoint/workflow-telemetry-action@v2
+              with:
+                  theme: dark
+
+            - name: Cache Tools
               uses: actions/cache@v4
               env:
                   cache-name: cache-tools
               with:
                   path: |
                       /opt/ac_tools/
-                  key: tools-${{ hashFiles('./.github/workflows/internal/**') }}
+                  key: tools-${{ hashFiles('./.github/workflows/internal/tools/**') }}
                   restore-keys: |
                       tools-
 
             - name: Prepare
-              run: ./.github/workflows/internal/prepare.sh
+              run: |
+                  ls /opt/ac_tools/
+                  ./.github/workflows/internal/prepare.sh
 
-            - name: Expand installer
+            - name: Expand Installer
               run: ./.github/workflows/internal/expanders/installer.sh
 
-            - name: Cache installation
+            - name: Cache Installation
               id: cache-install
               if: ${{ github.event.inputs.test-mode != 'strict' }}
               uses: actions/cache@v4
@@ -64,20 +72,17 @@ jobs:
               with:
                   path: |
                       /tmp/ac_install/
-                      /opt/ac_install/
                   key: build-${{ hashFiles('./src/**') }}
                   restore-keys: |
                       build-
 
-            - name: Load ccache
+            - name: Load CCache
               uses: hendrikmuhs/ccache-action@v1.2
               with:
                   create-symlink: true
 
-            - name: Install libraries
+            - name: Install Libraries
               env:
-                  CMAKE_C_COMPILER_LAUNCHER: 'ccache'
-                  CMAKE_CXX_COMPILER_LAUNCHER: 'ccache'
                   RUN_TEST: ${{ github.event.inputs.test-mode == 'strict' }}
               run: |
                   ./dist/install.sh
@@ -87,17 +92,17 @@ jobs:
 
                   du -sh /opt/ac_install/
 
-            - name: Upload installed libraries
+            - name: Upload Libraries
               uses: actions/upload-artifact@v4
               with:
                   name: install-directory
                   path: /opt/ac_install/
                   compression-level: 9
 
-            - name: Expand compiler
+            - name: Expand Compiler
               run: ./.github/workflows/internal/expanders/compiler.sh
 
-            - name: Expand config file
+            - name: Expand Configuration File
               run: |
                   ./.github/workflows/internal/expanders/config.sh
 

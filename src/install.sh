@@ -8,15 +8,20 @@ echo "::endgroup::"
 
 ### Libraries
 echo "::group::tools"
-
 sudo apt-get install -y git cmake ninja-build pigz pbzip2
+echo "::endgroup::"
 
 sudo mkdir -p /tmp/ac_install/
 sudo mkdir -p /opt/ac_install/
 
-export GENERATOR="Ninja"
+export CFLAGS="-w"
+export CXX="g++-14"
+export CMAKE_GENERATOR="Ninja"
 
-echo "::endgroup::"
+if ccache -v; then
+    export CMAKE_C_COMPILER_LAUNCHER="ccache"
+    export CMAKE_CXX_COMPILER_LAUNCHER="ccache"
+fi
 
 ./sub-installers/abseil.sh
 ./sub-installers/AC-Library.sh

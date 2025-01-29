@@ -20,7 +20,7 @@ fi
 
 sudo mkdir -p ./build/ && cd ./build/
 
-sudo cmake -G "${GENERATOR}" \
+sudo cmake \
     -DBUILD_ZLIB:BOOL=ON -DBUILD_Protobuf:BOOL=ON -DBUILD_re2:BOOL=ON \
     -DUSE_COINOR:BOOL=ON -DBUILD_CoinUtils:BOOL=ON -DBUILD_Osi:BOOL=ON -DBUILD_Clp:BOOL=ON -DBUILD_Cgl:BOOL=ON -DBUILD_Cbc:BOOL=ON \
     -DUSE_GLPK:BOOL=ON -DBUILD_GLPK:BOOL=ON \
@@ -31,10 +31,7 @@ sudo cmake -G "${GENERATOR}" \
     -DCMAKE_PREFIX_PATH:PATH="/opt/ac_install/abseil/;/opt/ac_install/eigen3/" \
     -DCMAKE_INSTALL_PREFIX:PATH=/opt/ac_install/or-tools/ \
     -DBUILD_SHARED_LIBS:BOOL=OFF \
-    -DCMAKE_C_FLAGS:STRING="-w" \
-    -DCMAKE_CXX_COMPILER:STRING="g++-14" \
     -DCMAKE_CXX_FLAGS:STRING="${BUILD_FLAGS[*]}" \
-    -DCMAKE_INSTALL_MESSAGE:STRING=NEVER -DCMAKE_MESSAGE_LOG_LEVEL:STRING=WARNING \
     ../
 
 sudo cmake --build ./ --config Release --target install
