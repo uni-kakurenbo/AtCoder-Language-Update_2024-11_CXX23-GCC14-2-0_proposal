@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu
 
-if pkg-config --version; then exit 0; fi
+if pkg-config --version >&/dev/null; then exit 0; fi
 
 VERSION="0.29.2"
 
