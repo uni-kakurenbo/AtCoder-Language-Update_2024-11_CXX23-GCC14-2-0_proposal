@@ -48,7 +48,7 @@ fi
 if [ -v ATCODER ]; then
     echo "::group::finalize"
 
-    find /opt/ \
+    find /opt/ac_install/ \
         -name cmake -or -name pkgconfig -or -name bin -or -name share \
         -type d -print0 |
         xargs -0 sudo rm -rf
