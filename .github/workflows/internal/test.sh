@@ -1,10 +1,10 @@
 #!/bin/bash
 set -eu
 
+chmod +x -R ./dist/
+
 cd ./test/
 mkdir -p ./tmp/
-
-chmod -R +x ./dist/
 
 function run-test() {
     set -eu

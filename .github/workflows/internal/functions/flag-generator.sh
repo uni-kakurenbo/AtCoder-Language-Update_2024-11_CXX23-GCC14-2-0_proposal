@@ -11,7 +11,6 @@ CONFIG_PATHS=(
     "${ROOT_DIR}/config/"
     "${ROOT_DIR}/config/internal/"
     "${ROOT_DIR}/config/library/"
-    "${ROOT_DIR}/config/libs/"
 
     "/opt/ac_install/abseil/lib/pkgconfig/"
     "/opt/ac_install/or-tools/lib/pkgconfig/"

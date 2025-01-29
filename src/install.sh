@@ -16,8 +16,12 @@ sudo mkdir -p /opt/ac_install/
 
 CMAKE_ENVIRONMENT=(
     -G "Ninja"
+
     -DCFLAGS:STRING="-w"
     -DCMAKE_CXX_COMPILER:STRING="g++-14"
+
+    -DCMAKE_MESSAGE_LOG_LEVEL:STRING="WARNING"
+    -DCMAKE_INSTALL_MESSAGE:STRING="NEVER"
 )
 
 if ccache -v; then
