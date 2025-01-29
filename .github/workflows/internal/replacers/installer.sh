@@ -38,7 +38,7 @@ function replace() {
     name="${name//.sh/}"
 
     local content
-    content="(\n$(cat "$1"))"
+    content="($(cat "$1")\n)"
     content="${content//"$2"/}"
 
     local target
