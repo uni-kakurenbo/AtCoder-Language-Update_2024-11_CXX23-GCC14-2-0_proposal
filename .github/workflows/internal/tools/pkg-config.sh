@@ -2,7 +2,7 @@
 set -eu
 
 export PATH="${PATH}:/opt/ac_tools/bin/"
-pkg-config
+pkg-config --version
 
 VERSION="0.29.2"
 
