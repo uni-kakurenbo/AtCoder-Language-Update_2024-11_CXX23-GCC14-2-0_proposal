@@ -143,12 +143,8 @@ jobs:
               env:
                   RUN_TEST: ${{ github.event.inputs.test-mode == 'strict' }}
               run: |
+                  chmod +x ./dist/install.sh
                   ./dist/install.sh
-
-                  ls /opt/
-                  ls /opt/ac_install/
-
-                  du -sh /opt/ac_install/
 
             - name: Cache Installation
               uses: actions/cache/save@v4
