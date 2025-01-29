@@ -223,7 +223,7 @@ jobs:
     push:
         name: Push to Repository
         needs: gen-config
-        if: (!cancelled())
+        if: (!cancelled()) && github.ref_name == 'main'
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
         steps:
@@ -247,7 +247,6 @@ jobs:
                   path: ./dist/
 
             - name: Push
-              if: (!cancelled()) && github.ref_name == 'main'
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: |
