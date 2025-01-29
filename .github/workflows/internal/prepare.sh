@@ -4,7 +4,9 @@ set -eu
 WORKING_DIRECTORY="$(dirname "$0")"
 
 echo "::group::dasel"
+ls /usr/bin/
 dasel || sudo apt-get install -y dasel
+which dasel
 echo "::endgroup::"
 
 echo "::group::jq"
