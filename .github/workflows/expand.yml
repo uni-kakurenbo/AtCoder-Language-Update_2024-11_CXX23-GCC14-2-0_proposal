@@ -147,16 +147,16 @@ jobs:
                   path: /tmp/ac_install/
                   key: ${{ steps.load-cached-install.outputs.cache-primary-key }}
 
-            - name: Collect Pkgconfig Files
-              run: |
-                  find /opt/ac_install/ -name *.pc -type f -print 0 |
-                    xargs -0 -I {} sudo cp {} ./dist/pkgconfig/
+            # - name: Collect Pkgconfig Files
+            #   run: |
+            #       find /opt/ac_install/ -name *.pc -type f -print 0 |
+            #         xargs -0 -I {} sudo cp {} ./dist/pkgconfig/
 
-            - name: Upload Pkgconfig Files
-              uses: actions/upload-artifact@v4
-              with:
-                  name: pkgconfig
-                  path: ./dist/pkgconfig/
+            # - name: Upload Pkgconfig Files
+            #   uses: actions/upload-artifact@v4
+            #   with:
+            #       name: pkgconfig
+            #       path: ./dist/pkgconfig/
 
             - name: Upload Libraries
               uses: actions/upload-artifact@v4
@@ -167,19 +167,20 @@ jobs:
 
     gen-config:
         name: Generate Compiler & Configuration File
+        needs: install
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
         steps:
-            - name: Download Pkgconfig Files
-              uses: actions/download-artifact@v4
-              with:
-                  name: pkgconfig
-                  path: ./config/libs/
-
             - name: Checkout
               uses: actions/checkout@v4
               with:
                   ref: ${{ github.head_ref || github.ref_name }}
+
+            - name: Download Libraries
+              uses: actions/download-artifact@v4
+              with:
+                  name: libraries
+                  path: /opt/ac_install/
 
             - name: Load Cached Tools
               uses: actions/cache/restore@v4
@@ -211,7 +212,7 @@ jobs:
 
     push:
         name: Push to Repository
-        needs: run
+        needs: gen-config
         if: (!cancelled())
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
@@ -263,7 +264,7 @@ jobs:
 
     dump:
         name: Dump
-        needs: run
+        needs: gen-config
         if: (!cancelled())
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
