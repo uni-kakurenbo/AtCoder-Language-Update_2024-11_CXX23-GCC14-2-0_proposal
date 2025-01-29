@@ -1,5 +1,5 @@
 #!/bin/bash
-set -exu
+set -eu
 
 cd /tmp/ac_install/
 

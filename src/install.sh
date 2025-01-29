@@ -41,7 +41,15 @@ fi
 ./sub-installers/unordered_dense.sh
 ./sub-installers/Z3.sh
 
+cat /tmp/ac_install/cmake_hashes.txt
+
 echo "::group::finalize"
-find /opt/ -name cmake -or -name pkgconfig -or -name bin -or -name share -type d -print0 | xargs -0 sudo rm -rf
+
+find /opt/ \
+    -name cmake -or -name pkgconfig -or -name bin -or -name share \
+    -type d -print0 |
+    xargs -0 sudo rm -rf
+
 sudo apt-get remove -y --auto-remove git cmake ninja-build pigz pbzip2
+
 echo "::endgroup::"
