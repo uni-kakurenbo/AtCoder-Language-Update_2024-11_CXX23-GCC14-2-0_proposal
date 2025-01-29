@@ -24,6 +24,8 @@ if ccache -v; then
     export CMAKE_CXX_COMPILER_LAUNCHER="ccache"
 fi
 
+cmake -E environment
+
 ./sub-installers/abseil.sh
 ./sub-installers/AC-Library.sh
 ./sub-installers/Boost.sh
@@ -37,6 +39,6 @@ fi
 ./sub-installers/Z3.sh
 
 echo "::group::finalize"
-find /opt/ -name cmake -or -name pkgconfig -or -name bin -type d -print0 | xargs -0 sudo rm -rf
+find /opt/ -name cmake -or -name pkgconfig -or -name bin -or -name share -type d -print0 | xargs -0 sudo rm -rf
 sudo apt-get remove -y --auto-remove git cmake ninja-build pigz pbzip2
 echo "::endgroup::"

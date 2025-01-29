@@ -28,7 +28,8 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
-    replace:
+    run:
+        name: Generate & Test
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
         steps:
@@ -44,16 +45,13 @@ jobs:
               with:
                   theme: dark
 
-            - name: Cache Tools
-              uses: actions/cache@v4
-              env:
-                  cache-name: cache-tools
+            - name: Load Cached Tools
+              id: load-cached-tools
+              uses: actions/cache/restore@v4
               with:
-                  path: |
-                      /opt/ac_tools/
+                  path: /opt/ac_tools/
                   key: tools-${{ hashFiles('./.github/workflows/internal/tools/**') }}
-                  restore-keys: |
-                      tools-
+                  restore-keys: tools-
 
             - name: Prepare
               run: |
@@ -61,26 +59,30 @@ jobs:
                   ls /opt/ac_tools/share/
                   ./.github/workflows/internal/prepare.sh
 
+            - name: Cache Tools
+              uses: actions/cache/save@v4
+              if: always() && steps.load-cached-tools.outputs.cache-hit != 'true'
+              with:
+                  path: /opt/ac_tools/
+                  key: ${{ steps.load-cached-tools.outputs.cache-primary-key }}
+
             - name: Expand Installer
               run: ./.github/workflows/internal/expanders/installer.sh
 
-            - name: Cache Installation
-              id: cache-install
-              if: ${{ github.event.inputs.test-mode != 'strict' }}
-              uses: actions/cache@v4
-              env:
-                  cache-name: cache-install
-              with:
-                  path: |
-                      /tmp/ac_install/
-                  key: build-${{ hashFiles('./src/**') }}
-                  restore-keys: |
-                      build-
-
             - name: Load CCache
+              if: ${{ github.event.inputs.test-mode != 'strict' }}
               uses: hendrikmuhs/ccache-action@v1.2
               with:
                   create-symlink: true
+
+            - name: Load Cached Installation
+              id: load-cached-install
+              if: ${{ github.event.inputs.test-mode != 'strict' }}
+              uses: actions/cache/restore@v4
+              with:
+                  path: /tmp/ac_install/
+                  key: build-${{ hashFiles('./src/**') }}
+                  restore-keys: build-
 
             - name: Install Libraries
               env:
@@ -93,12 +95,19 @@ jobs:
 
                   du -sh /opt/ac_install/
 
+            - name: Cache Installation
+              uses: actions/cache/save@v4
+              if: always() && steps.load-cached-install.outputs.cache-hit != 'true'
+              with:
+                  path: /tmp/ac_install/
+                  key: ${{ steps.load-cached-install.outputs.cache-primary-key }}
+
             - name: Upload Libraries
               uses: actions/upload-artifact@v4
               with:
                   name: install-directory
                   path: /opt/ac_install/
-                  compression-level: 9
+                  compression-level: 8
 
             - name: Expand Compiler
               run: ./.github/workflows/internal/expanders/compiler.sh
