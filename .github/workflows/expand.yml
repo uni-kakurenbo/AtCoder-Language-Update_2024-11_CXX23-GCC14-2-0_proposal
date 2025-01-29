@@ -65,7 +65,11 @@ jobs:
               uses: actions/cache/save@v4
               if: always() && steps.load-cached-tools.outputs.cache-hit != 'true'
               with:
-                  path: /opt/ac_tools/
+                  path: |
+                      /opt/ac_tools/
+                      /usr/bin/dasel
+                      /usr/bin/jq
+                      /usr/local/bin/taplo
                   key: ${{ steps.load-cached-tools.outputs.cache-primary-key }}
 
             - name: Expand Installer
