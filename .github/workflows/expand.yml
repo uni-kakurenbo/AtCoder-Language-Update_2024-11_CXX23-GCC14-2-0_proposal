@@ -188,6 +188,12 @@ jobs:
                   name: libraries
                   path: /opt/ac_install/
 
+            - name: Download
+              uses: actions/download-artifact@v4
+              with:
+                  name: libraries
+                  path: /opt/ac_install/
+
             - name: Load Cached Tools
               uses: actions/cache/restore@v4
               with:

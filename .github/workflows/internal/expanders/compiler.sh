@@ -10,4 +10,5 @@ gen-flags ac_user | tr ' ' '\n' >./dist/user.flags.txt
 cat ./dist/user.flags.txt
 
 "${WORKING_DIRECTORY}/replacers/compiler.sh"
+
 chmod +x -R ./dist/
