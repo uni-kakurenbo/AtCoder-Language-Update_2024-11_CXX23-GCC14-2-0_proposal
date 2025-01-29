@@ -36,6 +36,11 @@ jobs:
             cache-primary-key: ${{ steps.load-cached-binary.outputs.cache-primary-key }}
 
         steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.head_ref || github.ref_name }}
+
             - name: Load Cached Binary
               id: load-cached-binary
               uses: actions/cache/restore@v4
@@ -101,6 +106,11 @@ jobs:
         #   fail-fast: false
 
         steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.head_ref || github.ref_name }}
+
             - name: Download Installers
               uses: actions/download-artifact@v4
               with:
