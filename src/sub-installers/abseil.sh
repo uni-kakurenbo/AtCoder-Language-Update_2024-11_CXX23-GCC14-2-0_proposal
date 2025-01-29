@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu
 
-if [ BUILD_]
+if [[ -v BUILD_LIBRARIES ]]
 
 cd /tmp/ac_install/
 
