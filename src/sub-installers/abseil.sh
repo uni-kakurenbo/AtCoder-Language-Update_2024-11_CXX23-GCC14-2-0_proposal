@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu
 
-if [[ -v BUILD && ]]
+if ! ${AC_BUILD_ABSEIL}; then exit 0; fi
 
 cd /tmp/ac_install/
 
