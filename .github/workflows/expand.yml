@@ -159,7 +159,7 @@ jobs:
 
     dump:
         needs: run
-        name: Generate & Test
+        name: Dump
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
         steps:
