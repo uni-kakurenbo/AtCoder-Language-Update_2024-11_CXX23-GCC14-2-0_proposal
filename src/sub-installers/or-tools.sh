@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu
 
-if [[ ! ${AC_NO_BUILD_OrTools} ]]; then exit 0; fi
+if [[ ${AC_NO_BUILD_OrTools} ]]; then exit 0; fi
 
 cd /tmp/ac_install/
 
