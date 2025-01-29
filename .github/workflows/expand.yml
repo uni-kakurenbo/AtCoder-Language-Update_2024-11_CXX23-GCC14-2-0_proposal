@@ -153,16 +153,22 @@ jobs:
                   path: /tmp/ac_install/
                   key: ${{ steps.load-cached-install.outputs.cache-primary-key }}
 
-            # - name: Collect Pkgconfig Files
-            #   run: |
-            #       find /opt/ac_install/ -name *.pc -type f -print 0 |
-            #         xargs -0 -I {} sudo cp {} ./dist/pkgconfig/
+            - name: Collect Pkgconfig Files
+              run: |
+                  find /opt/ac_install/ -name *.pc -type f -print 0 |
+                    xargs -0 -I {} sudo cp {} ./config/libs/
 
-            # - name: Upload Pkgconfig Files
-            #   uses: actions/upload-artifact@v4
-            #   with:
-            #       name: pkgconfig
-            #       path: ./dist/pkgconfig/
+            - name: Upload Pkgconfig Files
+              uses: actions/upload-artifact@v4
+              with:
+                  name: pkgconfig
+                  path: ./config/libs/
+
+            - name: Clean Up Libraries Directory
+              run: |
+                  find /opt/ \
+                    -name cmake -or -name pkgconfig -or -name bin -or -name share -type d -print0 |
+                    xargs -0 sudo rm -rf
 
             - name: Upload Libraries
               uses: actions/upload-artifact@v4
@@ -171,8 +177,42 @@ jobs:
                   path: /opt/ac_install/
                   compression-level: 9
 
+    test:
+        name: Test
+        needs: install
+        runs-on: ${{ vars.RUNNER_IMAGE }}
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.head_ref || github.ref_name }}
+
+            - name: Download Pkgconfig Files
+              uses: actions/download-artifact@v4
+              with:
+                  name: pkgconfig
+                  path: ./config/libs/
+
+            - name: Load Cached Tools
+              uses: actions/cache/restore@v4
+              with:
+                  path: /opt/ac_tools/
+                  key: tools-${{ needs.prepare-tools.outputs.cache-primary-key }}
+                  restore-keys: tools-
+
+            - name: Apply Tools
+              run: sudo cp -rf /opt/ac_tools/** /usr/bin/
+
+            - name: Expand Compiler
+              run: ./.github/workflows/internal/expanders/compiler.sh
+
+            - name: Test
+              if: github.event.inputs.test-mode != 'none'
+              run: ./.github/workflows/internal/test.sh
+
     gen-config:
-        name: Generate Compiler & Configuration File
+        name: Generate Configuration File
         needs: install
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
@@ -183,12 +223,6 @@ jobs:
                   ref: ${{ github.head_ref || github.ref_name }}
 
             - name: Download Libraries
-              uses: actions/download-artifact@v4
-              with:
-                  name: libraries
-                  path: /opt/ac_install/
-
-            - name: Download
               uses: actions/download-artifact@v4
               with:
                   name: libraries
@@ -221,6 +255,7 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                   name: config
+                  path: ./dist/
 
     push:
         name: Push to Repository
@@ -242,7 +277,7 @@ jobs:
                   name: installers
                   path: ./dist/
 
-            - name: Download Compiler & Configuration File
+            - name: Download Configuration File
               uses: actions/download-artifact@v4
               with:
                   name: config
