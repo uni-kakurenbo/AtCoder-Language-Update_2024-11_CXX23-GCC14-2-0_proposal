@@ -2,13 +2,10 @@
 set -eu
 
 export PATH="${PATH}:/opt/ac_tools/bin/"
-pkg-config --version
+
+if pkg-config --version; then exit 0; fi
 
 VERSION="0.29.2"
-
-if [[ "$(pkg-config --version)" = "${VERSION}" ]]; then
-    exit 0
-fi
 
 echo "::group::pkg-config"
 

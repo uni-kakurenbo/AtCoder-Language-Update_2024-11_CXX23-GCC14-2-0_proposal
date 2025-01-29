@@ -49,7 +49,11 @@ jobs:
               id: load-cached-tools
               uses: actions/cache/restore@v4
               with:
-                  path: /opt/ac_tools/
+                  path: |
+                      /opt/ac_tools/
+                      /usr/bin/dasel
+                      /usr/bin/jq
+                      /usr/local/bin/taplo
                   key: tools-${{ hashFiles('./.github/workflows/internal/tools/**') }}
                   restore-keys: tools-
 
