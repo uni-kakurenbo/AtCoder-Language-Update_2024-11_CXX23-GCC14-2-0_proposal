@@ -4,6 +4,8 @@ set -eu
 cd ./test/
 mkdir -p ./tmp/
 
+chmod -R +x ./dist/
+
 function run-test() {
     set -eu
 
