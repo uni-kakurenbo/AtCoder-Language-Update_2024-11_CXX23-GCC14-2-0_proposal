@@ -14,17 +14,20 @@ echo "::endgroup::"
 sudo mkdir -p /tmp/ac_install/
 sudo mkdir -p /opt/ac_install/
 
-export CFLAGS="-w"
-export CXX="g++-14"
-export CMAKE_GENERATOR="Ninja"
+CMAKE_ENVIRONMENT=(
+    -G "Ninja"
+    -DCFLAGS:STRING="-w"
+    -DCMAKE_CXX_COMPILER:STRING="g++-14"
+)
 
 if ccache -v; then
     echo "ccache: enabled"
-    export CMAKE_C_COMPILER_LAUNCHER="ccache"
-    export CMAKE_CXX_COMPILER_LAUNCHER="ccache"
-fi
 
-cmake -E environment
+    CMAKE_ENVIRONMENT+=(
+        -DCMAKE_C_COMPILER_LAUNCHER:STRING="ccache"
+        -DCMAKE_CXX_COMPILER_LAUNCHER:STRING="ccache"
+    )
+fi
 
 ./sub-installers/abseil.sh
 ./sub-installers/AC-Library.sh

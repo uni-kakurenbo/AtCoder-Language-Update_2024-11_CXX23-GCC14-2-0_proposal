@@ -14,7 +14,7 @@ cd ./z3/
 
 sudo mkdir -p ./build/ && cd ./build/
 
-sudo cmake \
+sudo cmake "${CMAKE_ENVIRONMENT[@]}" \
     -DCMAKE_BUILD_TYPE:STRING=Release \
     -DCMAKE_INSTALL_PREFIX:PATH=/opt/ac_install/z3/ \
     -DCMAKE_CXX_FLAGS:STRING="${BUILD_FLAGS[*]}" \

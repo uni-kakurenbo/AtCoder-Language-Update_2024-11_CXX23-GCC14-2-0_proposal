@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eu
+set -exu
 
 cd /tmp/ac_install/
 
@@ -14,21 +14,22 @@ cd ./abseil/
 
 sudo mkdir -p ./build/ && cd ./build/
 
-BUILD_ARGS=(
+CMAKE_ARGUMENTS=(
+    "${CMAKE_ENVIRONMENT[@]}"
     -DABSL_ENABLE_INSTALL:BOOL=ON
     -DABSL_PROPAGATE_CXX_STD:BOOL=ON
     -DABSL_USE_SYSTEM_INCLUDES:BOOL=ON
     -DCMAKE_INSTALL_PREFIX:PATH=/opt/ac_install/abseil/
-    -DCMAKE_CXX_FLAGS:STRING="${BUILD_FLAGS[*]} -fPIC"
+    -DCMAKE_CXX_FLAGS:STRING="-fPIC ${BUILD_FLAGS[*]}"
 )
 
 if [[ -v RUN_TEST ]] && [[ "${RUN_TEST}" = "true" ]]; then
-    sudo cmake -DABSL_BUILD_TESTING=ON -DABSL_USE_GOOGLETEST_HEAD=ON "${BUILD_ARGS[@]}" ../
+    sudo cmake -DABSL_BUILD_TESTING=ON -DABSL_USE_GOOGLETEST_HEAD=ON "${CMAKE_ARGUMENTS[@]}" ../
 
     sudo make "-j${PARALLEL}"
     sudo ctest --parallel "${PARALLEL}"
 else
-    sudo cmake "${BUILD_ARGS[@]}" ../
+    sudo cmake "${CMAKE_ARGUMENTS[@]}" ../
 fi
 
 sudo cmake --build ./ --target install
