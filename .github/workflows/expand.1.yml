@@ -1,23 +1,23 @@
 name: Expand template
 run-name: ${{ github.workflow }} (${{ github.ref_name }})
 
-on:
-    push:
-        branches:
-            - main
-            - test/**
-    pull_request:
-    workflow_dispatch:
-        inputs:
-            test-mode:
-                description: "Test mode"
-                required: true
-                default: "normal"
-                type: choice
-                options:
-                    - none
-                    - normal
-                    - strict
+# on:
+#     push:
+#         branches:
+#             - main
+#             - test/**
+#     pull_request:
+#     workflow_dispatch:
+#         inputs:
+#             test-mode:
+#                 description: "Test mode"
+#                 required: true
+#                 default: "normal"
+#                 type: choice
+#                 options:
+#                     - none
+#                     - normal
+#                     - strict
 
 concurrency:
     group: |
@@ -28,33 +28,23 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
-    gen-installer:
-        name: Generate Installer
+    prepare-tools:
+        name: Prepare Tools
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
+        outputs:
+            cache-primary-key: ${{ steps.load-cached-binary.outputs.cache-primary-key }}
+
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-              with:
-                  ref: ${{ github.head_ref || github.ref_name }}
-                  fetch-depth: 0
-                  ssh-key: ${{ secrets.SSH_KEY }}
-
-            - name: Collect Workflow Telemetry
-              uses: catchpoint/workflow-telemetry-action@v2
-              with:
-                  theme: dark
-
-            - name: Load Cached Tools
-              id: load-cached-tools
+            - name: Load Cached Binary
+              id: load-cached-binary
               uses: actions/cache/restore@v4
               with:
-                  path: |
-                      /opt/ac_tools/
+                  path: /opt/ac_tools/
                   key: tools-${{ hashFiles('./.github/workflows/internal/tools/**') }}
                   restore-keys: tools-
 
-            - name: Prepare
+            - name: Build
               run: |
                   sudo cp -rf /opt/ac_tools/** /usr/bin/
 
@@ -62,15 +52,65 @@ jobs:
 
                   which pkg-config dasel jq taplo | xargs -I {} cp {} /opt/ac_tools/
 
-            - name: Cache Tools
+            - name: Cache Binary
               uses: actions/cache/save@v4
-              if: (!cancelled()) && steps.load-cached-tools.outputs.cache-hit != 'true'
+              if: (!cancelled()) && steps.load-cached-binary.outputs.cache-hit != 'true'
               with:
                   path: /opt/ac_tools/
-                  key: ${{ steps.load-cached-tools.outputs.cache-primary-key }}
+                  key: ${{ steps.load-cached-binary.outputs.cache-primary-key }}
 
-            - name: Expand Installer
+    gen-installer:
+        name: Generate Installers
+        needs: prepare-tools
+        runs-on: ${{ vars.RUNNER_IMAGE }}
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.head_ref || github.ref_name }}
+
+            - name: Load Cached Tools
+              uses: actions/cache/restore@v4
+              with:
+                  path: /opt/ac_tools/
+                  key: tools-${{ needs.prepare-tools.outputs.cache-primary-key }}
+                  restore-keys: tools-
+
+            - name: Apply Tools
+              run: sudo cp -rf /opt/ac_tools/** /usr/bin/
+
+            - name: Expand
               run: ./.github/workflows/internal/expanders/installer.sh
+
+            - name: Upload
+              uses: actions/upload-artifact@v4
+              with:
+                  name: installers
+                  path: ./dist/
+
+    install:
+        name: Install Libraries
+        needs: gen-installer
+
+        runs-on: ${{ vars.RUNNER_IMAGE }}
+
+        # strategy:
+        #   matrix:
+        #     target: [ Abseil, AcLibrary, Boost, Eigen, GMP, LibTorch, LightGBM, OrTools, RangeV3, UnorderedDense, Z3 ]
+        #   fail-fast: false
+
+        steps:
+            - name: Download Installers
+              uses: actions/download-artifact@v4
+              with:
+                  name: installers
+                  path: ./dist/
+
+            - name: Collect Workflow Telemetry
+              uses: catchpoint/workflow-telemetry-action@v2
+              with:
+                  theme: dark
 
             - name: Load CCache
               if: ${{ github.event.inputs.test-mode != 'strict' }}
@@ -86,6 +126,8 @@ jobs:
                   path: /tmp/ac_install/
                   key: build-${{ hashFiles('./src/**') }}
                   restore-keys: build-
+                  # key: build-${{ matrix.target }}-${{ hashFiles('./src/**') }}
+                  # restore-keys: build-${{ matrix.target }}-
 
             - name: Install Libraries
               env:
@@ -105,12 +147,43 @@ jobs:
                   path: /tmp/ac_install/
                   key: ${{ steps.load-cached-install.outputs.cache-primary-key }}
 
+            - name: Collect pkgconfig
+              run: |
+                  find /opt/ac_install/ -name *.pc -type f -print 0 |
+                    xargs -0 -I {}
+
             - name: Upload Libraries
               uses: actions/upload-artifact@v4
               with:
-                  name: install-directory
+                  name: libraries
                   path: /opt/ac_install/
-                  compression-level: 8
+                  compression-level: 9
+
+    gen-config:
+        name: Generate Compiler & Configuration File
+        runs-on: ${{ vars.RUNNER_IMAGE }}
+
+        steps:
+            - name: Download Libraries
+              uses: actions/download-artifact@v4
+              with:
+                  name: libraries
+                  path: /opt/ac_install/
+
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.head_ref || github.ref_name }}
+
+            - name: Load Cached Tools
+              uses: actions/cache/restore@v4
+              with:
+                  path: /opt/ac_tools/
+                  key: tools-${{ needs.prepare-tools.outputs.cache-primary-key }}
+                  restore-keys: tools-
+
+            - name: Apply Tools
+              run: sudo cp -rf /opt/ac_tools/** /usr/bin/
 
             - name: Expand Compiler
               run: ./.github/workflows/internal/expanders/compiler.sh
@@ -118,19 +191,43 @@ jobs:
             - name: Expand Configuration File
               run: ./.github/workflows/internal/expanders/config.sh
 
-            - name: Upload Outputs
-              if: (!cancelled())
-              uses: actions/upload-artifact@v4
-              with:
-                  name: outputs
-                  path: ./dist/
-
             - name: Lint
               run: ./.github/workflows/internal/lint.sh
 
             - name: Test
               if: github.event.inputs.test-mode != 'none'
               run: ./.github/workflows/internal/test.sh
+
+            - name: Upload
+              uses: actions/upload-artifact@v4
+              with:
+                  name: config
+
+    push:
+        name: Push to Repository
+        needs: run
+        if: (!cancelled())
+        runs-on: ${{ vars.RUNNER_IMAGE }}
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.head_ref || github.ref_name }}
+                  fetch-depth: 0
+                  ssh-key: ${{ secrets.SSH_KEY }}
+
+            - name: Download Installers
+              uses: actions/download-artifact@v4
+              with:
+                  name: installers
+                  path: ./dist/
+
+            - name: Download Compiler & Configuration File
+              uses: actions/download-artifact@v4
+              with:
+                  name: config
+                  path: ./dist/
 
             - name: Push
               if: (!cancelled()) && github.ref_name == 'main'
@@ -156,28 +253,12 @@ jobs:
                   else
                     echo "No updated files."
                   fi
-
-    install:
-        name: Generate Installer
-        runs-on: ${{ vars.RUNNER_IMAGE }}
-
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-              with:
-                  ref: ${{ github.head_ref || github.ref_name }}
-                  fetch-depth: 0
-                  ssh-key: ${{ secrets.SSH_KEY }}
-
-
-    gen-compiler:
-
-    test:
+                  path: ./dist/
 
     dump:
+        name: Dump
         needs: run
         if: (!cancelled())
-        name: Dump
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
         steps:
@@ -185,6 +266,18 @@ jobs:
               uses: actions/download-artifact@v4
               with:
                   name: outputs
+                  path: ./dist/
+
+            - name: Download Installers
+              uses: actions/download-artifact@v4
+              with:
+                  name: installers
+                  path: ./dist/
+
+            - name: Download Compiler & Configuration File
+              uses: actions/download-artifact@v4
+              with:
+                  name: config
                   path: ./dist/
 
             - name: Dump
@@ -203,7 +296,7 @@ jobs:
                     if [ -f ./compile.sh ]; then
                       echo '## `compile.sh`'
                       echo '```bash'
-                      cat ./compiler.sh
+                      cat ./compile.sh
                       echo '```'
                     fi
 
