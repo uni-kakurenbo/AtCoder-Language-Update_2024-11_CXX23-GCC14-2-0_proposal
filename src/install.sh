@@ -19,6 +19,7 @@ export CXX="g++-14"
 export CMAKE_GENERATOR="Ninja"
 
 if ccache -v; then
+    echo "ccache: enabled"
     export CMAKE_C_COMPILER_LAUNCHER="ccache"
     export CMAKE_CXX_COMPILER_LAUNCHER="ccache"
 fi
