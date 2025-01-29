@@ -1,7 +1,7 @@
 #!/bin/bash
-set -eu
-
+set +u
 if [[ ${AC_NO_BUILD_GMP} ]]; then exit 0; fi
+set -eu
 
 echo "::group::GMP"
 

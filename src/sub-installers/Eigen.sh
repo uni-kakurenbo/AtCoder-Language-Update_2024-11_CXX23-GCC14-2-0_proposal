@@ -1,7 +1,7 @@
 #!/bin/bash
-set -eu
-
+set +u
 if [[ ${AC_NO_BUILD_Eigen} && ${AC_NO_BUILD_LightGBM} && ${AC_NO_BUILD_OrTools} ]]; then exit 0; fi
+set -eu
 
 echo "::group::Eigen3"
 
