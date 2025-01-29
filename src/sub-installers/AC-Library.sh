@@ -1,6 +1,8 @@
 #!/bin/bash
 set -eu
 
+if [[ ! ${AC_NO_BUILD_AcLibrary} ]]; then exit 0; fi
+
 cd /tmp/ac_install/
 
 echo "::group::AC Library"
