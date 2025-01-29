@@ -1,7 +1,7 @@
 #!/bin/bash
-set -eu
-
+set +u
 if [[ ${AC_NO_BUILD_Z3} ]]; then exit 0; fi
+set -eu
 
 cd /tmp/ac_install/
 
