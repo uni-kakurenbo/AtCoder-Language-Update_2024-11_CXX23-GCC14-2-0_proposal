@@ -59,8 +59,6 @@ jobs:
 
             - name: Prepare
               run: |
-                  ls /opt/ac_tools/
-                  ls /opt/ac_tools/bin/
                   ./.github/workflows/internal/prepare.sh
 
             - name: Cache Tools
