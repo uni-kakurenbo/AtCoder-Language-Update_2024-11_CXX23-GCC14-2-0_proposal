@@ -164,14 +164,10 @@ jobs:
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
         steps:
-            - name: Make Working Directory
-              run: mkdir -p ./dist/
-
             - name: Download Outputs
               uses: actions/upload-artifact@v4
               with:
                   name: outputs
-                  path: ./dist/
 
             - name: Dump
               working-directory: ./dist/
