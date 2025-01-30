@@ -1,11 +1,11 @@
 #!/bin/bash
 set +u
-if [[ ${AC_NO_BUILD_Boost} ]]; then exit 0; fi
+if [[ ${AC_NO_BUILD_boost} ]]; then exit 0; fi
 set -eu
 
 cd /tmp/ac_install/
 
-echo "::group::Boost"
+echo "::group::boost"
 
 sudo mkdir -p ./boost/
 

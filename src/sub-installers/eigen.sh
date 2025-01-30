@@ -1,6 +1,6 @@
 #!/bin/bash
 set +u
-if [[ ${AC_NO_BUILD_Eigen} && ${AC_NO_BUILD_LightGBM} && ${AC_NO_BUILD_OrTools} ]]; then exit 0; fi
+if [[ ${AC_NO_BUILD_eigen} && ${AC_NO_BUILD_light_gbm} && ${AC_NO_BUILD_or_tools} ]]; then exit 0; fi
 set -eu
 
 echo "::group::Eigen3"

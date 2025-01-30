@@ -34,16 +34,16 @@ if ccache -v; then
 fi
 
 ./sub-installers/abseil.sh
-./sub-installers/AC-Library.sh
-./sub-installers/Boost.sh
-./sub-installers/Eigen.sh
-./sub-installers/GMP.sh
+./sub-installers/ac-library.sh
+./sub-installers/boost.sh
+./sub-installers/eigen.sh
+./sub-installers/gmp.sh
 ./sub-installers/libtorch.sh
-./sub-installers/LightGBM.sh
+./sub-installers/light-gbm.sh
 ./sub-installers/or-tools.sh
 ./sub-installers/range-v3.sh
 ./sub-installers/unordered_dense.sh
-./sub-installers/Z3.sh
+./sub-installers/z3.sh
 
 if [ -v ATCODER ]; then
     echo "::group::finalize"

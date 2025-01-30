@@ -1,6 +1,6 @@
 #!/bin/bash
 set +u
-if [[ ${AC_NO_BUILD_RangeV3} ]]; then exit 0; fi
+if [[ ${AC_NO_BUILD_range_v3} ]]; then exit 0; fi
 set -eu
 
 cd /tmp/ac_install/
