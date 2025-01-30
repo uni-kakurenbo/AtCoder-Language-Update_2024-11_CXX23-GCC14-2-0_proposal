@@ -1,6 +1,6 @@
 #!/bin/bash
 set +u
-if [[ ${AC_NO_BUILD_UnorderedDense} ]]; then exit 0; fi
+if [[ ${AC_NO_BUILD_unordered_dense} ]]; then exit 0; fi
 set -eu
 
 cd /tmp/ac_install/

@@ -1,6 +1,6 @@
 #!/bin/bash
 set +u
-if [[ ${AC_NO_BUILD_OrTools} ]]; then exit 0; fi
+if [[ ${AC_NO_BUILD_or_tools} ]]; then exit 0; fi
 set -eu
 
 cd /tmp/ac_install/

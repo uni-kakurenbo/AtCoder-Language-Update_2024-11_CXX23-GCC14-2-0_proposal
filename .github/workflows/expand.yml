@@ -111,10 +111,11 @@ jobs:
 
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
-        # strategy:
-        #     matrix:
-        #         target: [Abseil, AcLibrary, Boost, Eigen, GMP, LibTorch, LightGBM, OrTools, RangeV3, UnorderedDense, Z3]
-        #     fail-fast: false
+        strategy:
+            matrix:
+                target:
+                    [Abseil, AcLibrary, boost, eigen, gmp, LibTorch, light-gbm, OrTools, RangeV3, UnorderedDense, z3]
+            fail-fast: false
 
         steps:
             - name: Collect Workflow Telemetry
@@ -139,17 +140,6 @@ jobs:
               with:
                   create-symlink: true
 
-            # - name: Load Cached Installation
-            #   id: load-cached-install
-            #   if: ${{ github.event.inputs.test-mode != 'strict' }}
-            #   uses: actions/cache/restore@v4
-            #   with:
-            #       path: /tmp/ac_install/
-            #       key: build-${{ hashFiles('./src/**') }}
-            #       restore-keys: build-
-            # key: build-${{ matrix.target }}-${{ hashFiles('./src/**') }}
-            # restore-keys: build-${{ matrix.target }}-
-
             - name: Install Libraries
               env:
                   TARGET: ${{ matrix.target }}
@@ -160,13 +150,6 @@ jobs:
 
                   find /tmp/ac_install/ -iname *.tar.* -or -iname *.zip -print0 |
                     xargs -0 -I {} sudo rm -rf {}
-
-            - name: Cache Installation
-              uses: actions/cache/save@v4
-              if: (!cancelled()) && steps.load-cached-install.outputs.cache-hit != 'true'
-              with:
-                  path: /tmp/ac_install/
-                  key: ${{ steps.load-cached-install.outputs.cache-primary-key }}
 
             - name: Collect Pkgconfig Files
               run: |
@@ -238,7 +221,6 @@ jobs:
               with:
                   name: dist-compiler
                   path: ./dist/
-                  compression-level: 9
 
     test:
         name: Test
@@ -301,14 +283,9 @@ jobs:
             - name: Download Installer
               uses: actions/download-artifact@v4
               with:
-                  name: dist-installers
+                  name: dist-*
                   path: ./dist/
-
-            - name: Download Compiler
-              uses: actions/download-artifact@v4
-              with:
-                  name: dist-compiler
-                  path: ./dist/
+                  merge-multiple: true
 
             - name: Expand Configuration File
               run: |

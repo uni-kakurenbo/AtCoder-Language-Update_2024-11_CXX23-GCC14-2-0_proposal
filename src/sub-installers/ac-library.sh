@@ -1,6 +1,6 @@
 #!/bin/bash
 set +u
-if [[ ${AC_NO_BUILD_AcLibrary} ]]; then exit 0; fi
+if [[ ${AC_NO_BUILD_ac_library} ]]; then exit 0; fi
 set -eu
 
 cd /tmp/ac_install/

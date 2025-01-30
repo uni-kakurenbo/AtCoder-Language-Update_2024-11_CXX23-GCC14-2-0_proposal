@@ -23,25 +23,25 @@ execution = ['./a.out']
         { name = 'Apache-2.0', url = 'https://github.com/abseil/abseil-cpp/blob/master/LICENSE' },
     ]
 
-[library.AC-Library]
+[library.ac-library]
     version = '1.5.1'
     license = [
         { name = 'CC0-1.0', url = 'https://github.com/atcoder/ac-library/blob/master/LICENSE' }
     ]
 
-[library.Boost]
+[library.boost]
     version = '1.86.0'
     license = [
         { name = 'BSL-1.0', url = 'https://www.boost.org/LICENSE_1_0.txt' }
     ]
 
-[library.Eigen]
+[library.eigen]
     version = '3.4.0-4'
     license = [
         { name = 'MPL-2.0-no-copyleft-exception', url = 'https://www.mozilla.org/en-US/MPL/2.0/' },
     ]
 
-[library.GMP]
+[library.gmp]
     version = '2:6.3.0+dfsg-2ubuntu6'
     license = [
         { name = 'LGPL-3.0-only', url = 'https://www.gnu.org/licenses/lgpl-3.0.html' },
@@ -85,10 +85,10 @@ execution = ['./a.out']
     url = 'https://github.com/pytorch/pytorch/blob/main/NOTICE#L420-L456'
 
 
-[library.LightGBM]
+[library.light-gbm]
     version = '4.5.0'
     license = [
-        { name = 'MIT', url = 'https://github.com/microsoft/LightGBM/blob/master/LICENSE' }
+        { name = 'MIT', url = 'https://github.com/microsoft/light-gbm/blob/master/LICENSE' }
     ]
 
 
@@ -186,63 +186,63 @@ execution = ['./a.out']
     url = 'https://github.com/coin-or/CoinUtils/blob/master/LICENSE'
 
 
-[library.Osi]
+[library.osi]
     indirect = true
 
-[[library.Osi.license]]
+[[library.osi.license]]
     name = 'EPL-2.0'
     url = 'https://github.com/coin-or/Osi/blob/master/LICENSE'
 
 
-[library.Clp]
+[library.clp]
     indirect = true
 
-[[library.Clp.license]]
+[[library.clp.license]]
     name = 'EPL-2.0'
     url = 'https://github.com/coin-or/Clp/blob/master/LICENSE'
 
 
-[library.Cgl]
+[library.cgl]
     indirect = true
 
-[[library.Cgl.license]]
+[[library.cgl.license]]
     name = 'EPL-2.0'
     url = 'https://github.com/coin-or/Cgl/blob/master/LICENSE'
 
 
-[library.Cbc]
+[library.cbc]
     indirect = true
 
-[[library.Cbc.license]]
+[[library.cbc.license]]
     name = 'EPL-2.0'
     url = 'https://github.com/coin-or/Cbc/blob/master/LICENSE'
 
 
-[library.GLPK]
+[library.glpk]
     indirect = true
 
-[[library.GLPK.license]]
+[[library.glpk.license]]
     name = 'GPL-3.0-or-later'
     url = 'https://www.gnu.org/licenses/gpl-3.0.html'
 
 
-[library.HiGHS]
+[library.highs]
     indirect = true
 
-[[library.HiGHS.license]]
+[[library.highs.license]]
     name = 'MIT'
     url = 'https://github.com/ERGO-Code/HiGHS/blob/master/LICENSE.txt'
 
 
-[library.SCIP]
+[library.scip]
     indirect = true
 
-[[library.SCIP.license]]
+[[library.scip.license]]
     name = 'Apache-2.0'
     url = 'https://www.scipopt.org/scip/doc/html/LICENSE.php'
 
 
-[library.Z3]
+[library.z3]
     version = '4.13.3'
     license = [
         { name = 'MIT', url = 'https://github.com/Z3Prover/z3/blob/z3-4.13.3/LICENSE.txt' }
