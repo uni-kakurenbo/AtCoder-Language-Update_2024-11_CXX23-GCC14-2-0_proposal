@@ -28,7 +28,7 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
-    config-matirx:
+    config-matrix:
         name: Prepare Tools
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
