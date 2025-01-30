@@ -90,11 +90,11 @@ jobs:
                   sudo rm -rf ./dist/ && mkdir -p ./dist/
                   ./.github/workflows/internal/expanders/installer.sh
 
-                  if [ -f ./install.sh ]; then
+                  if [ -f ./dist/install.sh ]; then
                     {
-                      echo '## `install.sh`'
+                      echo '# `install.sh`'
                       echo '```bash'
-                      cat ./install.sh
+                      cat ./dist/install.sh
                       echo '```'
                     } >> "${GITHUB_STEP_SUMMARY}"
                   fi
@@ -224,11 +224,11 @@ jobs:
                   sudo rm -rf ./dist/ && mkdir -p ./dist/
                   ./.github/workflows/internal/expanders/compiler.sh
 
-                  if [ -f ./compile.sh ]; then
+                  if [ -f ./dist/compile.sh ]; then
                     {
-                      echo '## `compile.sh`'
+                      echo '# `compile.sh`'
                       echo '```bash'
-                      cat ./compile.sh
+                      cat ./dist/compile.sh
                       echo '```'
                     } >> "${GITHUB_STEP_SUMMARY}"
                   fi
@@ -242,7 +242,7 @@ jobs:
 
     test:
         name: Test
-        needs: install
+        needs: gen-compiler
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
         steps:
@@ -314,11 +314,11 @@ jobs:
               run: |
                   ./.github/workflows/internal/expanders/config.sh
 
-                  if [ -f ./install.toml ]; then
+                  if [ -f ./dist/config.toml ]; then
                     {
-                      echo '## `install.toml`'
+                      echo '# `config.toml`'
                       echo '```toml'
-                      cat ./install.toml
+                      cat ./dist/config.toml
                       echo '```'
                     } > "${GITHUB_STEP_SUMMARY}"
                   fi
