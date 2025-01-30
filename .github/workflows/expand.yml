@@ -111,11 +111,11 @@ jobs:
 
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
-        strategy:
-            matrix:
-                target:
-                    [Abseil, AcLibrary, boost, eigen, gmp, LibTorch, light-gbm, OrTools, RangeV3, UnorderedDense, z3]
-            fail-fast: false
+        # strategy:
+        #     matrix:
+        #         target:
+        #             [Abseil, AcLibrary, boost, eigen, gmp, LibTorch, light-gbm, OrTools, RangeV3, UnorderedDense, z3]
+        #     fail-fast: false
 
         steps:
             - name: Collect Workflow Telemetry
