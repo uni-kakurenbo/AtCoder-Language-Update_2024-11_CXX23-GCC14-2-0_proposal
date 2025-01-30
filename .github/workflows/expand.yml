@@ -28,6 +28,28 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
+    config-matirx:
+        name: Prepare Tools
+        runs-on: ${{ vars.RUNNER_IMAGE }}
+
+        outputs:
+            lib-list: ${{ steps.gen-lib-list.outputs.data }}
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.head_ref || github.ref_name }}
+
+            - name: Generate Library List
+              id: gen-lib-list
+              run: |
+                  {
+                    echo -n "data=\"["
+                    ls -m ./src/sub-installers/ | tr -d "\n"
+                    echo -n "]\""
+                  } > "${GITHUB_OUTPUT}"
+
     prepare-tools:
         name: Prepare Tools
         runs-on: ${{ vars.RUNNER_IMAGE }}
@@ -107,21 +129,24 @@ jobs:
 
     install:
         name: Install Libraries
-        needs: gen-installer
+        needs: gen-installer, config-matrix
 
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
-        # strategy:
-        #     matrix:
-        #         target:
-        #             [Abseil, AcLibrary, boost, eigen, gmp, LibTorch, light-gbm, OrTools, RangeV3, UnorderedDense, z3]
-        #     fail-fast: false
+        strategy:
+            matrix:
+                target: ${{ needs.config-matrix.outputs.lib-list }}
+            fail-fast: false
 
         steps:
-            - name: Collect Workflow Telemetry
-              uses: catchpoint/workflow-telemetry-action@v2
-              with:
-                  theme: dark
+            # - name: Collect Workflow Telemetry
+            #   uses: catchpoint/workflow-telemetry-action@v2
+            #   with:
+            #       theme: dark
+
+            - name: Set Build Switches
+              run: |
+                  AC_NO_BUILD=true
 
             - name: Checkout
               uses: actions/checkout@v4
@@ -283,7 +308,7 @@ jobs:
             - name: Download Installer
               uses: actions/download-artifact@v4
               with:
-                  name: dist-*
+                  pattern: dist-*
                   path: ./dist/
                   merge-multiple: true
 
