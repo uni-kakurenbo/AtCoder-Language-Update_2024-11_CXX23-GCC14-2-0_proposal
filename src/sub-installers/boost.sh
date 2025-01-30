@@ -21,18 +21,15 @@ sudo ./bootstrap.sh \
     --without-libraries=mpi,graph_parallel \
     --prefix=/opt/ac_install/boost/
 
-BUILD_ARGS=(
-    -d0
-    "-j$(nproc)"
-    "toolset=gcc"
-    "link=static"
-    "threading=single"
-    "variant=release"
-    "cflags=-w"
-    "cxxflags=${BUILD_FLAGS[*]}"
-    "--user-config=./user-config.jam"
-)
-
-sudo ./b2 "${BUILD_ARGS[@]}" -j"${PARALLEL}" -d2 install
+sudo ./b2 \
+    toolset=gcc \
+    link=static \
+    threading=single \
+    variant=release \
+    cflags="-w" \
+    cxxflags="${BUILD_FLAGS[*]}" \
+    --user-config="./user-config.jam" \
+    -j"${PARALLEL}" -d2 \
+    install
 
 echo "::endgroup::"
