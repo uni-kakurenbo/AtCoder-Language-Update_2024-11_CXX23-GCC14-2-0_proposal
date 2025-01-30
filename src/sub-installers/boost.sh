@@ -14,7 +14,7 @@ sudo tar -I pbzip2 -xf ./boost.tar.bz2 -C ./boost/ --strip-components 1
 
 cd ./boost/
 
-echo "using gcc : : ccache g++-14 ;" | sudo tee - a ./user-config.jam
+echo "using gcc : : ccache g++-14 ;" | sudo tee -a ./user-config.jam
 
 sudo ./bootstrap.sh \
     --with-toolset=gcc \
