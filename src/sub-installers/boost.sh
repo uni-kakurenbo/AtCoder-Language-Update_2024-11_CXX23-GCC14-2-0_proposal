@@ -29,7 +29,7 @@ sudo ./b2 \
     cflags="-w" \
     cxxflags="${BUILD_FLAGS[*]}" \
     --user-config="./user-config.jam" \
-    -j"${PARALLEL}" -d2 \
+    -j"${PARALLEL}" \
     install
 
 echo "::endgroup::"
