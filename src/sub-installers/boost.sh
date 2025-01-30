@@ -19,7 +19,8 @@ echo "using gcc : : ccache g++-14 ;" | sudo tee -a ./user-config.jam
 sudo ./bootstrap.sh \
     --with-toolset=gcc \
     --without-libraries=mpi,graph_parallel \
-    --prefix=/opt/ac_install/boost/
+    --prefix=/opt/ac_install/boost/ \
+    --user-config='./user-config.jam'
 
 BUILD_ARGS=(
     -d0
