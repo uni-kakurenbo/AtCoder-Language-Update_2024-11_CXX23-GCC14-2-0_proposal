@@ -129,7 +129,9 @@ jobs:
 
     install:
         name: Install Libraries
-        needs: gen-installer, config-matrix
+        needs:
+            - gen-installer
+            - config-matrix
 
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
