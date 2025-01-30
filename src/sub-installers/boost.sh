@@ -19,8 +19,7 @@ echo "using gcc : : ccache g++-14 ;" | sudo tee -a ./user-config.jam
 sudo ./bootstrap.sh \
     --with-toolset=gcc \
     --without-libraries=mpi,graph_parallel \
-    --prefix=/opt/ac_install/boost/ \
-    --user-config='./user-config.jam'
+    --prefix=/opt/ac_install/boost/
 
 BUILD_ARGS=(
     -d0
@@ -31,8 +30,9 @@ BUILD_ARGS=(
     "variant=release"
     "cflags=-w"
     "cxxflags=${BUILD_FLAGS[*]}"
+    "--user-config=./user-config.jam"
 )
 
-sudo ./b2 "${BUILD_ARGS[@]}" -j "${PARALLEL}" install
+sudo ./b2 "${BUILD_ARGS[@]}" -j"${PARALLEL}" -d2 install
 
 echo "::endgroup::"
