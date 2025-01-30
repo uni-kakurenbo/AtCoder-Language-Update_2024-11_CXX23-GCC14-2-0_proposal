@@ -139,16 +139,16 @@ jobs:
               with:
                   create-symlink: true
 
-            - name: Load Cached Installation
-              id: load-cached-install
-              if: ${{ github.event.inputs.test-mode != 'strict' }}
-              uses: actions/cache/restore@v4
-              with:
-                  path: /tmp/ac_install/
-                  key: build-${{ hashFiles('./src/**') }}
-                  restore-keys: build-
-                  # key: build-${{ matrix.target }}-${{ hashFiles('./src/**') }}
-                  # restore-keys: build-${{ matrix.target }}-
+            # - name: Load Cached Installation
+            #   id: load-cached-install
+            #   if: ${{ github.event.inputs.test-mode != 'strict' }}
+            #   uses: actions/cache/restore@v4
+            #   with:
+            #       path: /tmp/ac_install/
+            #       key: build-${{ hashFiles('./src/**') }}
+            #       restore-keys: build-
+            # key: build-${{ matrix.target }}-${{ hashFiles('./src/**') }}
+            # restore-keys: build-${{ matrix.target }}-
 
             - name: Install Libraries
               env:
@@ -314,11 +314,11 @@ jobs:
               run: |
                   ./.github/workflows/internal/expanders/config.sh
 
-                  if [ -f ./dist/config.toml ]; then
+                  if [ -f ./dist/install.toml ]; then
                     {
-                      echo '# `config.toml`'
+                      echo '# `install.toml`'
                       echo '```toml'
-                      cat ./dist/config.toml
+                      cat ./dist/install.toml
                       echo '```'
                     } > "${GITHUB_STEP_SUMMARY}"
                   fi
