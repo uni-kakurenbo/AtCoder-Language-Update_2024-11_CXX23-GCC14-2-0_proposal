@@ -163,6 +163,8 @@ jobs:
 
                   # eval "export AC_NO_BUILD_${lib_id//-/_}=true"
 
+                  echo "================================================================="
+
                   printenv
 
             - name: Checkout
