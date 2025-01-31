@@ -158,14 +158,11 @@ jobs:
 
                   echo "${LIBRARY_LIST//-/_}" | jq -c -r '.[]' |
                     while read -r lib_id; do
-                      eval "env AC_NO_BUILD_${lib_id//-/_}=false"
+                      echo "AC_NO_BUILD_${lib_id//-/_}=false" >>"${GITHUB_ENV}"
                     done
 
-                  # eval "export AC_NO_BUILD_${lib_id//-/_}=true"
-
-                  echo "================================================================="
-
-                  printenv
+                  LIB_ID='${{ matrix.target }}'
+                  echo "AC_NO_BUILD_${LIB_ID//-/_}=true" >>"${GITHUB_ENV}"
 
             - name: Checkout
               uses: actions/checkout@v4
