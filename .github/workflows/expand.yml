@@ -158,10 +158,10 @@ jobs:
 
                   echo "${LIBRARY_LIST//-/_}" | jq -c -r '.[]' |
                     while read -r lib_id; do
-                      eval "AC_NO_BUILD_${lib_id//-/_}=false" env
+                      eval "env AC_NO_BUILD_${lib_id//-/_}=false"
                     done
 
-                  eval "export AC_NO_BUILD_${lib_id//-/_}=true"
+                  # eval "export AC_NO_BUILD_${lib_id//-/_}=true"
 
                   printenv
 
