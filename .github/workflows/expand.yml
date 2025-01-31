@@ -158,11 +158,11 @@ jobs:
 
                   echo "${LIBRARY_LIST//-/_}" | jq -c -r '.[]' |
                     while read -r lib_id; do
-                      echo "AC_NO_BUILD_${lib_id//-/_}=false" >>"${GITHUB_ENV}"
+                      echo "AC_NO_BUILD_${lib_id//-/_}=true" >>"${GITHUB_ENV}"
                     done
 
                   LIB_ID='${{ matrix.target }}'
-                  echo "AC_NO_BUILD_${LIB_ID//-/_}=true" >>"${GITHUB_ENV}"
+                  echo "AC_NO_BUILD_${LIB_ID//-/_}=false" >>"${GITHUB_ENV}"
 
             - name: Checkout
               uses: actions/checkout@v4
@@ -186,10 +186,6 @@ jobs:
                   TARGET: ${{ matrix.target }}
                   RUN_TEST: ${{ github.event.inputs.test-mode == 'strict' }}
               run: |
-                  printenv
-
-                  exit 0
-
                   chmod +x ./dist/install.sh
                   ./dist/install.sh
 
