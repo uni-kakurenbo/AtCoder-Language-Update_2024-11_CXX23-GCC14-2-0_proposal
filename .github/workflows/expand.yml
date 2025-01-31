@@ -152,6 +152,8 @@ jobs:
 
             - name: Configure Installation
               run: |
+                  set +x
+
                   LIBRARY_LIST='${{ needs.config-matrix.outputs.lib-list }}'
 
                   echo "${LIBRARY_LIST//-/_}" | jq -c -r '.[]' |
