@@ -181,7 +181,7 @@ jobs:
               with:
                   create-symlink: true
 
-            - name: Install Libraries
+            - name: Install
               env:
                   TARGET: ${{ matrix.target }}
                   RUN_TEST: ${{ github.event.inputs.test-mode == 'strict' }}
@@ -204,15 +204,15 @@ jobs:
                   name: pkgconfig
                   path: ./config/libs/
 
-            - name: Clean Up Install Directory
+            - name: Clean Up
               run: |
                   find /opt/ac_install/ -name cmake -or -name pkgconfig -or -name bin -or -name share -type d -print0 |
                     xargs -0 sudo rm -rf
 
-            - name: Upload Libraries
+            - name: Upload
               uses: actions/upload-artifact@v4
               with:
-                  name: libraries
+                  name: library-${{ matrix.target }}
                   path: /opt/ac_install/
                   compression-level: 9
 
@@ -287,8 +287,9 @@ jobs:
             - name: Download Libraries
               uses: actions/download-artifact@v4
               with:
-                  name: libraries
+                  pattern: library-*
                   path: /opt/ac_install/
+                  merge-multiple: true
 
             - name: Download Compiler
               uses: actions/download-artifact@v4
