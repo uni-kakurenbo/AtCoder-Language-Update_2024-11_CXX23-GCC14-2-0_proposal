@@ -46,7 +46,7 @@ jobs:
               run: |
                   {
                     echo -n "data=["
-                    ls ./src/sub-installers/ | sed -e s/^/\"/g -e s/$/\"/g | tr '\n' ',' | sed s/,$//g
+                    ls ./src/sub-installers/ | sed -e s/^/\"/g -e s/\.sh$/\"/g | tr '\n' ',' | sed s/,$//g
                     echo -n "]"
                   }  > "${GITHUB_OUTPUT}"
 
@@ -146,9 +146,18 @@ jobs:
             #   with:
             #       theme: dark
 
-            - name: Set Build Switches
+            - name: Configure Installation
               run: |
-                  AC_NO_BUILD=true
+                  LIBRARY_LIST="${{ needs.config-matrix.outputs.lib-list }}"
+
+                  echo "${LIBRARY_LIST//-/_}" | jq -c '.[]' |
+                    while read -r lib_id; do
+                      eval export "AC_NO_BUILD_${lib_id//-/_}"=false
+                    done
+
+                  eval export "AC_NO_BUILD_${lib_id//-/_}"=true
+
+                  printenv
 
             - name: Checkout
               uses: actions/checkout@v4
@@ -172,6 +181,8 @@ jobs:
                   TARGET: ${{ matrix.target }}
                   RUN_TEST: ${{ github.event.inputs.test-mode == 'strict' }}
               run: |
+                  printenv
+
                   chmod +x ./dist/install.sh
                   ./dist/install.sh
 
