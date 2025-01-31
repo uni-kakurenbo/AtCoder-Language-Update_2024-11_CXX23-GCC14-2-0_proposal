@@ -19,6 +19,10 @@ on:
                     - normal
 #                     - strict
 
+defaults:
+    run:
+        shell: bash
+
 concurrency:
     group: |
         test-${{
@@ -46,7 +50,7 @@ jobs:
               run: |
                   {
                     echo -n "data=["
-                    ls ./src/sub-installers/ | sed -e s/^/\"/g -e s/\.sh$/\"/g | tr '\n' ',' | sed s/,$//g
+                    ls ./src/sub-installers/ | sed -e s/^/\'/g -e s/\.sh$/\'/g | tr '\n' ',' | sed s/,$//g
                     echo -n "]"
                   }  > "${GITHUB_OUTPUT}"
 
