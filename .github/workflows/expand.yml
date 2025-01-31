@@ -152,7 +152,7 @@ jobs:
 
             - name: Configure Installation
               run: |
-                  set +x
+                  set -x
 
                   LIBRARY_LIST='${{ needs.config-matrix.outputs.lib-list }}'
 
@@ -162,7 +162,7 @@ jobs:
                       eval "export AC_NO_BUILD_${lib_id//-/_}=false"
                     done
 
-                  eval export "AC_NO_BUILD_${lib_id//-/_}"=true
+                  eval "export AC_NO_BUILD_${lib_id//-/_}=true"
 
                   printenv
 
