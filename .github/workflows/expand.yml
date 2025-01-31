@@ -45,7 +45,7 @@ jobs:
               id: gen-lib-list
               run: |
                   {
-                    echo -n "list=["
+                    echo -n "data=["
                     ls ./src/sub-installers/ | sed -e s/^/\"/g -e s/$/\"/g | tr '\n' ',' | sed s/,$//g
                     echo -n "]"
                   }  > "${GITHUB_OUTPUT}"
