@@ -157,7 +157,7 @@ jobs:
                   echo "${LIBRARY_LIST//-/_}" | jq -c -r '.[]' |
                     while read -r lib_id; do
                       echo "AC_NO_BUILD_${lib_id//-/_}"
-                      eval export "AC_NO_BUILD_${lib_id//-/_}"=false
+                      eval "export AC_NO_BUILD_${lib_id//-/_}=false"
                     done
 
                   eval export "AC_NO_BUILD_${lib_id//-/_}"=true
