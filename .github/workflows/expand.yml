@@ -45,10 +45,10 @@ jobs:
               id: gen-lib-list
               run: |
                   {
-                    echo -n "data=\"["
-                    ls -m ./src/sub-installers/ | tr -d "\n"
-                    echo -n "]\""
-                  } > "${GITHUB_OUTPUT}"
+                    echo -n "list=["
+                    ls ./src/sub-installers/ | sed -e s/^/\"/g -e s/$/\"/g | tr '\n' ',' | sed s/,$//g
+                    echo -n "]"
+                  }  > "${GITHUB_OUTPUT}"
 
     prepare-tools:
         name: Prepare Tools
@@ -61,7 +61,7 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v4
               with:
-                  ref: ${{ github.head_ref || github.ref_name }}
+                  ref: ${{ fromJson(github.head_ref || github.ref_name) }}
 
             - name: Load Cached Binary
               id: load-cached-binary
