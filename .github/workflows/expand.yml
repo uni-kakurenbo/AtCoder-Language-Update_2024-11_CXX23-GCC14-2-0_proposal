@@ -61,7 +61,7 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v4
               with:
-                  ref: ${{ fromJson(github.head_ref || github.ref_name) }}
+                  ref: ${{ github.head_ref || github.ref_name }}
 
             - name: Load Cached Binary
               id: load-cached-binary
@@ -137,7 +137,7 @@ jobs:
 
         strategy:
             matrix:
-                target: ${{ needs.config-matrix.outputs.lib-list }}
+                target: ${{ fromJson(needs.config-matrix.outputs.lib-list) }}
             fail-fast: false
 
         steps:
