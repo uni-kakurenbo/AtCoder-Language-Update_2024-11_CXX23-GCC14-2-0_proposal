@@ -3,9 +3,6 @@ set -eu
 
 WORKING_DIRECTORY="$(dirname "$0")"
 
-mkdir -p /opt/ac_tools/bin/
-mkdir -p /opt/ac_tools/lib/
-
 echo "::group::ccache"
 ccache --version || sudo apt-get install -y ccache
 find /usr/lib/ -iname 'libhiredis.so*' -print0 | xargs -0 -I {} cp {} /opt/ac_tools/lib/
