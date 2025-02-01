@@ -419,7 +419,10 @@ jobs:
 
     deploy:
         runs-on: ${{ vars.RUNNER_IMAGE }}
-        needs: gen-config
+        needs:
+            - test
+            - gen-config
+        if: ${{ !cancelled() && needs.test.result == 'success' }}
 
         permissions:
             contents: write
