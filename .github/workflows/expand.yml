@@ -6,12 +6,15 @@ on:
         branches:
             - main
             - test/**
+
         paths-ignore:
             - ./pages/
+            - ./dist/
 
     pull_request:
         paths-ignore:
             - ./pages/
+            - ./dist/
 
     workflow_dispatch:
         inputs:
@@ -422,12 +425,11 @@ jobs:
             - name: Commit & Push
               uses: stefanzweifel/git-auto-commit-action@v5
               with:
-                  add_options: "-f"
                   file_pattern: "./dist/*"
                   commit_user_name: Template Expander
                   commit_user_email: template-expander@example.com
-                  commit_message: "[workflow] expand templates (${GITHUB_SHA})"
-                  commit_options: "--no-verify --signoff"
+                  commit_message: "[workflow] expand templates (${{ github.sha }})"
+                  commit_options: "--no-verify"
 
     deploy-pages:
         name: Deploy to GitHub Pages
@@ -494,4 +496,5 @@ jobs:
               uses: actions/upload-pages-artifact@v3
 
             - name: Deploy to GitHub Pages
+              id: deployment
               uses: actions/deploy-pages@v4
