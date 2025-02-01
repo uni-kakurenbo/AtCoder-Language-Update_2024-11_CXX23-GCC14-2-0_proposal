@@ -179,9 +179,20 @@ jobs:
               if: ${{ github.event.inputs.test-mode != 'strict' }}
               uses: hendrikmuhs/ccache-action@v1.2
               with:
-                  key: cache-${{ matrix.target }}
-                  restore-keys: cache-${{ matrix.target }}-
                   create-symlink: true
+                  append-timestamp: false
+                  key: >
+                      cache-${{ matrix.target }}-${{
+                        hashFiles(
+                          './src/install.sh',
+                          './src/install.toml',
+                          ./config/internal/ac_basic.pc,
+                          ./config/internal/ac_internal.pc,
+                          format('./src/sub-installers/{0}.sh', matrix.target),
+                          format('./config/library/ac_{0}', matrix.target),
+                        )
+                      }}
+                  restore-keys: cache-${{ matrix.target }}-
 
             - name: Install
               env:
