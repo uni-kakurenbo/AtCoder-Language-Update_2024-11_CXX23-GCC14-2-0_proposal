@@ -11,6 +11,7 @@ SHEBANG='#!/bin/bash'
 HEADER="$(cat ./dist/install.sh)"
 
 VERSION="$(dasel -r toml -w json <./src/install.toml | jq '.version')"
+
 {
     format() { sed 's/^/    "/' | sed 's/$/"/'; }
 
