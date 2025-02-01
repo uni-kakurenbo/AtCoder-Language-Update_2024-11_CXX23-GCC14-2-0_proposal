@@ -18,7 +18,7 @@ sudo mkdir -p ./build/ && cd ./build/
 
 sudo cmake "${CMAKE_ENVIRONMENT[@]}" \
     -DCMAKE_CXX_FLAGS:STRING="${BUILD_FLAGS[*]}" \
-    -DCMAKE_INSTALL_PREFIX:PATH=/opt/ac_install/unordered_dense/ \
+    -DCMAKE_INSTALL_PREFIX:PATH=/opt/ac_install/ \
     ../
 
 sudo cmake --build ./ --target install

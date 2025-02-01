@@ -2,4 +2,4 @@ Name: AC-Library
 Description: links AC-Library.
 Version:
 
-Cflags: -I/opt/ac_install/ac-library/
+Cflags: -I/opt/ac_install/

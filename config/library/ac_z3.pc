@@ -4,5 +4,5 @@ Version:
 
 Requires: z3
 Libs: \
-    -L/opt/ac_install/z3/lib/ \
-    -Wl,-R/opt/ac_install/z3/lib/ \
+    -L/opt/ac_install/lib/ \
+    -Wl,-R/opt/ac_install/lib/ \
