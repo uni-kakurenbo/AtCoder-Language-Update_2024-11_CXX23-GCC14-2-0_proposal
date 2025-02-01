@@ -1,4 +1,4 @@
-name: Prune branches
+name: Prune Branches
 run-name: ${{ github.workflow }} (${{ github.ref_name }})
 
 on:
