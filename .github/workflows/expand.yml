@@ -123,7 +123,8 @@ jobs:
               uses: actions/cache/restore@v4
               with:
                   path: /opt/ac_tools/
-                  key: tools-${{ needs.prepare-tools.outputs.cache-primary-key }}
+                  key: ${{ needs.prepare-tools.outputs.cache-primary-key }}
+                  fail-on-cache-miss: true
 
             - name: Apply Tools
               run: sudo cp -rf /opt/ac_tools/** /usr/bin/
@@ -206,7 +207,8 @@ jobs:
               uses: actions/cache/restore@v4
               with:
                   path: /opt/ac_tools/
-                  key: tools-${{ needs.prepare-tools.outputs.cache-primary-key }}
+                  key: ${{ needs.prepare-tools.outputs.cache-primary-key }}
+                  fail-on-cache-miss: true
 
             - name: Apply Tools
               run: sudo cp -rf /opt/ac_tools/** /usr/bin/
@@ -288,7 +290,8 @@ jobs:
               uses: actions/cache/restore@v4
               with:
                   path: /opt/ac_tools/
-                  key: tools-${{ needs.prepare-tools.outputs.cache-primary-key }}
+                  key: ${{ needs.prepare-tools.outputs.cache-primary-key }}
+                  fail-on-cache-miss: true
 
             - name: Apply Tools
               run: sudo cp -rf /opt/ac_tools/** /usr/bin/
@@ -367,7 +370,8 @@ jobs:
               uses: actions/cache/restore@v4
               with:
                   path: /opt/ac_tools/
-                  key: tools-${{ needs.prepare-tools.outputs.cache-primary-key }}
+                  key: ${{ needs.prepare-tools.outputs.cache-primary-key }}
+                  fail-on-cache-miss: true
 
             - name: Apply Tools
               run: sudo cp -rf /opt/ac_tools/** /usr/bin/
