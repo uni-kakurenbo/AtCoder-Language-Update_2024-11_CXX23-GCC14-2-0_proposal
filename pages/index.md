@@ -1,4 +1,5 @@
-# [Proposed libraries](https://github.com/uni-kakurenbo/AtCoder-Language-Update_2024-11_Cpp23-GCC14_draft/blob/main/config/library/)
+# Proposed libraries
+- [installers](https://github.com/uni-kakurenbo/AtCoder-Language-Update_2024-11_Cpp23-GCC14_draft/blob/main/src/sub-installers)
 
 ## Official
 - [AC Library](https://atcoder.github.io/ac-library/master/document_ja/): `1.5.1`
@@ -25,7 +26,7 @@
 
 ## Mathematical
 - [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page): `3.4.0-4` (apt)
-    - C++ template library for linear algebra.
+    - A C++ template library for linear algebra.
     - inherited
 
 - [GMP](https://gmplib.org/): `2:6.3.0+dfsg-2ubuntu6` (apt)
@@ -36,7 +37,7 @@ Arithmetic Library
 
 ## Machine learning
 - [LibTorch](https://pytorch.org/cppdocs/installing.html): `2.5.1`
-    - The C++-binding API for [PyTorch](https://pytorch.org/).
+    - A C++-binding API for [PyTorch](https://pytorch.org/).
     - proposed at [2024/11/10 08:28](https://discord.com/channels/1245258617582653553/1293457974442070016/1304950777604735097)
 
 - [LightGBM](https://lightgbm.readthedocs.io/en/latest/): `4.5.0`
