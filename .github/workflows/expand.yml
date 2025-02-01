@@ -63,7 +63,8 @@ jobs:
               run: |
                   set -eu
 
-                  sudo cp -rf /opt/ac_tools/** /usr/bin/
+                  sudo cp -rf /opt/ac_tools/bin/* /usr/bin/
+                  sudo cp -rf /opt/ac_tools/lib/* /usr/lib/
 
                   ./.github/workflows/internal/prepare.sh
 
