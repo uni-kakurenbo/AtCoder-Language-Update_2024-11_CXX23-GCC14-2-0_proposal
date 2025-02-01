@@ -256,6 +256,7 @@ jobs:
               with:
                   name: pkgconfig-${{ matrix.target }}
                   path: ./config/libs/
+                  if-no-files-found: ignore
 
             - name: Clean Up
               run: |
@@ -269,7 +270,7 @@ jobs:
               with:
                   name: library-${{ matrix.target }}
                   path: /opt/ac_install/
-                  compression-level: 9
+                  compression-level: 0
 
     gen-compiler:
         name: Generate Compiler
