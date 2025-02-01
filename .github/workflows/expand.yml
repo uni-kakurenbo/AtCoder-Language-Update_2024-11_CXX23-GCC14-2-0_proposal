@@ -32,38 +32,6 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
-    config-matrix:
-        name: Configure Matrix
-        runs-on: ${{ vars.RUNNER_IMAGE }}
-
-        outputs:
-            lib-list: ${{ steps.gen-lib-list.outputs.list }}
-            execlude-libs: ${{ steps.gen-lib-list.outputs.execlude }}
-
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-              with:
-                  ref: ${{ github.head_ref || github.ref_name }}
-
-            - name: Generate Library List
-              id: gen-lib-list
-              run: |
-                  set -eu
-
-                  EXCLUDE='["abseil"]'
-
-                  {
-                    echo -n "list="
-                    {
-                      echo -n "["
-                      ls ./src/sub-installers/ | sed -e s/^/\"/g -e s/\.sh$/\"/g | tr '\n' ',' | sed s/,$//g
-                      echo -n "]"
-                    } | jq -c --argjson exclude "${EXCLUDE}" '. - $exclude'
-                  } >>"${GITHUB_OUTPUT}"
-
-                  echo "execlude=${EXECLUDE}" >>"${GITHUB_OUTPUT}"
-
     prepare-tools:
         name: Prepare Tools
         runs-on: ${{ vars.RUNNER_IMAGE }}
@@ -101,6 +69,38 @@ jobs:
               with:
                   path: /opt/ac_tools/
                   key: ${{ steps.load-cached-binary.outputs.cache-primary-key }}
+
+    config-matrix:
+        name: Configure Matrix
+        runs-on: ${{ vars.RUNNER_IMAGE }}
+
+        outputs:
+            lib-list: ${{ steps.gen-lib-list.outputs.list }}
+            execlude-libs: ${{ steps.gen-lib-list.outputs.execlude }}
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.head_ref || github.ref_name }}
+
+            - name: Generate Library List
+              id: gen-lib-list
+              run: |
+                  set -eu
+
+                  EXCLUDE='["abseil"]'
+
+                  {
+                    echo -n "list="
+                    {
+                      echo -n "["
+                      ls ./src/sub-installers/ | sed -e s/^/\"/g -e s/\.sh$/\"/g | tr '\n' ',' | sed s/,$//g
+                      echo -n "]"
+                    } | jq -c --argjson exclude "${EXCLUDE}" '. - $exclude'
+                  } >>"${GITHUB_OUTPUT}"
+
+                  echo "execlude=${EXCLUDE}" >>"${GITHUB_OUTPUT}"
 
     gen-installer:
         name: Generate Installers
