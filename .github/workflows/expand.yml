@@ -35,6 +35,7 @@ concurrency:
 jobs:
     prepare-tools:
         name: Prepare Tools
+
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
         outputs:
@@ -81,6 +82,7 @@ jobs:
 
     config-matrix:
         name: Configure Matrix
+
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
         outputs:
@@ -113,7 +115,9 @@ jobs:
 
     gen-installer:
         name: Generate Installers
+
         needs: prepare-tools
+
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
         steps:
@@ -147,6 +151,7 @@ jobs:
 
     install:
         name: Install Libraries
+
         needs:
             - prepare-tools
             - gen-installer
@@ -270,9 +275,11 @@ jobs:
 
     gen-compiler:
         name: Generate Compiler
+
         needs:
             - prepare-tools
             - install
+
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
         steps:
@@ -313,7 +320,9 @@ jobs:
 
     test:
         name: Test
+
         needs: gen-compiler
+
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
         steps:
@@ -341,9 +350,11 @@ jobs:
 
     gen-config:
         name: Generate Configuration File
+
         needs:
             - prepare-tools
             - gen-compiler
+
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
         steps:
@@ -386,10 +397,16 @@ jobs:
 
     push:
         name: Push to Repository
+
         needs:
             - gen-config
             - test
-        if: (!cancelled()) && github.ref_name == 'main'
+
+        if: >
+            (!cancelled()) &&
+            github.ref_name == github.event.repository.default_branch &&
+            needs.test.result == 'success'
+
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
         steps:
@@ -419,9 +436,11 @@ jobs:
 
     deploy-pages:
         name: Deploy to GitHub Pages
+
         needs:
             - gen-config
             - test
+
         if: >
             (!cancelled()) &&
             github.ref_name == github.event.repository.default_branch &&
