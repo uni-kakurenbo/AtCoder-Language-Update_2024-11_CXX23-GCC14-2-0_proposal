@@ -181,7 +181,7 @@ jobs:
               with:
                   create-symlink: true
                   append-timestamp: false
-                  key: >
+                  key: >-
                       cache-${{ matrix.target }}-${{
                         hashFiles(
                           './src/install.sh',
