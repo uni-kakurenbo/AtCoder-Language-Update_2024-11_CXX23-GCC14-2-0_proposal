@@ -4,13 +4,13 @@ Version:
 
 Requires: \
     ac_abseil \
-    ac_AC-Library \
-    ac_Boost \
-    ac_Eigen \
-    ac_GMP \
+    ac_ac-library \
+    ac_boost \
+    ac_eigen \
+    ac_gmp \
     ac_libtorch \
-    ac_LightGBM \
+    ac_light-gbm \
     ac_or-tools \
     ac_range-v3 \
     ac_unordered_dense \
-    ac_Z3 \
+    ac_z3 \
