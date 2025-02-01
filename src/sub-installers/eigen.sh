@@ -12,14 +12,14 @@ sudo mkdir -p /opt/ac_install/cmake/
 
 sudo cp -Trf /usr/include/eigen3/ /opt/ac_install/include/
 
-# copy and modify cmake files to build or-tools.
+# copy and patch cmake files to build or-tools.
 sudo cp -f \
     /usr/share/eigen3/cmake/Eigen3Targets.cmake \
     /usr/share/eigen3/cmake/Eigen3Config.cmake \
     /opt/ac_install/cmake/
 
 sudo sed -i \
-    -e 's/include\/eigen3/ac_install\/eigen3\/include/g' \
+    -e 's/include\/eigen3/ac_install\/include/g' \
     /opt/ac_install/cmake/Eigen3Targets.cmake
 
 sudo apt-get remove -y libeigen3-dev
