@@ -3,6 +3,10 @@ set -eu
 
 WORKING_DIRECTORY="$(dirname "$0")"
 
+echo "::group::ccache"
+ccache --version || sudo apt-get install -y ccache
+echo "::endgroup::"
+
 echo "::group::dasel"
 dasel --version || sudo apt-get install -y dasel
 echo "::endgroup::"
