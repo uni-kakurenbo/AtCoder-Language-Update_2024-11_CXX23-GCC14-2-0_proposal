@@ -30,8 +30,8 @@ sudo cmake "${CMAKE_ENVIRONMENT[@]}" \
     -DUSE_SCIP:BOOL=ON -DBUILD_SCIP:BOOL=ON \
     -DBUILD_SAMPLES:BOOL=OFF -DBUILD_EXAMPLES:BOOL=OFF \
     -DBUILD_TESTING:BOOL="${BUILD_TESTING}" \
-    -DCMAKE_PREFIX_PATH:PATH="/opt/ac_install/abseil/;/opt/ac_install/eigen3/" \
-    -DCMAKE_INSTALL_PREFIX:PATH=/opt/ac_install/or-tools/ \
+    -DCMAKE_PREFIX_PATH:PATH=/opt/ac_install/ \
+    -DCMAKE_INSTALL_PREFIX:PATH=/opt/ac_install/ \
     -DBUILD_SHARED_LIBS:BOOL=OFF \
     -DCMAKE_CXX_FLAGS:STRING="${BUILD_FLAGS[*]}" \
     ../
