@@ -246,6 +246,8 @@ jobs:
 
             - name: Expand
               run: |
+                  ls ./config/libs/
+
                   sudo rm -rf ./dist/ && mkdir -p ./dist/
                   ./.github/workflows/internal/expanders/compiler.sh
 
