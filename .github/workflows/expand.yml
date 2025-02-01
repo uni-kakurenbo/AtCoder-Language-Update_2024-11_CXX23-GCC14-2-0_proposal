@@ -154,15 +154,15 @@ jobs:
               run: |
                   set -x
 
+                  TARGET='${{ matrix.target }}'
                   LIBRARY_LIST='${{ needs.config-matrix.outputs.lib-list }}'
 
                   echo "${LIBRARY_LIST//-/_}" | jq -c -r '.[]' |
                     while read -r lib_id; do
-                      echo "AC_NO_BUILD_${lib_id//-/_}=true" >>"${GITHUB_ENV}"
+                      if [ "${TARGET}" != "${lib_id}" ]; then
+                        echo "AC_NO_BUILD_${lib_id//-/_}=true" >>"${GITHUB_ENV}"
+                      fi
                     done
-
-                  LIB_ID='${{ matrix.target }}'
-                  echo "AC_NO_BUILD_${LIB_ID//-/_}=false" >>"${GITHUB_ENV}"
 
             - name: Checkout
               uses: actions/checkout@v4
