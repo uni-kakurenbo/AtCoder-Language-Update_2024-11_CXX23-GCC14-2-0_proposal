@@ -19,7 +19,7 @@ sudo cp -f \
     /opt/ac_install/cmake/
 
 sudo sed -i \
-    -e 's/include\/eigen3/include\//g' \
+    -e 's/include\/eigen3/opt\/include\//g' \
     /opt/ac_install/cmake/Eigen3Targets.cmake
 
 sudo apt-get remove -y libeigen3-dev
