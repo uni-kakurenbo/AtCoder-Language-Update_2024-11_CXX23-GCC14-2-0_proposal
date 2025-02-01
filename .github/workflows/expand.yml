@@ -157,7 +157,7 @@ jobs:
                   TARGET='${{ matrix.target }}'
                   LIBRARY_LIST='${{ needs.config-matrix.outputs.lib-list }}'
 
-                  echo "${LIBRARY_LIST//-/_}" | jq -c -r '.[]' |
+                  echo "${LIBRARY_LIST}" | jq -c -r '.[]' |
                     while read -r lib_id; do
                       if [ "${TARGET}" != "${lib_id}" ]; then
                         echo "AC_NO_BUILD_${lib_id//-/_}=true" >>"${GITHUB_ENV}"
