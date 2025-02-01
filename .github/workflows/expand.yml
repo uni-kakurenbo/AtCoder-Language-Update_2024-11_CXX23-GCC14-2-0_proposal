@@ -131,6 +131,16 @@ jobs:
               with:
                   ref: ${{ github.head_ref || github.ref_name }}
 
+            - name: Load Cached Tools
+              uses: actions/cache/restore@v4
+              with:
+                  path: /opt/ac_tools/
+                  key: ${{ needs.prepare-tools.outputs.cache-primary-key }}
+                  fail-on-cache-miss: true
+
+            - name: Apply Tools
+              run: sudo cp -rf /opt/* /usr/
+
             - name: Expand
               run: |
                   set -eu
