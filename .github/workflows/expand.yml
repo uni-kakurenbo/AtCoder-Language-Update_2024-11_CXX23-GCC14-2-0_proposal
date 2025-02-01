@@ -6,7 +6,13 @@ on:
         branches:
             - main
             - test/**
+        paths-ignore:
+            - ./pages/
+
     pull_request:
+        paths-ignore:
+            - ./pages/
+
     workflow_dispatch:
         inputs:
             test-mode:
