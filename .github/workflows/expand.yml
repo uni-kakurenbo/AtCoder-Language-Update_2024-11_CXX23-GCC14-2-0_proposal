@@ -469,7 +469,7 @@ jobs:
                         cat ./dist/install.toml
                         echo '```'
                     fi
-                  } >./pages/index.md
+                  } >>./pages/index.md
 
             - name: Build with Jekyll
               uses: actions/jekyll-build-pages@v1
