@@ -222,10 +222,8 @@ jobs:
               if: ${{ github.event.inputs.test-mode != 'strict' }}
               uses: hendrikmuhs/ccache-action@v1.2
               with:
-                  create-symlink: true
-                  append-timestamp: false
                   key: >
-                      cache-${{ matrix.target }}-${{
+                      ${{ matrix.target }}-${{
                         hashFiles(
                           './src/install.sh',
                           './src/install.toml',
@@ -235,7 +233,7 @@ jobs:
                           format('./config/library/ac_{0}.pc', matrix.target)
                         )
                       }}
-                  restore-keys: cache-${{ matrix.target }}-
+                  restore-keys: ${{ matrix.target }}-
 
             - name: Install
               env:
