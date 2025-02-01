@@ -417,12 +417,17 @@ jobs:
                   commit_message: "[workflow] expand templates (${GITHUB_SHA})"
                   commit_options: "--no-verify --signoff"
 
-    deploy:
-        runs-on: ${{ vars.RUNNER_IMAGE }}
+    deploy-pages:
+        name: Deploy to GitHub Pages
         needs:
-            - test
             - gen-config
-        if: ${{ !cancelled() && needs.test.result == 'success' }}
+            - test
+        if: >
+            (!cancelled()) &&
+            github.ref_name == github.event.repository.default_branch &&
+            needs.test.result == 'success'
+
+        runs-on: ${{ vars.RUNNER_IMAGE }}
 
         permissions:
             contents: write
