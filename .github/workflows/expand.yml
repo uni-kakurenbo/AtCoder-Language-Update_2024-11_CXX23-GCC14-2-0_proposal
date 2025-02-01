@@ -37,7 +37,8 @@ jobs:
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
         outputs:
-            lib-list: ${{ steps.gen-lib-list.outputs.data }}
+            lib-list: ${{ steps.gen-lib-list.outputs.list }}
+            execlude-libs: ${{ steps.gen-lib-list.outputs.execlude }}
 
         steps:
             - name: Checkout
@@ -50,16 +51,18 @@ jobs:
               run: |
                   set -eu
 
-                  {
-                    EXCLUDE='["abseil"]'
+                  EXCLUDE='["abseil"]'
 
-                    echo -n "data="
+                  {
+                    echo -n "list="
                     {
                       echo -n "["
                       ls ./src/sub-installers/ | sed -e s/^/\"/g -e s/\.sh$/\"/g | tr '\n' ',' | sed s/,$//g
                       echo -n "]"
                     } | jq -c --argjson exclude "${EXCLUDE}" '. - $exclude'
-                  } >"${GITHUB_OUTPUT}"
+                  } >>"${GITHUB_OUTPUT}"
+
+                  echo "execlude=${EXECLUDE}" >>"${GITHUB_OUTPUT}"
 
     prepare-tools:
         name: Prepare Tools
@@ -166,13 +169,20 @@ jobs:
                   set -eu
 
                   TARGET='${{ matrix.target }}'
-                  LIBRARY_LIST='${{ needs.config-matrix.outputs.lib-list }}'
 
-                  echo "${LIBRARY_LIST}" | jq -c -r '.[]' |
+                  LIBRARIES='${{ needs.config-matrix.outputs.lib-list }}'
+                  EXECLUDE_LIBRARIES='${{ needs.config-matrix.outputs.lib-list }}'
+
+                  echo "${LIBRARIES}" | jq -c -r '.[]' |
                     while read -r lib_id; do
                       if [ "${TARGET}" != "${lib_id}" ]; then
                         echo "AC_NO_BUILD_${lib_id//-/_}=true" >>"${GITHUB_ENV}"
                       fi
+                    done
+
+                  echo "${EXECLUDE_LIBRARIES}" | jq -c -r '.[]' |
+                    while read -r lib_id; do
+                        echo "AC_NO_BUILD_${lib_id//-/_}=true" >>"${GITHUB_ENV}"
                     done
 
             - name: Checkout
