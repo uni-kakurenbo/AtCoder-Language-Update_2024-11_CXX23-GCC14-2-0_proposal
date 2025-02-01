@@ -179,7 +179,8 @@ jobs:
               if: ${{ github.event.inputs.test-mode != 'strict' }}
               uses: hendrikmuhs/ccache-action@v1.2
               with:
-                  key: cache-${{ matrix.target }}-
+                  key: cache-${{ matrix.target }}
+                  restore-keys: cache-${{ matrix.target }}-
                   create-symlink: true
 
             - name: Install
