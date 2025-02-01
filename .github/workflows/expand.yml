@@ -75,8 +75,8 @@ jobs:
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
         outputs:
-            lib-list: ${{ steps.gen-lib-list.outputs.list }}
-            execlude-libs: ${{ steps.gen-lib-list.outputs.execlude }}
+            libraries: ${{ steps.gen-lib-list.outputs.list }}
+            execlude-libraries: ${{ steps.gen-lib-list.outputs.execlude }}
 
         steps:
             - name: Checkout
@@ -170,8 +170,8 @@ jobs:
 
                   TARGET='${{ matrix.target }}'
 
-                  LIBRARIES='${{ needs.config-matrix.outputs.lib-list }}'
-                  EXECLUDE_LIBRARIES='${{ needs.config-matrix.outputs.lib-list }}'
+                  LIBRARIES='${{ needs.config-matrix.outputs.libraries }}'
+                  EXECLUDE_LIBRARIES='${{ needs.config-matrix.outputs.execlude-libraries }}'
 
                   echo "${LIBRARIES}" | jq -c -r '.[]' |
                     while read -r lib_id; do
