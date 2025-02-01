@@ -124,7 +124,6 @@ jobs:
               with:
                   path: /opt/ac_tools/
                   key: tools-${{ needs.prepare-tools.outputs.cache-primary-key }}
-                  restore-keys: tools-
 
             - name: Apply Tools
               run: sudo cp -rf /opt/ac_tools/** /usr/bin/
@@ -154,6 +153,7 @@ jobs:
     install:
         name: Install Libraries
         needs:
+            - prepare-tools
             - gen-installer
             - config-matrix
 
@@ -169,16 +169,6 @@ jobs:
             #   uses: catchpoint/workflow-telemetry-action@v2
             #   with:
             #       theme: dark
-
-            - name: Load Cached Tools
-              uses: actions/cache/restore@v4
-              with:
-                  path: /opt/ac_tools/
-                  key: tools-${{ needs.prepare-tools.outputs.cache-primary-key }}
-                  restore-keys: tools-
-
-            - name: Apply Tools
-              run: sudo cp -rf /opt/ac_tools/** /usr/bin/
 
             - name: Configure Installation
               run: |
@@ -211,6 +201,15 @@ jobs:
               with:
                   name: dist-installers
                   path: ./dist/
+
+            - name: Load Cached Tools
+              uses: actions/cache/restore@v4
+              with:
+                  path: /opt/ac_tools/
+                  key: tools-${{ needs.prepare-tools.outputs.cache-primary-key }}
+
+            - name: Apply Tools
+              run: sudo cp -rf /opt/ac_tools/** /usr/bin/
 
             - name: Load CCache
               if: ${{ github.event.inputs.test-mode != 'strict' }}
@@ -274,7 +273,9 @@ jobs:
 
     gen-compiler:
         name: Generate Compiler
-        needs: install
+        needs:
+            - prepare-tools
+            - install
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
         steps:
@@ -288,7 +289,6 @@ jobs:
               with:
                   path: /opt/ac_tools/
                   key: tools-${{ needs.prepare-tools.outputs.cache-primary-key }}
-                  restore-keys: tools-
 
             - name: Apply Tools
               run: sudo cp -rf /opt/ac_tools/** /usr/bin/
@@ -352,7 +352,9 @@ jobs:
 
     gen-config:
         name: Generate Configuration File
-        needs: gen-compiler
+        needs:
+            - prepare-tools
+            - gen-compiler
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
         steps:
@@ -366,7 +368,6 @@ jobs:
               with:
                   path: /opt/ac_tools/
                   key: tools-${{ needs.prepare-tools.outputs.cache-primary-key }}
-                  restore-keys: tools-
 
             - name: Apply Tools
               run: sudo cp -rf /opt/ac_tools/** /usr/bin/
