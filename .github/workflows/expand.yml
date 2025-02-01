@@ -67,8 +67,8 @@ jobs:
                   mkdir -p /opt/ac_tools/bin/
                   mkdir -p /opt/ac_tools/lib/
 
-                  sudo cp -rf /opt/ac_tools/bin/* /usr/bin/
-                  sudo cp -rf /opt/ac_tools/lib/* /usr/lib/
+                  sudo cp -rf /opt/ac_tools/bin/* /usr/bin/ || :
+                  sudo cp -rf /opt/ac_tools/lib/* /usr/lib/ || :
 
                   ./.github/workflows/internal/prepare.sh
 
