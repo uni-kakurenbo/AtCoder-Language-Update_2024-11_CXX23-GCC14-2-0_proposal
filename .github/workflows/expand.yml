@@ -155,7 +155,7 @@ jobs:
 
         strategy:
             matrix:
-                target: ${{ fromJson(needs.config-matrix.outputs.lib-list) }}
+                target: ${{ fromJson(needs.config-matrix.outputs.libraries) }}
             fail-fast: false
 
         steps:
