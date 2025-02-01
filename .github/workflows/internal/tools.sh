@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eu
+set -xeu
 
 WORKING_DIRECTORY="$(dirname "$0")"
 
@@ -24,4 +24,4 @@ echo "::group::taplo"
 "${WORKING_DIRECTORY}/tools/taplo.sh"
 echo "::endgroup::"
 
-which pkg-config ccache dasel jq taplo | xargs -I {} cp {} /opt/ac_tools/bin/
+which ccache dasel jq pkg-config taplo | xargs -I {} cp {} /opt/ac_tools/bin/

@@ -54,7 +54,7 @@ jobs:
                   key: >
                       tools-${{
                         hashFiles(
-                          './.github/workflows/internal/prepare.sh',
+                          './.github/workflows/internal/tools.sh',
                           './.github/workflows/internal/tools/**'
                         )
                       }}
@@ -70,7 +70,7 @@ jobs:
                   sudo cp -rf /opt/ac_tools/bin/* /usr/bin/ || :
                   sudo cp -rf /opt/ac_tools/lib/* /usr/lib/ || :
 
-                  ./.github/workflows/internal/prepare.sh
+                  ./.github/workflows/internal/tools.sh
 
             - name: Cache Binary
               uses: actions/cache/save@v4
@@ -138,15 +138,6 @@ jobs:
 
                   sudo rm -rf ./dist/ && mkdir -p ./dist/
                   ./.github/workflows/internal/expanders/installer.sh
-
-                  if [ -f ./dist/install.sh ]; then
-                    {
-                      echo '# `install.sh`'
-                      echo '```bash'
-                      cat ./dist/install.sh
-                      echo '```'
-                    } >> "${GITHUB_STEP_SUMMARY}"
-                  fi
 
             - name: Upload
               uses: actions/upload-artifact@v4
@@ -314,15 +305,6 @@ jobs:
                   sudo rm -rf ./dist/ && mkdir -p ./dist/
                   ./.github/workflows/internal/expanders/compiler.sh
 
-                  if [ -f ./dist/compile.sh ]; then
-                    {
-                      echo '# `compile.sh`'
-                      echo '```bash'
-                      cat ./dist/compile.sh
-                      echo '```'
-                    } >> "${GITHUB_STEP_SUMMARY}"
-                  fi
-
             - name: Upload
               uses: actions/upload-artifact@v4
               with:
@@ -393,15 +375,6 @@ jobs:
 
                   ./.github/workflows/internal/expanders/config.sh
 
-                  if [ -f ./dist/install.toml ]; then
-                    {
-                      echo '# `install.toml`'
-                      echo '```toml'
-                      cat ./dist/install.toml
-                      echo '```'
-                    } > "${GITHUB_STEP_SUMMARY}"
-                  fi
-
             - name: Lint
               run: ./.github/workflows/internal/lint.sh
 
@@ -413,7 +386,9 @@ jobs:
 
     push:
         name: Push to Repository
-        needs: [gen-config, test]
+        needs:
+            - gen-config
+            - test
         if: (!cancelled()) && github.ref_name == 'main'
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
@@ -432,26 +407,69 @@ jobs:
                   path: ./dist/
                   merge-multiple: true
 
-            - name: Push
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            - name: Commit & Push
+              uses: stefanzweifel/git-auto-commit-action@v5
+              with:
+                  add_options: "-f"
+                  file_pattern: "./dist/*"
+                  commit_user_name: Template Expander
+                  commit_user_email: template-expander@example.com
+                  commit_message: "[workflow] expand templates (${GITHUB_SHA})"
+                  commit_options: "--no-verify --signoff"
+
+    deploy:
+        runs-on: ${{ vars.RUNNER_IMAGE }}
+        needs: gen-config
+
+        permissions:
+            contents: write
+            pages: write
+            id-token: write
+
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+
+        steps:
+            - name: Download Outputs
+              uses: actions/download-artifact@v4
+              with:
+                  pattern: dist-*
+                  path: ./pages/
+                  merge-multiple: true
+
+            - name: Merge data
               run: |
-                  set -eu
+                  {
+                    if [ -f ./dist/install.sh ]; then
+                        echo '# `install.sh`'
+                        echo '```bash'
+                        cat ./dist/install.sh
+                        echo '```'
+                    fi
 
-                  git remote set-url origin git@github.com:${GITHUB_REPOSITORY}.git
+                    if [ -f ./dist/compile.sh ]; then
+                        echo '# `compile.sh`'
+                        echo '```bash'
+                        cat ./dist/compile.sh
+                        echo '```'
+                    fi
 
-                  git config --global user.name "Template Expander"
-                  git config --global user.email "noreply@example.com"
+                    if [ -f ./dist/install.toml ]; then
+                        echo '# `install.toml`'
+                        echo '```toml'
+                        cat ./dist/install.toml
+                        echo '```'
+                    fi
+                  } >./pages/index.md
 
-                  git add -f ./dist/
+            - name: Build with Jekyll
+              uses: actions/jekyll-build-pages@v1
+              with:
+                  source: ./pages/
 
-                  if (git diff --cached --shortstat | grep '[0-9]'); then
-                    git commit -m "[workflow] expand templates ${GITHUB_SHA}"
+            - name: Upload Pages artifact
+              uses: actions/upload-pages-artifact@v3
 
-                    REPOSITORY_NAME="${{ github.head_ref || github.ref_name }}"
-
-                    git pull --rebase origin "${REPOSITORY_NAME}"
-                    git push origin "HEAD:${REPOSITORY_NAME}"
-                  else
-                    echo "No updated files."
-                  fi
+            - name: Deploy to GitHub Pages
+              uses: actions/deploy-pages@v4
