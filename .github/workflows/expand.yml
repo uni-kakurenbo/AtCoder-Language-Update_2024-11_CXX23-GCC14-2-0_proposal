@@ -164,10 +164,10 @@ jobs:
             fail-fast: false
 
         steps:
-            # - name: Collect Workflow Telemetry
-            #   uses: catchpoint/workflow-telemetry-action@v2
-            #   with:
-            #       theme: dark
+            - name: Collect Workflow Telemetry
+              uses: catchpoint/workflow-telemetry-action@v2
+              with:
+                  theme: dark
 
             - name: Configure Installation
               run: |
