@@ -1,4 +1,4 @@
-name: Expand template
+name: Expand Template
 run-name: ${{ github.workflow }} (${{ github.ref_name }})
 
 on:
@@ -179,6 +179,7 @@ jobs:
               if: ${{ github.event.inputs.test-mode != 'strict' }}
               uses: hendrikmuhs/ccache-action@v1.2
               with:
+                  key: cache-${{ matrix.target }}-
                   create-symlink: true
 
             - name: Install
