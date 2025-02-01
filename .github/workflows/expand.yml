@@ -139,7 +139,7 @@ jobs:
                   fail-on-cache-miss: true
 
             - name: Apply Tools
-              run: sudo cp -rf /opt/* /usr/
+              run: sudo cp -rf /opt/ac_tools/* /usr/
 
             - name: Expand
               run: |
@@ -217,7 +217,7 @@ jobs:
                   fail-on-cache-miss: true
 
             - name: Apply Tools
-              run: sudo cp -rf /opt/* /usr/
+              run: sudo cp -rf /opt/ac_tools/* /usr/
 
             - name: Load CCache
               if: ${{ github.event.inputs.test-mode != 'strict' }}
@@ -366,7 +366,7 @@ jobs:
                   fail-on-cache-miss: true
 
             - name: Apply Tools
-              run: sudo cp -rf /opt/* /usr/
+              run: sudo cp -rf /opt/ac_tools/* /usr/
 
             - name: Download Installer
               uses: actions/download-artifact@v4
