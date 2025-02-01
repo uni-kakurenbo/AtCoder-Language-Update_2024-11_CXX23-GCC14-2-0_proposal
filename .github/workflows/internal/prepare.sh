@@ -23,6 +23,10 @@ echo "::group::taplo"
 "${WORKING_DIRECTORY}/tools/taplo.sh"
 echo "::endgroup::"
 
-which pkg-config ccache dasel jq taplo | xargs -I {} cp {} /opt/ac_tools/
+mkdir -p /opt/ac_tools/bin/
+mkdir -p /opt/ac_tools/lib/
+
+which pkg-config ccache dasel jq taplo | xargs -I {} cp {} /opt/ac_tools/bin/
+find /usr/lib/ -iname 'libhiredis.so*' -print0 | xargs -0 -I {} cp {} /opt/ac_tools/lib/
 
 rm -rf ./dist/ && mkdir -p ./dist/
