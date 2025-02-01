@@ -181,7 +181,7 @@ jobs:
               with:
                   create-symlink: true
                   append-timestamp: false
-                  key: >-
+                  key: >
                       cache-${{ matrix.target }}-${{
                         hashFiles(
                           './src/install.sh',
@@ -189,7 +189,7 @@ jobs:
                           './config/internal/ac_basic.pc',
                           './config/internal/ac_internal.pc',
                           format('./src/sub-installers/{0}.sh', matrix.target),
-                          format('./config/library/ac_{0}.pc', matrix.target),
+                          format('./config/library/ac_{0}.pc', matrix.target)
                         )
                       }}
                   restore-keys: cache-${{ matrix.target }}-
