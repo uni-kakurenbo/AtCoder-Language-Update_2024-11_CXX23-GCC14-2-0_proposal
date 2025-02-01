@@ -23,4 +23,6 @@ echo "::group::taplo"
 "${WORKING_DIRECTORY}/tools/taplo.sh"
 echo "::endgroup::"
 
+which pkg-config ccache dasel jq taplo | xargs -I {} cp {} /opt/ac_tools/
+
 rm -rf ./dist/ && mkdir -p ./dist/

@@ -67,8 +67,6 @@ jobs:
 
                   ./.github/workflows/internal/prepare.sh
 
-                  which pkg-config dasel jq taplo | xargs -I {} cp {} /opt/ac_tools/
-
             - name: Cache Binary
               uses: actions/cache/save@v4
               if: (!cancelled()) && steps.load-cached-binary.outputs.cache-hit != 'true'
