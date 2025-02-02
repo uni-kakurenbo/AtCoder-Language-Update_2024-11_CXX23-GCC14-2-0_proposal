@@ -35,7 +35,7 @@ defaults:
 concurrency:
     group: |
         test-${{
-            startsWith(github.ref_name, 'test') && github.ref_name ||
+            startsWith(github.ref_name, 'test/') && github.ref_name ||
             github.run_id
         }}
 
@@ -409,8 +409,8 @@ jobs:
             - test
 
         if: >
-            (!cancelled()) &&
-            github.ref_name == github.event.repository.default_branch &&
+            !cancelled() &&
+            !startsWith(github.ref_name, 'test/') &&
             needs.test.result == 'success'
 
         runs-on: ${{ vars.RUNNER_IMAGE }}
@@ -449,7 +449,7 @@ jobs:
             - test
 
         if: >
-            (!cancelled()) &&
+            !cancelled() &&
             github.ref_name == github.event.repository.default_branch &&
             needs.test.result == 'success'
 
