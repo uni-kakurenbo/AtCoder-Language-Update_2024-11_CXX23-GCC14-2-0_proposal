@@ -13,7 +13,7 @@ function replace() {
     local dist="./dist/sub-installers/${name}.sh"
 
     local version
-    version="$(dasel -r toml -w json <./src/install.toml | jq --arg name "${name}" '.library[$name].version')"
+    version="$(dasel -r toml -w json <./src/config.toml | jq --arg name "${name}" '.library[$name].version')"
 
     target="$(cat "$1")"
 

@@ -32,5 +32,8 @@ jobs:
 
             - name: Run
               run: |
+                  set -eu
+
                   cat ./dist/install.toml >./.test-runner/installscript.toml
-                  ./.test-runner/run.sh ./test/00_plane/0000.test.cpp
+                  cd ./.test-runner/
+                  ./run.sh ./test/00_plane/0000.test.cpp

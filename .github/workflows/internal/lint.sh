@@ -1,4 +1,4 @@
 #!/bin/bash
 set -eu
 
-taplo lint --config ./assets/taplo.toml ./dist/install.toml
+taplo lint --config ./assets/taplo.toml ./dist/config.toml

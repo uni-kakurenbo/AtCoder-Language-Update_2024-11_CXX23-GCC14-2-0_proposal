@@ -234,7 +234,7 @@ jobs:
                       ${{ matrix.target }}-${{
                         hashFiles(
                           './src/install.sh',
-                          './src/install.toml',
+                          './src/config.toml',
                           './config/internal/ac_basic.pc',
                           './config/internal/ac_internal.pc',
                           format('./src/sub-installers/{0}.sh', matrix.target),

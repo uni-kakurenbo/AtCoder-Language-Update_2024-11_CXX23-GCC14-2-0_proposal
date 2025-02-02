@@ -43,23 +43,23 @@ jobs:
                     echo
 
                     if [ -f ./pages/install.sh ]; then
-                        echo '## `install.sh`'
+                        echo '## Install Script'
                         echo '```bash'
                         cat ./pages/install.sh
                         echo '```'
                     fi
 
                     if [ -f ./pages/compile.sh ]; then
-                        echo '## `compile.sh`'
+                        echo '## Compile Script'
                         echo '```bash'
                         cat ./pages/compile.sh
                         echo '```'
                     fi
 
-                    if [ -f ./pages/install.toml ]; then
-                        echo '## `install.toml`'
+                    if [ -f ./pages/config.toml ]; then
+                        echo '## Configuration File'
                         echo '```toml'
-                        cat ./pages/install.toml
+                        cat ./pages/config.toml
                         echo '```'
                     fi
                   } >>./pages/index.md
