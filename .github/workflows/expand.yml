@@ -68,7 +68,7 @@ jobs:
                           './.github/workflows/internal/tools/**'
                         )
                       }}
-                  restore-keys: tools-
+                  restore-keys: tools
 
             - name: Build
               run: |
@@ -241,7 +241,7 @@ jobs:
                           format('./config/library/ac_{0}.pc', matrix.target)
                         )
                       }}
-                  restore-keys: ${{ matrix.target }}-
+                  restore-keys: ${{ matrix.target }}
 
             - name: Install
               env:
@@ -441,8 +441,8 @@ jobs:
                   commit_message: "[workflow] expand templates (${{ github.sha }})"
                   commit_options: "--no-verify"
 
-    deploy-pages:
-        name: Deploy to GitHub Pages
+    gh-pages:
+        name: Generate Pages
 
         needs:
             - gen-config
@@ -453,57 +453,5 @@ jobs:
             github.ref_name == github.event.repository.default_branch &&
             needs.test.result == 'success'
 
-        runs-on: ${{ vars.RUNNER_IMAGE }}
-
-        permissions:
-            contents: write
-            pages: write
-            id-token: write
-
-        environment:
-            name: github-pages
-            url: ${{ steps.deployment.outputs.page_url }}
-
-        steps:
-            - name: Download Outputs
-              uses: actions/download-artifact@v4
-              with:
-                  name: dist-config
-                  path: ./pages/
-
-            - name: Merge data
-              run: |
-                  {
-                    if [ -f ./dist/install.sh ]; then
-                        echo '# `install.sh`'
-                        echo '```bash'
-                        cat ./dist/install.sh
-                        echo '```'
-                    fi
-
-                    if [ -f ./dist/compile.sh ]; then
-                        echo '# `compile.sh`'
-                        echo '```bash'
-                        cat ./dist/compile.sh
-                        echo '```'
-                    fi
-
-                    if [ -f ./dist/install.toml ]; then
-                        echo '# `install.toml`'
-                        echo '```toml'
-                        cat ./dist/install.toml
-                        echo '```'
-                    fi
-                  } >>./pages/index.md
-
-            - name: Build with Jekyll
-              uses: actions/jekyll-build-pages@v1
-              with:
-                  source: ./pages/
-
-            - name: Upload Pages artifact
-              uses: actions/upload-pages-artifact@v3
-
-            - name: Deploy to GitHub Pages
-              id: deployment
-              uses: actions/deploy-pages@v4
+        uses: ./.github/workflows/gh-pages.yml
+        secrets: inherit

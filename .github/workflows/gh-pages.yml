@@ -1,0 +1,92 @@
+name: Generate Pages
+run-name: ${{ github.workflow }} (${{ github.ref_name }})
+
+on:
+    workflow_dispatch:
+    workflow_call:
+
+concurrency:
+    group: ${{ github.repository_id }}
+    cancel-in-progress: true
+
+jobs:
+    configure:
+        name: Configure
+        runs-on: ${{ vars.RUNNER_IMAGE }}
+
+        steps:
+            - name: Configure
+              uses: actions/configure-pages@v4
+
+    build:
+        name: Build
+        needs: configure
+        runs-on: ${{ vars.RUNNER_IMAGE }}
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.head_ref || github.ref_name }}
+                  sparse-checkout: ./pages/
+
+            - name: Download Outputs
+              uses: actions/download-artifact@v4
+              with:
+                  pattern: dist-config
+                  path: ./pages/
+                  merge-multiple: true
+
+            - name: Merge data
+              run: |
+                  {
+                    echo
+
+                    if [ -f ./pages/install.sh ]; then
+                        echo '## `install.sh`'
+                        echo '```bash'
+                        cat ./pages/install.sh
+                        echo '```'
+                    fi
+
+                    if [ -f ./pages/compile.sh ]; then
+                        echo '## `compile.sh`'
+                        echo '```bash'
+                        cat ./pages/compile.sh
+                        echo '```'
+                    fi
+
+                    if [ -f ./pages/install.toml ]; then
+                        echo '## `install.toml`'
+                        echo '```toml'
+                        cat ./pages/install.toml
+                        echo '```'
+                    fi
+                  } >>./pages/index.md
+
+            - name: Build with Jekyll
+              uses: actions/jekyll-build-pages@v1
+              with:
+                  source: ./pages/
+
+            - name: Upload Pages artifact
+              uses: actions/upload-pages-artifact@v3
+
+    deploy:
+        name: Deploy
+        needs: build
+        runs-on: ${{ vars.RUNNER_IMAGE }}
+
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+
+        permissions:
+            contents: write
+            pages: write
+            id-token: write
+
+        steps:
+            - name: Deploy to GitHub Pages
+              id: deployment
+              uses: actions/deploy-pages@v4

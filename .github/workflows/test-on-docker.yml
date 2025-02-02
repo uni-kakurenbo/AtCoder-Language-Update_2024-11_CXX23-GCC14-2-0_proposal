@@ -1,0 +1,36 @@
+name: Run Test on Docker Container
+run-name: ${{ github.workflow }} (${{ github.ref_name }})
+
+on:
+    workflow_dispatch:
+    push:
+        branches:
+            - main
+        paths:
+            - dist/**
+
+concurrency:
+    group: ${{ github.head_ref || github.ref_name }}
+    cancel-in-progress: true
+
+jobs:
+    run:
+        name: Run
+        runs-on: ${{ vars.RUNNER_IMAGE }}
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.head_ref || github.ref_name }}
+
+            - name: Download Tester
+              uses: actions/checkout@v4
+              with:
+                  repository: tatyam-prime/ALU2024_Dockerfile
+                  path: ./.test-runner/
+
+            - name: Run
+              run: |
+                  cat ./dist/install.toml >./.test-runner/installscript.toml
+                  ./.test-runner/run.sh ./test/00_plane/0000.test.cpp
