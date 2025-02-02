@@ -8,13 +8,13 @@ on:
             - test/**
 
         paths-ignore:
-            - ./pages/
-            - ./dist/
+            - ./pages/**
+            - ./dist/**
 
     pull_request:
         paths-ignore:
-            - ./pages/
-            - ./dist/
+            - ./pages/**
+            - ./dist/**
 
     workflow_dispatch:
         inputs:
@@ -65,7 +65,7 @@ jobs:
                       tools-${{
                         hashFiles(
                           './.github/workflows/internal/tools.sh',
-                          './.github/workflows/internal/tools/*'
+                          './.github/workflows/internal/tools/**'
                         )
                       }}
                   restore-keys: tools-
@@ -77,7 +77,7 @@ jobs:
                   mkdir -p /opt/ac_tools/bin/
                   mkdir -p /opt/ac_tools/lib/
 
-                  sudo cp -rf /opt/ac_tools/* /usr/ || :
+                  sudo cp -rf /opt/ac_tools/** /usr/ || :
 
                   ./.github/workflows/internal/tools.sh
 
@@ -133,6 +133,10 @@ jobs:
               uses: actions/checkout@v4
               with:
                   ref: ${{ github.head_ref || github.ref_name }}
+                  sparse-checkout-cone-mode: false
+                  sparse-checkout: |
+                      /*
+                      !/dist/*
 
             - name: Load Cached Tools
               uses: actions/cache/restore@v4
@@ -142,7 +146,7 @@ jobs:
                   fail-on-cache-miss: true
 
             - name: Apply Tools
-              run: sudo cp -rf /opt/ac_tools/* /usr/
+              run: sudo cp -rf /opt/ac_tools/** /usr/
 
             - name: Expand
               run: |
@@ -220,7 +224,7 @@ jobs:
                   fail-on-cache-miss: true
 
             - name: Apply Tools
-              run: sudo cp -rf /opt/ac_tools/* /usr/
+              run: sudo cp -rf /opt/ac_tools/** /usr/
 
             - name: Load CCache
               if: ${{ github.event.inputs.test-mode != 'strict' }}
@@ -249,7 +253,7 @@ jobs:
                   chmod +x ./dist/install.sh
                   ./dist/install.sh
 
-                  find /tmp/ac_install/ -iname *.tar.* -or -iname *.zip -print0 |
+                  find /tmp/ac_install/ -iname **.tar.* -or -iname **.zip -print0 |
                     xargs -0 -I {} sudo rm -rf {}
 
             - name: Collect Pkgconfig Files
@@ -257,7 +261,7 @@ jobs:
                   set -eu
 
                   mkdir -p ./config/libs/
-                  find /opt/ac_install/ -name '*.pc' -type f -print0 |
+                  find /opt/ac_install/ -name '**.pc' -type f -print0 |
                     xargs -0 -I {} sudo cp {} ./config/libs/
 
             - name: Upload Pkgconfig Files
@@ -295,6 +299,10 @@ jobs:
               uses: actions/checkout@v4
               with:
                   ref: ${{ github.head_ref || github.ref_name }}
+                  sparse-checkout-cone-mode: false
+                  sparse-checkout: |
+                      /*
+                      !/dist/*
 
             - name: Download Pkgconfig Files
               uses: actions/download-artifact@v4
@@ -369,9 +377,9 @@ jobs:
                   fail-on-cache-miss: true
 
             - name: Apply Tools
-              run: sudo cp -rf /opt/ac_tools/* /usr/
+              run: sudo cp -rf /opt/ac_tools/** /usr/
 
-            - name: Download Installer
+            - name: Download Installer & Compiler
               uses: actions/download-artifact@v4
               with:
                   pattern: dist-*
@@ -412,20 +420,22 @@ jobs:
               uses: actions/checkout@v4
               with:
                   ref: ${{ github.head_ref || github.ref_name }}
-                  fetch-depth: 0
                   ssh-key: ${{ secrets.SSH_KEY }}
+                  fetch-depth: 0
+
+            - name: Remove Old Files
+              run: rm -rf ./dist/
 
             - name: Download Installers
               uses: actions/download-artifact@v4
               with:
-                  pattern: dist-*
+                  name: dist-config
                   path: ./dist/
-                  merge-multiple: true
 
             - name: Commit & Push
               uses: stefanzweifel/git-auto-commit-action@v5
               with:
-                  file_pattern: "./dist/*"
+                  file_pattern: "./dist/**"
                   commit_user_name: Template Expander
                   commit_user_email: template-expander@example.com
                   commit_message: "[workflow] expand templates (${{ github.sha }})"
@@ -458,9 +468,8 @@ jobs:
             - name: Download Outputs
               uses: actions/download-artifact@v4
               with:
-                  pattern: dist-*
+                  name: dist-config
                   path: ./pages/
-                  merge-multiple: true
 
             - name: Merge data
               run: |
