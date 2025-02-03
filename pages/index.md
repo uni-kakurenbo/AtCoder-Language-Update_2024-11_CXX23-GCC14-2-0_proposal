@@ -1,7 +1,8 @@
 # AtCoder Language Update &ndash; Nov. 2024 <br /> C++23 (GCC 14.2.0) [proposal]
 
 [![workflows:expand-template](https://github.com/uni-kakurenbo/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/actions/workflows/expand.yml/badge.svg)](https://github.com/uni-kakurenbo/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/actions/workflows/expand.yml)
-[![workflows:test-on-docker](https://github.com/uni-kakurenbo/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/actions/workflows/test-on-docker.yml/badge.svg)]()
+[![workflows:generate-pages](https://github.com/uni-kakurenbo/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/actions/workflows/gh-pages.yml/badge.svg)](https://github.com/uni-kakurenbo/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/actions/workflows/gh-pages.yml)
+[![workflows:test-on-docker](https://github.com/uni-kakurenbo/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/actions/workflows/test-on-docker.yml/badge.svg)](https://github.com/uni-kakurenbo/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/actions/workflows/test-on-docker.yml)
 
 - [Install script](https://uni-kakurenbo.github.io/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/#install-script)
 - [Compile script](https://uni-kakurenbo.github.io/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/#compile-script)
