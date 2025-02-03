@@ -9,11 +9,7 @@ on:
             - main
 
         paths:
-            - ./pages/**
-
-    pull_request:
-        paths:
-            - ./pages/**
+            - pages/**
 
     workflow_run:
         workflows: ["Expand Templates"]

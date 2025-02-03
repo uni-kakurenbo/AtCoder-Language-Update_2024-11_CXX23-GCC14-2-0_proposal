@@ -8,13 +8,13 @@ on:
             - test/**
 
         paths-ignore:
-            - ./pages/**
-            - ./dist/**
+            - pages/**
+            - dist/**
 
     pull_request:
         paths-ignore:
-            - ./pages/**
-            - ./dist/**
+            - pages/**
+            - dist/**
 
     workflow_dispatch:
         inputs:
