@@ -23,18 +23,21 @@ CMAKE_ENVIRONMENT=(
     -DCMAKE_INSTALL_MESSAGE:STRING="NEVER"
 )
 
+BOOST_BUILDER_CONFIG="using gcc : : g++-14 ;"
+
 if ccache -v; then
     echo "ccache: enabled"
-
-    export BOOST_BUILDER_CONFIG="using gcc : : ccache g++-14 ;"
 
     CMAKE_ENVIRONMENT+=(
         -DCMAKE_C_COMPILER_LAUNCHER:STRING="ccache"
         -DCMAKE_CXX_COMPILER_LAUNCHER:STRING="ccache"
     )
+
+    BOOST_BUILDER_CONFIG="using gcc : : ccache g++-14 ;"
 fi
 
 export CMAKE_ENVIRONMENT
+export BOOST_BUILDER_CONFIG
 
 ./sub-installers/abseil.sh
 ./sub-installers/ac-library.sh
