@@ -19,7 +19,11 @@ sudo tar -I pbzip2 -xf ./boost.tar.bz2 -C ./boost/ --strip-components 1
 
 cd ./boost/
 
-echo "using gcc : : ccache g++-14 ;" | sudo tee -a ./user-config.jam
+if [[ -v BOOST_BUILDER_CONFIG ]]; then
+    echo "${BOOST_BUILDER_CONFIG}" | sudo tee -a ./user-config.jam
+else
+    sudo touch ./user-config.jam
+fi
 
 sudo ./bootstrap.sh \
     --with-toolset=gcc \

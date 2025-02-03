@@ -36,6 +36,8 @@ CMAKE_ENVIRONMENT=(
     -DCMAKE_INSTALL_MESSAGE:STRING="NEVER"
 )
 
+BOOST_BUILDER_CONFIG="using gcc : : g++-14 ;"
+
 if ccache -v; then
     echo "ccache: enabled"
 
@@ -43,7 +45,12 @@ if ccache -v; then
         -DCMAKE_C_COMPILER_LAUNCHER:STRING="ccache"
         -DCMAKE_CXX_COMPILER_LAUNCHER:STRING="ccache"
     )
+
+    BOOST_BUILDER_CONFIG="using gcc : : ccache g++-14 ;"
 fi
+
+export CMAKE_ENVIRONMENT
+export BOOST_BUILDER_CONFIG
 
 
 # abseil
@@ -129,7 +136,11 @@ sudo tar -I pbzip2 -xf ./boost.tar.bz2 -C ./boost/ --strip-components 1
 
 cd ./boost/
 
-echo "using gcc : : ccache g++-14 ;" | sudo tee -a ./user-config.jam
+if [[ -v BOOST_BUILDER_CONFIG ]]; then
+    echo "${BOOST_BUILDER_CONFIG}" | sudo tee -a ./user-config.jam
+else
+    sudo touch ./user-config.jam
+fi
 
 sudo ./bootstrap.sh \
     --with-toolset=gcc \
