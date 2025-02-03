@@ -3,11 +3,10 @@ run-name: ${{ github.workflow }} (${{ github.ref_name }})
 
 on:
     workflow_dispatch:
-    push:
-        branches:
-            - main
-        paths:
-            - ./dist/**
+    workflow_run:
+        workflows: ["Expand Template"]
+        types: [completed]
+        branches: [main]
 
 concurrency:
     group: ${{ github.head_ref || github.ref_name }}
@@ -16,6 +15,7 @@ concurrency:
 jobs:
     run:
         name: Run
+        if: ${{ github.event.workflow_run.conclusion == 'success' }}
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
         steps:
