@@ -440,18 +440,3 @@ jobs:
                   commit_user_email: template-expander@example.com
                   commit_message: "[workflow] expand templates (${{ github.sha }})"
                   commit_options: "--no-verify"
-
-    gh-pages:
-        name: Generate Pages
-
-        needs:
-            - gen-config
-            - test
-
-        if: >
-            !cancelled() &&
-            github.ref_name == github.event.repository.default_branch &&
-            needs.test.result == 'success'
-
-        uses: ./.github/workflows/gh-pages.yml
-        secrets: inherit
