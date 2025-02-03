@@ -3,8 +3,20 @@ run-name: ${{ github.workflow }} (${{ github.ref_name }})
 
 on:
     workflow_dispatch:
+
+    push:
+        branches:
+            - main
+
+        paths:
+            - ./pages/**
+
+    pull_request:
+        paths:
+            - ./pages/**
+
     workflow_run:
-        workflows: ["Expand Template"]
+        workflows: ["Expand Templates"]
         types: [completed]
         branches: [main]
 
@@ -15,6 +27,7 @@ concurrency:
 jobs:
     configure:
         name: Configure
+        if: ${{ !github.event.workflow_run.conclusion || github.event.workflow_run.conclusion == 'success' }}
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
         steps:

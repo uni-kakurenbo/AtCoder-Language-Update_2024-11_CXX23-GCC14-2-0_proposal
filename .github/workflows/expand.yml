@@ -1,4 +1,4 @@
-name: Expand Template
+name: Expand Templates
 run-name: ${{ github.workflow }} (${{ github.ref_name }})
 
 on:
