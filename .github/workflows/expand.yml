@@ -177,13 +177,6 @@ jobs:
             fail-fast: false
 
         steps:
-            - name: Collect Workflow Telemetry
-              uses: catchpoint/workflow-telemetry-action@v2
-              with:
-                  theme: dark
-                  comment_on_pr: false
-                  proc_trace_sys_enable: false
-
             - name: Configure Installation
               run: |
                   set -eu
