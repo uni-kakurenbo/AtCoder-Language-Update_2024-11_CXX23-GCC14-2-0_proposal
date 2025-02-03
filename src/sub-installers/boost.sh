@@ -16,6 +16,8 @@ cd ./boost/
 
 if [[ -v BOOST_BUILDER_CONFIG ]]; then
     echo "${BOOST_BUILDER_CONFIG}" | sudo tee -a ./user-config.jam
+else
+    sudo touch ./user-config.jam
 fi
 
 sudo ./bootstrap.sh \
