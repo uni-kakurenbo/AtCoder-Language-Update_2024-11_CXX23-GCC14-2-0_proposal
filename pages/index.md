@@ -1,5 +1,8 @@
 # AtCoder Language Update &ndash; Nov. 2024 <br /> C++23 (GCC 14.2.0) [proposal]
 
+![expand](https://github.com/uni-kakurenbo/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/actions/workflows/expand.yml/badge.svg)
+![test-on-docker](https://github.com/uni-kakurenbo/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/actions/workflows/test-on-docker.yml/badge.svg)
+
 - [Install script](https://uni-kakurenbo.github.io/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/#install-script)
 - [Compile script](https://uni-kakurenbo.github.io/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/#compile-script)
 - [Configuration file](https://uni-kakurenbo.github.io/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/#configuration-file)
