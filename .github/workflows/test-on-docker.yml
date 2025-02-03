@@ -35,5 +35,5 @@ jobs:
               run: |
                   set -eu
 
-                  cat ../dist/install.toml >./installscript.toml
+                  cat ../dist/config.toml >./installscript.toml
                   ./run.sh ../test/00_plane/0000.test.cpp
