@@ -34,7 +34,7 @@ defaults:
 
 concurrency:
     group: |
-        test/${{
+        expand-${{
             startsWith(github.ref_name, 'test/') && github.ref_name ||
             github.run_id
         }}

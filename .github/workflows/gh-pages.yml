@@ -20,8 +20,12 @@ on:
         types: [completed]
         branches: [main]
 
+defaults:
+    run:
+        shell: bash
+
 concurrency:
-    group: ${{ github.repository_id }}
+    group: pages-${{ github.repository_id }}
     cancel-in-progress: true
 
 jobs:
