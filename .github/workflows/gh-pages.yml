@@ -3,7 +3,10 @@ run-name: ${{ github.workflow }} (${{ github.ref_name }})
 
 on:
     workflow_dispatch:
-    workflow_call:
+    workflow_run:
+        workflows: ["Expand Template"]
+        types: [completed]
+        branches: [main]
 
 concurrency:
     group: ${{ github.repository_id }}
@@ -28,38 +31,30 @@ jobs:
               uses: actions/checkout@v4
               with:
                   ref: ${{ github.head_ref || github.ref_name }}
-                  sparse-checkout: ./pages/
-
-            - name: Download Outputs
-              uses: actions/download-artifact@v4
-              with:
-                  pattern: dist-config
-                  path: ./pages/
-                  merge-multiple: true
 
             - name: Merge data
               run: |
                   {
                     echo
 
-                    if [ -f ./pages/install.sh ]; then
+                    if [ -f ./dist/install.sh ]; then
                         echo '## Install Script'
                         echo '```bash'
-                        cat ./pages/install.sh
+                        cat ./dist/install.sh
                         echo '```'
                     fi
 
-                    if [ -f ./pages/compile.sh ]; then
+                    if [ -f ./dist/compile.sh ]; then
                         echo '## Compile Script'
                         echo '```bash'
-                        cat ./pages/compile.sh
+                        cat ./dist/compile.sh
                         echo '```'
                     fi
 
-                    if [ -f ./pages/config.toml ]; then
+                    if [ -f ./dist/config.toml ]; then
                         echo '## Configuration File'
                         echo '```toml'
-                        cat ./pages/config.toml
+                        cat ./dist/config.toml
                         echo '```'
                     fi
                   } >>./pages/index.md
