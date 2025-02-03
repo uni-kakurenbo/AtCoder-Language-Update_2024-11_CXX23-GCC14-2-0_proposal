@@ -7,7 +7,6 @@ BUILD_FLAGS=(
     "-DATCODER"
     "-DNOMINMAX"
     "-DONLINE_JUDGE"
-    "-I/opt/ac_install/"
     "-I/opt/ac_install/include"
     "-I/opt/ac_install/include/"
     "-I/opt/ac_install/include/torch/csrc/api/include/"
