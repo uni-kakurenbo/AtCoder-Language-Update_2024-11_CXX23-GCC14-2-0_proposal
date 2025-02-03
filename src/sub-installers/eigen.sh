@@ -12,7 +12,7 @@ sudo mkdir -p /opt/ac_install/cmake/
 
 sudo cp -Trf /usr/include/eigen3/ /opt/ac_install/include/
 
-# copy and patch cmake files to build or-tools.
+# copy and patch cmake files to build OR-Tools.
 sudo cp -f \
     /usr/share/eigen3/cmake/Eigen3Targets.cmake \
     /usr/share/eigen3/cmake/Eigen3Config.cmake \
