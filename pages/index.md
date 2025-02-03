@@ -43,7 +43,7 @@
     - inherited
     - [「機能面を見るに，C++ 標準 (GNU 拡張含む) や Boost で十分に思える．性能面で優れているところが動機だと思うが，それで外部ライブラリの導入を進めると際限なく広がってしまうので，やはり反対」](https://discord.com/channels/1245258617582653553/1293457974442070016/1308248462772408373)
 
-- [GMP](https://gmplib.org/): `2:6.3.0+dfsg-2ubuntu6` (apt)
+- [GMP](https://gmplib.org/): `2:6.3.0+dfsg-2ubuntu6.1` (apt)
     - The GNU
 Multiple Precision
 Arithmetic Library

@@ -42,7 +42,7 @@ execution = ['./a.out']
     ]
 
 [library.gmp]
-    version = '2:6.3.0+dfsg-2ubuntu6'
+    version = '2:6.3.0+dfsg-2ubuntu6.1'
     license = [
         { name = 'LGPL-3.0-only', url = 'https://www.gnu.org/licenses/lgpl-3.0.html' },
         { name = 'GPL-2.0-only', url = 'https://www.gnu.org/licenses/old-licenses/gpl-2.0.html' }
