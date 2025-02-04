@@ -47,9 +47,9 @@ jobs:
                   set -eu
 
                   cat ../dist/config.toml >./installscript.toml
-                  cp ../test/00_plane/0000.test.cpp src/source
+                  cp ../test/00_plane/0000.test.cpp ./src/source
 
-                  python3 src/parse.py
-                  docker build --platform linux/amd64 -t atcoder -f src/Dockerfile .
+                  python3 ./src/parse.py
+                  docker build --platform linux/amd64 -t atcoder -f ./src/Dockerfile .
 
                   docker run --rm atcoder
