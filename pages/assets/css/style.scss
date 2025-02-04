@@ -4,9 +4,9 @@
 @import "{{ site.theme }}";
 
 div.wrapper {
-    width: 85%;
+    min-width: 85%;
 }
 
 section.main {
-    width: 65%;
+    min-width: 65%;
 }
