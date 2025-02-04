@@ -4,3 +4,5 @@ github:
     installer_url: https://cdn.jsdelivr.net/gh/uni-kakurenbo/AtCoder-Language-Update_2024-11_Cpp23-GCC14-2-0_proposal/dist/install.sh
     compiler_url: https://cdn.jsdelivr.net/gh/uni-kakurenbo/AtCoder-Language-Update_2024-11_Cpp23-GCC14-2-0_proposal/dist/compile.sh
     config_url: https://cdn.jsdelivr.net/gh/uni-kakurenbo/AtCoder-Language-Update_2024-11_Cpp23-GCC14-2-0_proposal/dist/config.toml
+
+google_analytics: G-4P7TZVC1HV
