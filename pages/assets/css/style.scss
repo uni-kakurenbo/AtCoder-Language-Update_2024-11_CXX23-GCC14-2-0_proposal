@@ -3,8 +3,11 @@
 
 @import "{{ site.theme }}";
 
-div.wrapper {
-    min-width: 85%;
+@media print, screen and (min-width: 960px) {
+    div.wrapper {
+        width: 940px;
+        min-width: 85%;
+    }
 }
 
 section.main {
