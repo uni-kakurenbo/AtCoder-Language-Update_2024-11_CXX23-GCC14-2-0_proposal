@@ -12,12 +12,14 @@ cd /tmp/ac_install/
 
 echo "::group::LightGBM"
 
-if [ ! -d ./light-gbm/ ]; then
-    sudo mkdir -p ./light-gbm/
-
-    sudo wget -q "https://github.com/microsoft/LightGBM/releases/download/v${VERSION}/lightgbm-${VERSION}.tar.gz" -O ./light-gbm.tar.gz
-    sudo tar -I pigz -xf ./light-gbm.tar.gz -C ./light-gbm/ --strip-components 1
+if [ -d ./light-gbm/ ]; then
+    sudo rm -rf ./light-gbm/
 fi
+
+sudo mkdir -p ./light-gbm/
+
+sudo wget -q "https://github.com/microsoft/LightGBM/releases/download/v${VERSION}/lightgbm-${VERSION}.tar.gz" -O ./light-gbm.tar.gz
+sudo tar -I pigz -xf ./light-gbm.tar.gz -C ./light-gbm/ --strip-components 1
 
 cd ./light-gbm/
 
