@@ -95,6 +95,7 @@ Some other flags might be appended, depending on libraries that is to be install
 ### Optimization
 - `-O2`
 - `-O3` (not yet implemented)
+    - proposed at [2024/11/19 10:52](https://discord.com/channels/1245258617582653553/1293457974442070016/1308248462772408373)
     - [「Topcoder で採用例がある」](https://discord.com/channels/1245258617582653553/1293457974442070016/1308248462772408373)
 
 - `-march=native`
@@ -108,6 +109,7 @@ Some other flags might be appended, depending on libraries that is to be install
     - [「現環境でバグに出くわす例があって悩ましいが，強い最適化の恩恵にはあずかりたい」](https://discord.com/channels/1245258617582653553/1293457974442070016/1308248462772408373)
 
 - `-flto=auto`
+    - proposed at [2024/11/10 16:36](https://discord.com/channels/1245258617582653553/1293457974442070016/1305073512746192949)
     - [「かつては問題もややあったよう」](https://discord.com/channels/1245258617582653553/1293457974442070016/1306609306996707398)
     - [「GCC 14 時点での安定性については分りかねるが，再度検討して損はない」](https://discord.com/channels/1245258617582653553/1293457974442070016/1306609306996707398)
     - [「詳しく把握しないままに追加すると思わぬトラブルになるかも」](https://discord.com/channels/1245258617582653553/1293457974442070016/1308248462772408373)
@@ -134,6 +136,7 @@ Some other flags might be appended, depending on libraries that is to be install
 ### Extra features
 - `-lstdc++exp`
     - enables experimental library features
+    - proposed at [2024/11/10 16:36](https://discord.com/channels/1245258617582653553/1293457974442070016/1305073512746192949)
     - [「競プロ (特に Algo) とはほぼ関係ない (導入しても大きな問題はない) のでは」](https://discord.com/channels/1245258617582653553/1293457974442070016/1306609306996707398)
     - [「標準ライブラリにあるのであれば有効にしてもいいのでは」](https://discord.com/channels/1245258617582653553/1293457974442070016/1306624382331785268)
     - [「Codeforces で採用例がある」](https://discord.com/channels/1245258617582653553/1293457974442070016/1308248462772408373)
