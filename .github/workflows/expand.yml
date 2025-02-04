@@ -36,7 +36,7 @@ concurrency:
     group: |
         expand-${{
             startsWith(github.ref_name, 'test/') && github.ref_name ||
-            github.run_id
+            format('test/{0}', github.head_ref || github.ref_name)
         }}
 
     cancel-in-progress: true
