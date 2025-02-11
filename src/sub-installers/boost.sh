@@ -21,12 +21,12 @@ else
 fi
 
 sudo ./bootstrap.sh \
-    --with-toolset=gcc \
+    --with-toolset="${AC_VARIANT}" \
     --without-libraries=mpi,graph_parallel \
     --prefix=/opt/ac_install/
 
 sudo ./b2 \
-    toolset=gcc \
+    toolset="${AC_VARIANT}" \
     link=static \
     threading=single \
     variant=release \
