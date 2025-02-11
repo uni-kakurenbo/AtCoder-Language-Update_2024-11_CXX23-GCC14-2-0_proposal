@@ -152,7 +152,9 @@ jobs:
               run: |
                   set -eu
 
-                  sudo rm -rf ./dist/ && mkdir -p ./dist/
+                  sudo rm -rf ./dist/gcc/ && mkdir -p ./dist/gcc/
+                  sudo rm -rf ./dist/clang/ && mkdir -p ./dist/clang/
+
                   ./.github/workflows/internal/expanders/installer.sh gcc
                   # ./.github/workflows/internal/expanders/installer.sh clang
 
