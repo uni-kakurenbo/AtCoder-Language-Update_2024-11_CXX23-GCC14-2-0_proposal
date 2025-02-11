@@ -153,7 +153,8 @@ jobs:
                   set -eu
 
                   sudo rm -rf ./dist/ && mkdir -p ./dist/
-                  ./.github/workflows/internal/expanders/installer.sh
+                  ./.github/workflows/internal/expanders/installer.sh gcc
+                  # ./.github/workflows/internal/expanders/installer.sh clang
 
             - name: Upload
               uses: actions/upload-artifact@v4
@@ -309,7 +310,8 @@ jobs:
                   set -eu
 
                   sudo rm -rf ./dist/ && mkdir -p ./dist/
-                  ./.github/workflows/internal/expanders/compiler.sh
+                  ./.github/workflows/internal/expanders/compiler.sh gcc
+                  # ./.github/workflows/internal/expanders/compiler.sh clang
 
             - name: Upload
               uses: actions/upload-artifact@v4
@@ -345,7 +347,7 @@ jobs:
 
             - name: Test
               if: github.event.inputs.test-mode != 'none'
-              run: ./.github/workflows/internal/test.sh
+              run: ./.github/workflows/internal/test.sh gcc
 
     gen-config:
         name: Generate Configuration File
@@ -383,10 +385,13 @@ jobs:
               run: |
                   set -eu
 
-                  ./.github/workflows/internal/expanders/config.sh
+                  ./.github/workflows/internal/expanders/config.sh gcc
+                  # ./.github/workflows/internal/expanders/config.sh clang
 
             - name: Lint
-              run: ./.github/workflows/internal/lint.sh
+              run: |
+                  ./.github/workflows/internal/lint.sh gcc
+                  # ./.github/workflows/internal/lint.sh clang
 
             - name: Upload
               uses: actions/upload-artifact@v4

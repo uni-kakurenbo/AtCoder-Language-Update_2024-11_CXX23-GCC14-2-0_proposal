@@ -4,4 +4,8 @@ Version:
 
 Cflags: -std=gnu++23
 
-Libs: -lstdc++exp
+gcc:
+    Libs: -lstdc++exp
+
+clang:
+    Libs: -stdlib=libc++ -fuse-ld=lld
