@@ -6,8 +6,6 @@ export PATH="${PATH}:/opt/ac_tools/bin/"
 
 DIST_DIR="$1"
 
-echo "${DIST_DIR}"
-
 CONFIG_PATHS=(
     "${DIST_DIR}/config/"
     "${DIST_DIR}/config/internal/"
