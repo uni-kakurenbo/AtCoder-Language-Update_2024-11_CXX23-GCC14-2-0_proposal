@@ -108,7 +108,7 @@ jobs:
               run: |
                   set -eu
 
-                  EXCLUDE='["abseil", "eigen", "gmp"]'
+                  EXCLUDE='["abseil", "eigen", "gmp", "or-tools", "z3"]'
 
                   {
                     echo -n "list="
