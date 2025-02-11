@@ -2,11 +2,9 @@
 set -eu
 
 SHEBANG='#!/bin/bash'
-DIST_DIR="$1"
+export DIST_DIR="$1"
 
 mkdir -p "${DIST_DIR}/sub-installers/"
-
-echo "${DIST_DIR}"
 
 function replace() {
     local name
