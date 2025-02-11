@@ -1,7 +1,7 @@
 #include <time.h>
 #include <gmp.h>
 
-signed main() {
+int main() {
     mpz_t a;
     mpz_init(a);
 
