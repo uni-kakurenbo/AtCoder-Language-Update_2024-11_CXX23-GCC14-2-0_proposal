@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu
 
-DIST_DIR="$1"
+export DIST_DIR="$1"
 
 VARIANT="$(basename "${DIST_DIR}")"
 export VARIANT

@@ -152,11 +152,11 @@ jobs:
               run: |
                   set -eu
 
-                  sudo rm -rf ./dist/gcc/ && mkdir -p ./dist/gcc/
-                  sudo rm -rf ./dist/clang/ && mkdir -p ./dist/clang/
+                  sudo rm -rf ./dist/
+                  mkdir -p ./dist/gcc/; mkdir -p ./dist/clang/
 
                   ./.github/workflows/internal/expanders/installer.sh gcc
-                  # ./.github/workflows/internal/expanders/installer.sh clang
+                  ./.github/workflows/internal/expanders/installer.sh clang
 
             - name: Upload
               uses: actions/upload-artifact@v4
@@ -177,6 +177,7 @@ jobs:
         strategy:
             matrix:
                 target: ${{ fromJson(needs.config-matrix.outputs.libraries) }}
+                variant: ["gcc", "clang"]
             fail-fast: false
 
         steps:
@@ -241,8 +242,8 @@ jobs:
 
             - name: Install
               env:
-                  TARGET: ${{ matrix.target }}
-                  RUN_TEST: ${{ github.event.inputs.test-mode == 'strict' }}
+                  AC_VARIANT: ${{ matrix.variant }}
+                  AC_RUN_TEST: ${{ github.event.inputs.test-mode == 'strict' }}
               run: |
                   set -eu
 
@@ -311,9 +312,11 @@ jobs:
               run: |
                   set -eu
 
-                  sudo rm -rf ./dist/ && mkdir -p ./dist/
+                  sudo rm -rf ./dist/
+                  mkdir -p ./dist/gcc/; mkdir -p ./dist/clang/
+
                   ./.github/workflows/internal/expanders/compiler.sh gcc
-                  # ./.github/workflows/internal/expanders/compiler.sh clang
+                  ./.github/workflows/internal/expanders/compiler.sh clang
 
             - name: Upload
               uses: actions/upload-artifact@v4
@@ -388,12 +391,12 @@ jobs:
                   set -eu
 
                   ./.github/workflows/internal/expanders/config.sh gcc
-                  # ./.github/workflows/internal/expanders/config.sh clang
+                  ./.github/workflows/internal/expanders/config.sh clang
 
             - name: Lint
               run: |
                   ./.github/workflows/internal/lint.sh gcc
-                  # ./.github/workflows/internal/lint.sh clang
+                  ./.github/workflows/internal/lint.sh clang
 
             - name: Upload
               uses: actions/upload-artifact@v4
