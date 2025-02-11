@@ -16,7 +16,7 @@ cd ./or-tools/
 
 BUILD_TESTING=OFF
 
-if [[ -v RUN_TEST ]] && [[ "${RUN_TEST}" = "true" ]]; then
+if [[ -v AC_RUN_TEST ]] && [[ "${AC_RUN_TEST}" = "true" ]]; then
     BUILD_TESTING=ON
 fi
 
@@ -38,7 +38,7 @@ sudo cmake "${CMAKE_ENVIRONMENT[@]}" \
 
 sudo cmake --build ./ --config Release --target install
 
-if [[ -v RUN_TEST ]] && [[ "${RUN_TEST}" = "true" ]]; then
+if [[ -v AC_RUN_TEST ]] && [[ "${AC_RUN_TEST}" = "true" ]]; then
     sudo cmake --build ./ --config Release --target test --parallel "${PARALLEL}"
 fi
 

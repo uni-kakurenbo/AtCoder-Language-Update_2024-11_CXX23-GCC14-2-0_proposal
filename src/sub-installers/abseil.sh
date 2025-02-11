@@ -25,7 +25,7 @@ CMAKE_ARGUMENTS=(
     -DCMAKE_CXX_FLAGS:STRING="-fPIC ${BUILD_FLAGS[*]}"
 )
 
-if [[ -v RUN_TEST ]] && [[ "${RUN_TEST}" = "true" ]]; then
+if [[ -v AC_RUN_TEST ]] && [[ "${AC_RUN_TEST}" = "true" ]]; then
     sudo cmake -DABSL_BUILD_TESTING=ON -DABSL_USE_GOOGLETEST_HEAD=ON "${CMAKE_ARGUMENTS[@]}" ../
 
     sudo make "-j${PARALLEL}"

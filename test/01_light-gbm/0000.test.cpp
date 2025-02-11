@@ -1,6 +1,6 @@
 #include <print>
 #include <LightGBM/c_api.h>
 
-signed main() {
+int main() {
     std::println("{}", LGBM_SetMaxThreads(2));
 }

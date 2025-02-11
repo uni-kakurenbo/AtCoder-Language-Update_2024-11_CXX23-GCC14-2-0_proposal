@@ -22,7 +22,7 @@ auto d() {
     return c();
 }
 
-signed main() {
+int main() {
     std::println("{}", a());
     std::println("{}", b());
     std::println("{}", c());
