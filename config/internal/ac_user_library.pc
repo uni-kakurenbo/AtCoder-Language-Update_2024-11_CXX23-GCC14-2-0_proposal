@@ -9,10 +9,10 @@ Requires: \
     ac_eigen \
     ac_gmp \
     ac_light-gbm \
-    ac_or-tools \
     ac_range-v3 \
     ac_unordered_dense \
-    ac_z3 \
+# ac_z3 \
+# ac_or-tools \
 
 gcc:
     Requires: ac_libtorch
