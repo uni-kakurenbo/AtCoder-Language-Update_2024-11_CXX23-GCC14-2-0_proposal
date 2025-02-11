@@ -12,5 +12,7 @@ cat "${DIST_DIR}/internal.flags.txt"
 
 "${WORKING_DIRECTORY}/replacers/pkg-config.sh" "${DIST_DIR}"
 
+ls "${DIST_DIR}/config"
+
 "${WORKING_DIRECTORY}/replacers/sub-installers.sh" "${DIST_DIR}"
 "${WORKING_DIRECTORY}/replacers/installer.sh" "${DIST_DIR}"
