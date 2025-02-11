@@ -228,7 +228,7 @@ jobs:
               uses: hendrikmuhs/ccache-action@v1.2
               with:
                   key: >
-                      ${{ matrix.target }}-${{
+                      ${{ matrix.variant }}-${{ matrix.target }}-${{
                         hashFiles(
                           './src/install.sh',
                           './src/config.toml',
@@ -238,7 +238,7 @@ jobs:
                           format('./config/library/ac_{0}.pc', matrix.target)
                         )
                       }}
-                  restore-keys: ${{ matrix.target }}
+                  restore-keys: ${{ matrix.variant }}-${{ matrix.target }}
 
             - name: Install
               env:
@@ -264,7 +264,7 @@ jobs:
             - name: Upload Pkgconfig Files
               uses: actions/upload-artifact@v4
               with:
-                  name: pkgconfig-${{ matrix.target }}
+                  name: pkgconfig-${{ matrix.variant }}-${{ matrix.target }}
                   path: ./config/libs/
                   if-no-files-found: ignore
 
@@ -278,12 +278,17 @@ jobs:
             - name: Upload
               uses: actions/upload-artifact@v4
               with:
-                  name: library-${{ matrix.target }}
+                  name: library-${{ matrix.variant }}-${{ matrix.target }}
                   path: /opt/ac_install/
                   compression-level: 0
 
     gen-compiler:
         name: Generate Compiler
+
+        strategy:
+            matrix:
+                variant: ["gcc", "clang"]
+            fail-fast: false
 
         needs:
             - prepare-tools
@@ -304,7 +309,7 @@ jobs:
             - name: Download Pkgconfig Files
               uses: actions/download-artifact@v4
               with:
-                  pattern: pkgconfig-*
+                  pattern: pkgconfig-${{ matrix.variant }}-*
                   path: ./config/libs/
                   merge-multiple: true
 
@@ -313,21 +318,25 @@ jobs:
                   set -eu
 
                   sudo rm -rf ./dist/
-                  mkdir -p ./dist/gcc/; mkdir -p ./dist/clang/
+                  mkdir -p ./dist/${{ matrix.variant }}/
 
-                  ./.github/workflows/internal/expanders/compiler.sh gcc
-                  ./.github/workflows/internal/expanders/compiler.sh clang
+                  ./.github/workflows/internal/expanders/compiler.sh ${{ matrix.variant }}
 
             - name: Upload
               uses: actions/upload-artifact@v4
               with:
-                  name: dist-compiler
+                  name: dist-compiler-${{ matrix.variant }}
                   path: ./dist/
 
     test:
         name: Test
 
         needs: gen-compiler
+
+        strategy:
+            matrix:
+                variant: ["gcc", "clang"]
+            fail-fast: false
 
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
@@ -340,19 +349,19 @@ jobs:
             - name: Download Libraries
               uses: actions/download-artifact@v4
               with:
-                  pattern: library-*
+                  pattern: library-${{ matrix.variant }}-*
                   path: /opt/ac_install/
                   merge-multiple: true
 
             - name: Download Compiler
               uses: actions/download-artifact@v4
               with:
-                  name: dist-compiler
+                  name: dist-compiler-${{ matrix.variant }}
                   path: ./dist/
 
             - name: Test
               if: github.event.inputs.test-mode != 'none'
-              run: ./.github/workflows/internal/test.sh gcc
+              run: ./.github/workflows/internal/test.sh ${{ matrix.variant }}
 
     gen-config:
         name: Generate Configuration File
