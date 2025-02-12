@@ -1,6 +1,9 @@
 #!/bin/bash
 set -eu
 
+sudo mkdir -p /tmp/ac_install/
+sudo mkdir -p /opt/ac_install/
+
 ### Compiler
 if [[ ! -v AC_VARIANT ]] || [[ "${AC_VARIANT}" == "gcc" ]]; then
     ./sub-installers/gcc.sh
@@ -18,9 +21,6 @@ fi
 echo "::group::tools"
 sudo apt-get install -y git cmake ninja-build pigz pbzip2
 echo "::endgroup::"
-
-sudo mkdir -p /tmp/ac_install/
-sudo mkdir -p /opt/ac_install/
 
 CMAKE_ENVIRONMENT=(
     -G "Ninja"
