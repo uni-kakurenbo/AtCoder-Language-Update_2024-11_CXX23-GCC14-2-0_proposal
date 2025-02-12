@@ -1,6 +1,6 @@
 Name: Extra user flags
 Description: advanced flags for judge
-Version:
+Version: null
 
 Cflags: >
     -march=native

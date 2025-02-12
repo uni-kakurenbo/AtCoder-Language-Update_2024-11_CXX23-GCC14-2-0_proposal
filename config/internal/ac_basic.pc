@@ -1,6 +1,6 @@
 Name: Basic build flags
 Description: common flags both for build and for judge
-Version:
+Version: null
 
 Cflags: >
     -std=gnu++23

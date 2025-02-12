@@ -1,6 +1,6 @@
 Name: User library flags
 Description: library-linking flags for judge
-Version:
+Version: null
 
 Requires: >
     ac_abseil

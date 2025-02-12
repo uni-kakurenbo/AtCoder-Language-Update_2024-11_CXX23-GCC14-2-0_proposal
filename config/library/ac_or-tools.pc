@@ -1,6 +1,6 @@
 Name: OR-tools
 Description: links LightGBM.
-Version:
+Version: null
 
 Requires: protobuf re2
 
