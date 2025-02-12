@@ -22,6 +22,9 @@ VERSION="$(dasel -r toml -w json <./src/config.toml | jq '.version')"
     cat ./assets/parallel.sh
 
     echo
+    cat "AC_VARIANT=$(basename "${DIST_DIR}")"
+
+    echo
     echo "BUILD_FLAGS=("
     format <"${DIST_DIR}/internal.flags.txt"
     echo ")"
