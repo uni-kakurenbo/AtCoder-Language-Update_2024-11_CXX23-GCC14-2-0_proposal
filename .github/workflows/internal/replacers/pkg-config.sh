@@ -18,7 +18,6 @@ function replace() {
         dasel -r json -w yaml |
         sed -E -e 's/\\//g' -e 's/ +/ /g' -e 's/ \|//g' |
         dasel -r yaml --pretty=false >"${dist}"
-
 }
 
 export -f replace
