@@ -18,9 +18,9 @@ else
     echo "::group::Clang"
 
     sudo apt-get install -y lsb-release software-properties-common gnupg
-    wget https://apt.llvm.org/llvm.sh
+    sudo wget https://apt.llvm.org/llvm.sh
 
-    chmod +x llvm.sh
+    chmod +x ./llvm.sh
 
     sudo ./llvm.sh 19
     sudo apt-get install -y libc++-19-dev="${VERSION}"
