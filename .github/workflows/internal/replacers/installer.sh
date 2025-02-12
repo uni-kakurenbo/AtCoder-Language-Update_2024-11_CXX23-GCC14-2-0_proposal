@@ -3,6 +3,7 @@ set -eu
 
 SHEBANG='#!/bin/bash'
 DIST_DIR="$1"
+VARIANT="$(basename "${DIST_DIR}")"
 
 {
     echo "${SHEBANG}"
@@ -11,7 +12,10 @@ DIST_DIR="$1"
 
 HEADER="$(cat "${DIST_DIR}/install.sh")"
 
-VERSION="$(dasel -r toml -w json <./src/config.toml | jq '.version')"
+VERSION="$(
+    dasel -r toml -w json <./src/config.toml |
+        jq --arg variant "${VARIANT}" '.variant[$variant].version'
+)"
 
 {
     format() { sed -e 's/^/    "/' -e 's/$/"/'; }
@@ -22,14 +26,15 @@ VERSION="$(dasel -r toml -w json <./src/config.toml | jq '.version')"
     cat ./assets/parallel.sh
 
     echo
-    echo "AC_VARIANT=\"$(basename "${DIST_DIR}")\""
+    echo "AC_VARIANT=${VARIANT}"
 
     echo
     echo "BUILD_FLAGS=("
     format <"${DIST_DIR}/internal.flags.txt"
     echo ")"
 
-    echo -e "\nVERSION=${VERSION}"
+    echo
+    echo "VERSION=${VERSION}"
 
     echo
     echo -e "${INSTALLER//${SHEBANG}/}"
