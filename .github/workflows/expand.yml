@@ -363,7 +363,11 @@ jobs:
               if: github.event.inputs.test-mode != 'none'
               run: |
                   ls
+                  echo
                   ls ./dist/
+                  echo
+                  ls ./dist/gcc/
+                  echo
                   ./.github/workflows/internal/test.sh "${{ matrix.variant }}"
 
     gen-config:
