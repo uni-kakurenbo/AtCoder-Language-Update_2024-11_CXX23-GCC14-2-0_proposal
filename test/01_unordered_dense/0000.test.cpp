@@ -1,7 +1,7 @@
 #include <print>
 #include <ankerl/unordered_dense.h>
 
-signed main() {
+int main() {
     ankerl::unordered_dense::map<int, std::string> map;
 
     map[31415] = "3.1415";

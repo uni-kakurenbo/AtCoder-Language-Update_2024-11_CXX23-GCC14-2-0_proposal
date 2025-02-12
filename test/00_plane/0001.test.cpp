@@ -3,7 +3,7 @@
 #include <experimental/simd>
 
 int A[16], B[16], C[16];
-signed main() {
+int main() {
     for(const auto i : std::views::iota(0, 16)){
         A[i] = i;
         B[i] = i * 100;

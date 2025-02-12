@@ -1,6 +1,6 @@
 #include <print>
 #include <omp.h>
 
-signed main() {
+int main() {
     std::println("max threads: {}", omp_get_max_threads());
 }

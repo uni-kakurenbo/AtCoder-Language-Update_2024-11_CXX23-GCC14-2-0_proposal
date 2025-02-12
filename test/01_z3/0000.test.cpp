@@ -1378,7 +1378,6 @@ void iterate_args() {
 }
 
 int main() {
-
     try {
         demorgan(); std::cout << "\n";
         find_model_example1(); std::cout << "\n";
