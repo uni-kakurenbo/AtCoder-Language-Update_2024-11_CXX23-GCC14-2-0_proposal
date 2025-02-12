@@ -25,8 +25,6 @@ function run-test() {
     local exit_status
     exit_status=0
 
-    cat ./compile.sh
-
     {
         set +e
         local header="================ ${name} ================"
