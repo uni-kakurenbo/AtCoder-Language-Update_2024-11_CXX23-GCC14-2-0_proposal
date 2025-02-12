@@ -357,7 +357,7 @@ jobs:
               uses: actions/download-artifact@v4
               with:
                   name: dist-compiler-${{ matrix.variant }}
-                  path: ./dist/
+                  path: ./dist/${{ matrix.variant }}/
 
             - name: Test
               if: github.event.inputs.test-mode != 'none'
