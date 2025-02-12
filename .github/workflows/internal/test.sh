@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu
 
-DIST_DIR="./dist/$1"
+export DIST_DIR="./dist/$1"
 
 chmod +x -R "${DIST_DIR}"
 
