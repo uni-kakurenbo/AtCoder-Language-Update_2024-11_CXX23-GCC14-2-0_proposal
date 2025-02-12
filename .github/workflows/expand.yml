@@ -242,16 +242,12 @@ jobs:
 
             - name: Install
               env:
-                  AC_VARIANT: ${{ matrix.variant }}
                   AC_RUN_TEST: ${{ github.event.inputs.test-mode == 'strict' }}
               run: |
                   set -eu
 
-                  chmod +x ./dist/install.sh
-                  ./dist/install.sh
-
-                  find /tmp/ac_install/ -iname **.tar.* -or -iname **.zip -print0 |
-                    xargs -0 -I {} sudo rm -rf {}
+                  chmod +x ./dist/${{ matrix.variant }}/install.sh
+                  ./dist/${{ matrix.variant }}/install.sh
 
             - name: Collect Pkgconfig Files
               run: |
