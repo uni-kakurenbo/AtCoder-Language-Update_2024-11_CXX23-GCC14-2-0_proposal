@@ -357,11 +357,14 @@ jobs:
               uses: actions/download-artifact@v4
               with:
                   name: dist-compiler-${{ matrix.variant }}
-                  path: ./dist/${{ matrix.variant }}/
+                  path: ./dist/
 
             - name: Test
               if: github.event.inputs.test-mode != 'none'
-              run: ./.github/workflows/internal/test.sh ${{ matrix.variant }}
+              run: |
+                  ls
+                  ls ./dist/
+                  ./.github/workflows/internal/test.sh "${{ matrix.variant }}"
 
     gen-config:
         name: Generate Configuration File
