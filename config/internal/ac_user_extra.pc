@@ -8,13 +8,14 @@ Cflags: \
     \
     -fconstexpr-depth=1024 \
 
-gcc:
-    Cflags: \
-        -fconstexpr-loop-limit=524288 \
-        -fconstexpr-ops-limit=2097152 \
+variant:
+    gcc:
+        Cflags: \
+            -fconstexpr-loop-limit=524288 \
+            -fconstexpr-ops-limit=2097152 \
 
-clang:
-    Cflags: \
-        -fconstexpr-steps=524288 \
+    clang:
+        Cflags: \
+            -fconstexpr-steps=524288 \
 
 Libs: -fopenmp
