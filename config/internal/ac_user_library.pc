@@ -16,4 +16,5 @@ Requires: >
 
 variant:
     gcc:
-        Requires: ac_libtorch
+        Requires: >
+            ac_libtorch

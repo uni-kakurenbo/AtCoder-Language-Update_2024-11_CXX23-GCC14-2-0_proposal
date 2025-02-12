@@ -2,7 +2,8 @@ Name: LightGBM
 Description: links LightGBM.
 Version:
 
-Cflags: -I/opt/ac_install/include/
+Cflags: >
+    -I/opt/ac_install/include/
 
 Libs: >
     -L/opt/ac_install/lib/

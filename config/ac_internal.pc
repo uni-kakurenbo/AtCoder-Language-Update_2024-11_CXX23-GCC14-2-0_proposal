@@ -4,4 +4,5 @@ Version:
 
 Requires: ac_basic
 
-Cflags: -w
+Cflags: >
+    -w
