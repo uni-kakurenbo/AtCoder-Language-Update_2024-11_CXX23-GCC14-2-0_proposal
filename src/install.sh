@@ -13,7 +13,7 @@ if [[ ! -v AC_VARIANT ]] || [[ "${AC_VARIANT}" == "gcc" ]]; then
     sudo apt-get install -y "g++-14=${VERSION}"
 
     C_COMPILER="gcc-14"
-    CXX_COMPILER="gcc++-14"
+    CXX_COMPILER="g++-14"
 else
     echo "::group::Clang"
 
