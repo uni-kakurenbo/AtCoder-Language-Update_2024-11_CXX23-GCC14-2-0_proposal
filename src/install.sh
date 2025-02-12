@@ -4,18 +4,33 @@ set -eu
 sudo mkdir -p /tmp/ac_install/
 sudo mkdir -p /opt/ac_install/
 
+cd /tmp/ac_install/
+
 ### Compiler
 if [[ ! -v AC_VARIANT ]] || [[ "${AC_VARIANT}" == "gcc" ]]; then
-    ./sub-installers/gcc.sh
+    echo "::group::GCC"
+
+    sudo apt-get install -y "g++-14=${VERSION}"
 
     C_COMPILER="gcc-14"
     CXX_COMPILER="gcc++-14"
 else
-    ./sub-installers/clang.sh
+    echo "::group::Clang"
+
+    sudo apt-get install -y lsb-release software-properties-common gnupg
+    wget https://apt.llvm.org/llvm.sh
+
+    chmod +x llvm.sh
+
+    sudo ./llvm.sh 19
+    sudo apt-get install -y libc++-19-dev="${VERSION}"
+    sudo apt-get purge -y --auto-remove lsb-release software-properties-common gnupg
 
     C_COMPILER="clang-19"
     CXX_COMPILER="clang++-19"
 fi
+
+echo "::endgroup::"
 
 ### Libraries
 echo "::group::tools"
