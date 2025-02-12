@@ -17,7 +17,7 @@ function run-test() {
     local directory="./tmp/${name}"
 
     mkdir -p "${directory}"
-    cp -f "${DIST_DIR}/compile.sh" "${directory}/compile.sh"
+    cp -f "../${DIST_DIR}/compile.sh" "${directory}/compile.sh"
     cp -f "$1" "${directory}/Main.cpp"
 
     cd "${directory}/"
