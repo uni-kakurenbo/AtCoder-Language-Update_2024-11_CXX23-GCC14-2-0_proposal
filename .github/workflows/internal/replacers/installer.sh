@@ -2,18 +2,19 @@
 set -eu
 
 SHEBANG='#!/bin/bash'
+DIST_DIR="$1"
 
 {
     echo "${SHEBANG}"
     cat ./assets/warning.txt
-} >./dist/install.sh
+} >"${DIST_DIR}/install.sh"
 
-HEADER="$(cat ./dist/install.sh)"
+HEADER="$(cat "${DIST_DIR}/install.sh")"
 
 VERSION="$(dasel -r toml -w json <./src/config.toml | jq '.version')"
 
 {
-    format() { sed 's/^/    "/' | sed 's/$/"/'; }
+    format() { sed -e 's/^/    "/' -e 's/$/"/'; }
 
     INSTALLER="$(sed -e '/^\#/d' ./src/install.sh)"
 
@@ -21,17 +22,20 @@ VERSION="$(dasel -r toml -w json <./src/config.toml | jq '.version')"
     cat ./assets/parallel.sh
 
     echo
+    echo "AC_VARIANT=\"$(basename "${DIST_DIR}")\""
+
+    echo
     echo "BUILD_FLAGS=("
-    format <./dist/internal.flags.txt
+    format <"${DIST_DIR}/internal.flags.txt"
     echo ")"
 
     echo -e "\nVERSION=${VERSION}"
 
     echo
     echo -e "${INSTALLER//${SHEBANG}/}"
-} >>./dist/install.sh
+} >>"${DIST_DIR}/install.sh"
 
-mkdir -p ./dist/
+mkdir -p "${DIST_DIR}"
 
 function replace() {
     local name
@@ -50,7 +54,7 @@ function replace() {
 
 export -f replace
 
-cd ./dist/
+cd "${DIST_DIR}"
 
 find ./sub-installers/ -type f -name '*.sh' -print0 |
     xargs -0 -I {} bash -c "replace {} \"${HEADER}\""

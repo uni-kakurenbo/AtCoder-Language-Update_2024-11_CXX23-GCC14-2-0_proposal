@@ -1,5 +1,6 @@
 Name: Eigen3
 Description: links Eigen3.
-Version:
+Version: null
 
-Libs: -lgmpxx -lgmp
+Libs: >
+    -lgmpxx -lgmp

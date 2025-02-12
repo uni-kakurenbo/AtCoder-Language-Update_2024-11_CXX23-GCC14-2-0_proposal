@@ -2,15 +2,16 @@
 set -eu
 
 SHEBANG='#!/bin/bash'
+export DIST_DIR="$1"
 
-mkdir -p ./dist/sub-installers/
+mkdir -p "${DIST_DIR}/sub-installers/"
 
 function replace() {
     local name
     name="$(basename "$1")"
     name="${name//.sh/}"
 
-    local dist="./dist/sub-installers/${name}.sh"
+    local dist="${DIST_DIR}/sub-installers/${name}.sh"
 
     local version
     version="$(dasel -r toml -w json <./src/config.toml | jq --arg name "${name}" '.library[$name].version')"

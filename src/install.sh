@@ -1,29 +1,39 @@
 #!/bin/bash
 set -eu
 
-### GCC
-echo "::group::GCC"
-sudo apt-get install -y "g++-14=${VERSION}"
-echo "::endgroup::"
+sudo mkdir -p /tmp/ac_install/
+sudo mkdir -p /opt/ac_install/
+
+### Compiler
+if [[ ! -v AC_VARIANT ]] || [[ "${AC_VARIANT}" == "gcc" ]]; then
+    ./sub-installers/gcc.sh
+
+    C_COMPILER="gcc-14"
+    CXX_COMPILER="gcc++-14"
+else
+    ./sub-installers/clang.sh
+
+    C_COMPILER="clang-19"
+    CXX_COMPILER="clang++-19"
+fi
 
 ### Libraries
 echo "::group::tools"
 sudo apt-get install -y git cmake ninja-build pigz pbzip2
 echo "::endgroup::"
 
-sudo mkdir -p /tmp/ac_install/
-sudo mkdir -p /opt/ac_install/
-
 CMAKE_ENVIRONMENT=(
     -G "Ninja"
 
     -DCFLAGS:STRING="-w"
-    -DCMAKE_CXX_COMPILER:STRING="g++-14"
+
+    -DCMAKE_C_COMPILER:STRING="${C_COMPILER}"
+    -DCMAKE_CXX_COMPILER:STRING="${CXX_COMPILER}"
 
     -DCMAKE_INSTALL_MESSAGE:STRING="NEVER"
 )
 
-BOOST_BUILDER_CONFIG="using gcc : : g++-14 ;"
+BOOST_BUILDER_CONFIG="using gcc : : ${CXX_COMPILER} ;"
 
 if ccache -v; then
     echo "ccache: enabled"
@@ -33,7 +43,7 @@ if ccache -v; then
         -DCMAKE_CXX_COMPILER_LAUNCHER:STRING="ccache"
     )
 
-    BOOST_BUILDER_CONFIG="using gcc : : ccache g++-14 ;"
+    BOOST_BUILDER_CONFIG="using gcc : : ccache ${CXX_COMPILER} ;"
 fi
 
 export CMAKE_ENVIRONMENT
@@ -59,7 +69,7 @@ if [ -v ATCODER ]; then
         -type d -print0 |
         xargs -0 sudo rm -rf
 
-    sudo apt-get remove -y --auto-remove git cmake ninja-build pigz pbzip2
+    sudo apt-get purge -y --auto-remove git cmake ninja-build pigz pbzip2
 
     echo "::endgroup::"
 fi
