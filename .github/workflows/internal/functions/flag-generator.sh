@@ -2,8 +2,6 @@
 
 set -eu
 
-export PATH="${PATH}:/opt/ac_tools/bin/"
-
 DIST_DIR="$1"
 
 CONFIG_PATHS=(

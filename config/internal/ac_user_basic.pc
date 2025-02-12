@@ -4,11 +4,11 @@ Version:
 
 Requires: ac_basic
 
-Cflags: \
-    -DONLINE_JUDGE \
-    -DATCODER \
-    \
-    -Wall \
-    -Wextra \
-    \
-    -O2 \
+Cflags: >
+    -DONLINE_JUDGE
+    -DATCODER
+
+    -Wall
+    -Wextra
+
+    -O2
