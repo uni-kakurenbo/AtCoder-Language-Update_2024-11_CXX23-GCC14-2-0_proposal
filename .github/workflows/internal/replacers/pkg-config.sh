@@ -16,7 +16,9 @@ function replace() {
     jq -r --arg variant "$(basename "${DIST_DIR}")" --slurpfile this "${DIST_DIR}/.tmp.json" \
         '.Cflags += "" | .Libs += "" | with_entries(.value += $this[0].variant[$variant][.key]) | del(.variant)' "${DIST_DIR}/.tmp.json" |
         dasel -r json -w yaml |
-        sed -E -e 's/\\//g' -e 's/ +/ /g' >"${dist}"
+        sed -E -e 's/\\//g' -e 's/ +/ /g' -e 's/ \|//g' |
+        dasel -r yaml --pretty=false >"${dist}"
+
 }
 
 export -f replace
