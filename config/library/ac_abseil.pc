@@ -1,6 +1,6 @@
 Name: Abseil
 Description: links abseil fully.
-Version:
+Version: null
 
 Requires: >
     absl_absl_check

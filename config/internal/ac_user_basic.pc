@@ -1,6 +1,6 @@
 Name: Basic user flags
 Description: essential flags for judge
-Version:
+Version: null
 
 Requires: ac_basic
 
