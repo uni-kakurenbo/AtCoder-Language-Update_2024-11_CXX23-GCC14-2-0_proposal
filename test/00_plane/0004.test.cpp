@@ -1,6 +1,13 @@
+#include <print>
+
 struct X {
-    void f() const& {}
+    void f() const& {
+        std::println("f");
+    }
+
     void g(this const X& self) {
+        std::println("g");
+
         self.f();
     }
 };

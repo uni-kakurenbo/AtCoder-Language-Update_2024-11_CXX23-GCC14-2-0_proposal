@@ -5,7 +5,7 @@ using namespace std;
 using namespace Eigen;
 
 // ref: https://qiita.com/shiro-kuma/items/0faa02aa064a3c0a460b
-signed main() {
+int main() {
   Eigen::MatrixXf m(2,4);
   Eigen::VectorXf v(2);
 
