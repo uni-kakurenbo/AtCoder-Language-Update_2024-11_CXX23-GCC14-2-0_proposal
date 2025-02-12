@@ -4,6 +4,6 @@ Version:
 
 Requires: z3
 
-Libs: \
-    -L/opt/ac_install/lib/ \
-    -Wl,-R/opt/ac_install/lib/ \
+Libs: >
+    -L/opt/ac_install/lib/
+    -Wl,-R/opt/ac_install/lib/
