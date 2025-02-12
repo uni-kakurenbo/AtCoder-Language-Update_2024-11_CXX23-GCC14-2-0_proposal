@@ -306,16 +306,6 @@ jobs:
                       /*
                       !/dist/*
 
-            - name: Load Cached Tools
-              uses: actions/cache/restore@v4
-              with:
-                  path: /opt/ac_tools/
-                  key: ${{ needs.prepare-tools.outputs.cache-primary-key }}
-                  fail-on-cache-miss: true
-
-            - name: Apply Tools
-              run: sudo cp -rf /opt/ac_tools/** /usr/
-
             - name: Download Pkgconfig Files
               uses: actions/download-artifact@v4
               with:

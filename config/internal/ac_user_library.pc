@@ -3,14 +3,14 @@ Description: library-linking flags for judge
 Version:
 
 Requires: \
-    ac_abseil \
     ac_ac-library \
-    ac_boost \
     ac_eigen \
     ac_gmp \
     ac_light-gbm \
     ac_range-v3 \
     ac_unordered_dense \
+# ac_boost \
+# ac_abseil \
 # ac_z3 \
 # ac_or-tools \
 
