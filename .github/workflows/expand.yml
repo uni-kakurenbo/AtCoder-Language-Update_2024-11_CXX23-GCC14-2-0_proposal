@@ -108,7 +108,7 @@ jobs:
               run: |
                   set -eu
 
-                  EXCLUDE='["abseil", "eigen", "gmp", "or-tools", "z3"]'
+                  EXCLUDE='["abseil", "eigen", "gmp", "boost", "or-tools", "z3"]'
 
                   {
                     echo -n "list="
@@ -361,8 +361,7 @@ jobs:
 
             - name: Test
               if: github.event.inputs.test-mode != 'none'
-              run: |
-                  ./.github/workflows/internal/test.sh "${{ matrix.variant }}"
+              run: ./.github/workflows/internal/test.sh "${{ matrix.variant }}"
 
     gen-config:
         name: Generate Configuration File

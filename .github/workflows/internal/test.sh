@@ -44,7 +44,7 @@ function run-test() {
         echo
 
         if [ ${exit_status} -gt 0 ]; then
-            cat "error" >./../../fail.txt
+            echo "error" >./../../fail.txt
         fi
 
         set -e
