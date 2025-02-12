@@ -15,6 +15,8 @@ variant:
             -fconstexpr-ops-limit=2097152
 
     clang:
-        Cflags: -fconstexpr-steps=524288
+        Cflags: >
+            -fconstexpr-steps=524288
 
-Libs: -fopenmp
+Libs: >
+    -fopenmp

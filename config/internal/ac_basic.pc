@@ -2,11 +2,14 @@ Name: Basic build flags
 Description: common flags both for build and for judge
 Version:
 
-Cflags: -std=gnu++23
+Cflags: >
+    -std=gnu++23
 
 variant:
     gcc:
-        Libs: -lstdc++exp
+        Libs: >
+            -lstdc++exp
 
     clang:
-        Libs: -stdlib=libc++ -fuse-ld=lld
+        Libs: >
+            -stdlib=libc++ -fuse-ld=lld
