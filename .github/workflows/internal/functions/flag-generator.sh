@@ -2,16 +2,13 @@
 
 set -eu
 
-export PATH="${PATH}:/opt/ac_tools/bin/"
-
-ROOT_DIR="$(dirname "$0")"
-ROOT_DIR="${ROOT_DIR}/../../../../"
+DIST_DIR="$1"
 
 CONFIG_PATHS=(
-    "${ROOT_DIR}/config/"
-    "${ROOT_DIR}/config/internal/"
-    "${ROOT_DIR}/config/library/"
-    "${ROOT_DIR}/config/libs/"
+    "${DIST_DIR}/config/"
+    "${DIST_DIR}/config/internal/"
+    "${DIST_DIR}/config/library/"
+    "./pkgconfig/"
 
     "/opt/ac_install/lib/pkgconfig/"
 )

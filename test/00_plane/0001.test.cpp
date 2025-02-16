@@ -2,8 +2,9 @@
 #include <print>
 #include <experimental/simd>
 
+
 int A[16], B[16], C[16];
-signed main() {
+int main() {
     for(const auto i : std::views::iota(0, 16)){
         A[i] = i;
         B[i] = i * 100;
@@ -11,6 +12,16 @@ signed main() {
 
     std::experimental::fixed_size_simd<int,16> a(&A[0], std::experimental::element_aligned), b;
     b.copy_from(&B[0], std::experimental::element_aligned);
+
+
+#   ifdef __clang__
+
+
+    auto d = a;
+
+
+#   else
+
 
     auto c = a + b;
 
@@ -21,6 +32,10 @@ signed main() {
 
     std::experimental::native_simd<double> d = 100, e([](int i){ return i * i * i * i; });
     d += std::experimental::sqrt(e);
+
+
+#   endif
+
 
     for(const auto i : std::views::iota(0) | std::views::take(d.size())) std::print("{} ", int(d[i]));
     std::println();

@@ -7,7 +7,7 @@
 #include <range/v3/view/take.hpp>
 #include <range/v3/range/conversion.hpp>
 
-signed main() {
+int main() {
     const std::string a = "ABCD";
     const std::string b = "1234";
 

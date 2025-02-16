@@ -1,0 +1,9 @@
+Name: Z3
+Description: links Z3.
+Version: null
+
+Requires: z3
+
+Libs: >
+    -L/opt/ac_install/lib/
+    -Wl,-R/opt/ac_install/lib/

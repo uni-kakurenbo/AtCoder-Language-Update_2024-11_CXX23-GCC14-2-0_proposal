@@ -2,18 +2,25 @@
 set -eu
 
 SHEBANG='#!/bin/bash'
+DIST_DIR="$1"
+VARIANT="$(basename "${DIST_DIR}")"
 
 {
-    format() { sed 's/^/    "/' | sed 's/$/"/'; }
+    format() { sed -e 's/^/    "/' -e 's/$/"/'; }
 
     echo "${SHEBANG}"
     cat ./assets/warning.txt
 
     echo
+    echo "AC_VARIANT=${VARIANT}"
+
+    echo
     echo "BUILD_FLAGS=("
-    format <./dist/user.flags.txt
+    format <"${DIST_DIR}/user.flags.txt"
     echo ")"
 
     TARGET="$(cat ./src/compile.sh)"
     echo "${TARGET//"${SHEBANG}"/}"
-} >./dist/compile.sh
+} >"${DIST_DIR}/compile.sh"
+
+sudo chmod +x -R ./dist/

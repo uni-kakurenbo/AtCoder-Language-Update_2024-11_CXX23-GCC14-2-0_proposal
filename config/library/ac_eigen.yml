@@ -1,0 +1,6 @@
+Name: Eigen3
+Description: links Eigen3.
+Version: null
+
+Cflags: >
+    -I/opt/ac_install/include/

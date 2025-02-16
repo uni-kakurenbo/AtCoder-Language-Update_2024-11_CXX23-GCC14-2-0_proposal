@@ -1,0 +1,5 @@
+Name: AC-Library
+Description: links AC-Library.
+Version: ""
+Cflags: -I/opt/ac_install/include/
+Libs: ""

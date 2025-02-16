@@ -1,0 +1,5 @@
+Name: Basic build flags
+Description: common flags both for build and for judge
+Version: ""
+Cflags: -std=gnu++23
+Libs: -lstdc++exp

@@ -95,7 +95,7 @@ jobs:
 
         outputs:
             libraries: ${{ steps.gen-lib-list.outputs.list }}
-            execlude-libraries: ${{ steps.gen-lib-list.outputs.execlude }}
+            excluded-libraries: ${{ steps.gen-lib-list.outputs.excluded }}
 
         steps:
             - name: Checkout
@@ -108,18 +108,18 @@ jobs:
               run: |
                   set -eu
 
-                  EXCLUDE='["abseil", "eigen", "gmp"]'
+                  EXCLUDE='["abseil", "eigen", "gmp", "gcc", "clang"]'
 
                   {
                     echo -n "list="
                     {
                       echo -n "["
-                      ls ./src/sub-installers/ | sed -e s/^/\"/g -e s/\.sh$/\"/g | tr '\n' ',' | sed s/,$//g
+                      ls ./src/sub-installer/library/ | sed -e s/^/\"/g -e s/\.sh$/\"/g | tr '\n' ',' | sed s/,$//g
                       echo -n "]"
                     } | jq -c --argjson exclude "${EXCLUDE}" '. - $exclude'
                   } >>"${GITHUB_OUTPUT}"
 
-                  echo "execlude=${EXCLUDE}" >>"${GITHUB_OUTPUT}"
+                  echo "excluded=${EXCLUDE}" >>"${GITHUB_OUTPUT}"
 
     gen-installer:
         name: Generate Installers
@@ -127,6 +127,11 @@ jobs:
         needs: prepare-tools
 
         runs-on: ${{ vars.RUNNER_IMAGE }}
+
+        strategy:
+            matrix:
+                variant: ["gcc", "clang"]
+            fail-fast: false
 
         steps:
             - name: Checkout
@@ -152,13 +157,17 @@ jobs:
               run: |
                   set -eu
 
-                  sudo rm -rf ./dist/ && mkdir -p ./dist/
-                  ./.github/workflows/internal/expanders/installer.sh
+                  sudo rm -rf ./dist/
+                  mkdir -p ./dist/${{ matrix.variant }}/
+
+                  echo "::group::GCC"
+                  ./.github/workflows/internal/expanders/installer.sh ${{ matrix.variant }}
+                  echo "::endgroup::"
 
             - name: Upload
               uses: actions/upload-artifact@v4
               with:
-                  name: dist-installers
+                  name: dist-${{ matrix.variant }}-installers
                   path: ./dist/
 
     install:
@@ -174,6 +183,12 @@ jobs:
         strategy:
             matrix:
                 target: ${{ fromJson(needs.config-matrix.outputs.libraries) }}
+                variant: ["gcc", "clang"]
+                exclude:
+                    - target: libtorch
+                      variant: clang
+                    - target: light-gbm
+                      variant: clang
             fail-fast: false
 
         steps:
@@ -184,7 +199,7 @@ jobs:
                   TARGET='${{ matrix.target }}'
 
                   LIBRARIES='${{ needs.config-matrix.outputs.libraries }}'
-                  EXECLUDE_LIBRARIES='${{ needs.config-matrix.outputs.execlude-libraries }}'
+                  EXCLUDED_LIBRARIES='${{ needs.config-matrix.outputs.excluded-libraries }}'
 
                   echo "${LIBRARIES}" | jq -c -r '.[]' |
                     while read -r lib_id; do
@@ -193,7 +208,7 @@ jobs:
                       fi
                     done
 
-                  echo "${EXECLUDE_LIBRARIES}" | jq -c -r '.[]' |
+                  echo "${EXCLUDED_LIBRARIES}" | jq -c -r '.[]' |
                     while read -r lib_id; do
                         echo "AC_NO_BUILD_${lib_id//-/_}=true" >>"${GITHUB_ENV}"
                     done
@@ -202,11 +217,15 @@ jobs:
               uses: actions/checkout@v4
               with:
                   ref: ${{ github.head_ref || github.ref_name }}
+                  sparse-checkout-cone-mode: false
+                  sparse-checkout: |
+                      /*
+                      !/dist/*
 
             - name: Download Installers
               uses: actions/download-artifact@v4
               with:
-                  name: dist-installers
+                  name: dist-${{ matrix.variant }}-installers
                   path: ./dist/
 
             - name: Load Cached Tools
@@ -223,31 +242,24 @@ jobs:
               if: ${{ github.event.inputs.test-mode != 'strict' }}
               uses: hendrikmuhs/ccache-action@v1.2
               with:
-                  key: >
-                      ${{ matrix.target }}-${{
-                        hashFiles(
-                          './src/install.sh',
-                          './src/config.toml',
-                          './config/internal/ac_basic.pc',
-                          './config/internal/ac_internal.pc',
-                          format('./src/sub-installers/{0}.sh', matrix.target),
-                          format('./config/library/ac_{0}.pc', matrix.target)
-                        )
-                      }}
-                  restore-keys: ${{ matrix.target }}
+                  key: ${{ matrix.variant }}-${{ matrix.target }}
 
             - name: Install
               env:
-                  TARGET: ${{ matrix.target }}
-                  RUN_TEST: ${{ github.event.inputs.test-mode == 'strict' }}
+                  AC_RUN_TEST: ${{ github.event.inputs.test-mode == 'strict' }}
+                  AC_NO_BUILD_COMPILER: true
               run: |
                   set -eu
 
-                  chmod +x ./dist/install.sh
-                  ./dist/install.sh
+                  if "${{ matrix.variant == 'clang' }}"; then
+                    sudo apt-get install -y clang-18 libc++-19-dev
 
-                  find /tmp/ac_install/ -iname **.tar.* -or -iname **.zip -print0 |
-                    xargs -0 -I {} sudo rm -rf {}
+                    sudo ln -sT /usr/bin/clang-18 /usr/bin/clang-19
+                    sudo ln -sT /usr/bin/clang++-18 /usr/bin/clang++-19
+                  fi
+
+                  chmod +x -R ./dist/
+                  ./dist/${{ matrix.variant }}/install.sh
 
             - name: Collect Pkgconfig Files
               run: |
@@ -260,7 +272,7 @@ jobs:
             - name: Upload Pkgconfig Files
               uses: actions/upload-artifact@v4
               with:
-                  name: pkgconfig-${{ matrix.target }}
+                  name: pkgconfig-${{ matrix.variant }}-${{ matrix.target }}
                   path: ./config/libs/
                   if-no-files-found: ignore
 
@@ -274,12 +286,17 @@ jobs:
             - name: Upload
               uses: actions/upload-artifact@v4
               with:
-                  name: library-${{ matrix.target }}
+                  name: library-${{ matrix.variant }}-${{ matrix.target }}
                   path: /opt/ac_install/
                   compression-level: 0
 
     gen-compiler:
         name: Generate Compiler
+
+        strategy:
+            matrix:
+                variant: ["gcc", "clang"]
+            fail-fast: false
 
         needs:
             - prepare-tools
@@ -297,24 +314,35 @@ jobs:
                       /*
                       !/dist/*
 
+            - name: Load Cached Tools
+              uses: actions/cache/restore@v4
+              with:
+                  path: /opt/ac_tools/
+                  key: ${{ needs.prepare-tools.outputs.cache-primary-key }}
+                  fail-on-cache-miss: true
+
+            - name: Apply Tools
+              run: sudo cp -rf /opt/ac_tools/** /usr/
+
             - name: Download Pkgconfig Files
               uses: actions/download-artifact@v4
               with:
-                  pattern: pkgconfig-*
-                  path: ./config/libs/
+                  pattern: pkgconfig-${{ matrix.variant }}-*
+                  path: ./pkgconfig/
                   merge-multiple: true
 
             - name: Expand
               run: |
                   set -eu
 
-                  sudo rm -rf ./dist/ && mkdir -p ./dist/
-                  ./.github/workflows/internal/expanders/compiler.sh
+                  mkdir -p ./dist/${{ matrix.variant }}/
+
+                  ./.github/workflows/internal/expanders/compiler.sh ${{ matrix.variant }}
 
             - name: Upload
               uses: actions/upload-artifact@v4
               with:
-                  name: dist-compiler
+                  name: dist-${{ matrix.variant }}-compiler
                   path: ./dist/
 
     test:
@@ -323,6 +351,12 @@ jobs:
         needs: gen-compiler
 
         runs-on: ${{ vars.RUNNER_IMAGE }}
+
+        strategy:
+            matrix:
+                # id: [0, 1, 2, 3, 4, 5, 6, 7]
+                variant: ["gcc", "clang"]
+            fail-fast: false
 
         steps:
             - name: Checkout
@@ -333,19 +367,41 @@ jobs:
             - name: Download Libraries
               uses: actions/download-artifact@v4
               with:
-                  pattern: library-*
+                  pattern: library-${{ matrix.variant }}-*
                   path: /opt/ac_install/
                   merge-multiple: true
 
             - name: Download Compiler
               uses: actions/download-artifact@v4
               with:
-                  name: dist-compiler
+                  pattern: dist-${{ matrix.variant }}-*
                   path: ./dist/
+                  merge-multiple: true
 
             - name: Test
               if: github.event.inputs.test-mode != 'none'
-              run: ./.github/workflows/internal/test.sh
+              run: |
+                  set -eu
+
+                  if [[ "${{ matrix.variant == 'clang' }}" ]]; then
+                    sudo apt-get install -y clang-18 libc++-19-dev
+
+                    sudo ln -s /usr/bin/clang-18 /usr/bin/clang-19
+                    sudo ln -s /usr/bin/clang++-18 /usr/bin/clang++-19
+                  else
+                    ./dist/${{ matrix.variant }}/sub-installer/compiler/${{ matrix.variant }}.sh
+                  fi
+
+                  # TESTS=($(
+                  #     find ./test/ -type f -iname *.test.cpp -printf '%P\n' | \
+                  #     awk -v n=${{ strategy.job-total }}  \
+                  #       -v i=${{ matrix.id }} \
+                  #       '{ if((NR-1)%n == i){ print $0 } }'
+                  # ))
+
+                  chmod +x -R ./dist/
+
+                  ./.github/workflows/internal/test.sh "${{ matrix.variant }}" # "${TESTS[@]}"
 
     gen-config:
         name: Generate Configuration File
@@ -354,6 +410,11 @@ jobs:
             - prepare-tools
             - gen-compiler
 
+        strategy:
+            matrix:
+                variant: ["gcc", "clang"]
+            fail-fast: false
+
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
         steps:
@@ -361,6 +422,10 @@ jobs:
               uses: actions/checkout@v4
               with:
                   ref: ${{ github.head_ref || github.ref_name }}
+                  sparse-checkout-cone-mode: false
+                  sparse-checkout: |
+                      /*
+                      !/dist/*
 
             - name: Load Cached Tools
               uses: actions/cache/restore@v4
@@ -375,7 +440,7 @@ jobs:
             - name: Download Installer & Compiler
               uses: actions/download-artifact@v4
               with:
-                  pattern: dist-*
+                  pattern: dist-${{ matrix.variant }}-*
                   path: ./dist/
                   merge-multiple: true
 
@@ -383,15 +448,15 @@ jobs:
               run: |
                   set -eu
 
-                  ./.github/workflows/internal/expanders/config.sh
+                  ./.github/workflows/internal/expanders/config.sh ${{ matrix.variant }}
 
             - name: Lint
-              run: ./.github/workflows/internal/lint.sh
+              run: ./.github/workflows/internal/lint.sh ${{ matrix.variant }}
 
             - name: Upload
               uses: actions/upload-artifact@v4
               with:
-                  name: dist-config
+                  name: dist-${{ matrix.variant }}-config
                   path: ./dist/
 
     push:
@@ -403,7 +468,7 @@ jobs:
 
         if: >
             !cancelled() &&
-            !startsWith(github.ref_name, 'test/') &&
+            github.ref_name == github.event.repository.default_branch &&
             needs.test.result == 'success'
 
         runs-on: ${{ vars.RUNNER_IMAGE }}
@@ -416,14 +481,18 @@ jobs:
                   ssh-key: ${{ secrets.SSH_KEY }}
                   fetch-depth: 0
 
-            - name: Remove Old Files
-              run: rm -rf ./dist/
+            - name: Remove Old files
+              run: sudo rm -rf ./dist/
 
             - name: Download Installers
               uses: actions/download-artifact@v4
               with:
-                  name: dist-config
+                  pattern: dist-*-config
                   path: ./dist/
+                  merge-multiple: true
+
+            - name: Change Permission
+              run: chmod +x -R ./dist/
 
             - name: Commit & Push
               uses: stefanzweifel/git-auto-commit-action@v5

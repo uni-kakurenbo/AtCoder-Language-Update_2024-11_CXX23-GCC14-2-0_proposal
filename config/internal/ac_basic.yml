@@ -1,0 +1,17 @@
+Name: Basic build flags
+Description: common flags both for build and for judge
+Version: null
+
+Cflags: >
+    -std=gnu++23
+
+variant:
+    gcc:
+        Libs: >
+            -lstdc++exp
+
+    clang:
+        Cflags: >
+            -stdlib=libc++
+            -fuse-ld=lld
+            -fexperimental-library

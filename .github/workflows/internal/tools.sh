@@ -1,5 +1,5 @@
 #!/bin/bash
-set -xeu
+set -eu
 
 WORKING_DIRECTORY="$(dirname "$0")"
 

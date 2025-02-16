@@ -1,0 +1,5 @@
+Name: Eigen3
+Description: links Eigen3.
+Version: ""
+Libs: -lgmpxx -lgmp
+Cflags: ""

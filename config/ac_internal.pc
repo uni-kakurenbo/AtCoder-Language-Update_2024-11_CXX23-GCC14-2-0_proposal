@@ -1,7 +1,0 @@
-Name: Internal building flags
-Description: flags specified for internal library building (CMake).
-Version:
-
-Requires: ac_basic
-
-Cflags: -w

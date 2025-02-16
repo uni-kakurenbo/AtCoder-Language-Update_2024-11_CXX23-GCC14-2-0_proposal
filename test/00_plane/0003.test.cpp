@@ -1,3 +1,14 @@
+#ifdef __clang__
+
+
+#pragma message("skipped")
+
+int main() {}
+
+
+#else
+
+
 #include <print>
 #include <stacktrace>
 
@@ -22,9 +33,12 @@ auto d() {
     return c();
 }
 
-signed main() {
+int main() {
     std::println("{}", a());
     std::println("{}", b());
     std::println("{}", c());
     std::println("{}", d());
 }
+
+
+#endif

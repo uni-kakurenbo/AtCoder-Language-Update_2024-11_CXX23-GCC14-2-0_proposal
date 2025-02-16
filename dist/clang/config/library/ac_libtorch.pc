@@ -1,0 +1,5 @@
+Name: LibTorch
+Description: links LibTorch.
+Version: ""
+Cflags: -I/opt/ac_install/include/ -I/opt/ac_install/include/torch/csrc/api/include/
+Libs: -L/opt/ac_install/lib/ -Wl,-R/opt/ac_install/lib/ -ltorch -ltorch_cpu -lc10

@@ -8,7 +8,7 @@
 - [Compile script](https://uni-kakurenbo.github.io/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/#compile-script)
 - [Configuration file](https://uni-kakurenbo.github.io/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/#configuration-file)
 
-## [Library](https://github.com/uni-kakurenbo/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/blob/main/src/sub-installers)
+## [Library](https://github.com/uni-kakurenbo/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/blob/main/src/sub-installer/library)
 
 ### Official
 - [AC Library](https://atcoder.github.io/ac-library/master/document_ja/): `1.5.1`

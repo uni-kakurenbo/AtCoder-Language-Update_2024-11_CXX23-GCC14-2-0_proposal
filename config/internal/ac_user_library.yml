@@ -1,0 +1,20 @@
+Name: User library flags
+Description: library-linking flags for judge
+Version: null
+
+Requires: >
+    ac_abseil
+    ac_ac-library
+    ac_boost
+    ac_eigen
+    ac_gmp
+    ac_or-tools
+    ac_range-v3
+    ac_unordered_dense
+    ac_z3
+
+variant:
+    gcc:
+        Requires: >
+            ac_libtorch
+            ac_light-gbm

@@ -1,5 +1,5 @@
 #include <print>
 
-signed main() {
+int main() {
     std::println("Hello, world.");
 }

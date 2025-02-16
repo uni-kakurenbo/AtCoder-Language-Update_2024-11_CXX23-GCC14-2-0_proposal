@@ -1,5 +1,0 @@
-Name: unordered_dense
-Description: links unordered_dense.
-Version:
-
-Cflags: -I/opt/ac_install/include/

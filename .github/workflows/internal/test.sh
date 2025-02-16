@@ -1,10 +1,12 @@
 #!/bin/bash
 set -eu
 
-chmod +x -R ./dist/
+export DIST_DIR="./dist/$1"
+
+chmod +x -R "${DIST_DIR}"
 
 cd ./test/
-mkdir -p ./tmp/
+mkdir -p ./test/tmp/
 
 function run-test() {
     set -eu
@@ -15,7 +17,7 @@ function run-test() {
     local directory="./tmp/${name}"
 
     mkdir -p "${directory}"
-    cp -f ../dist/compile.sh "${directory}/compile.sh"
+    cp -f "../${DIST_DIR}/compile.sh" "${directory}/compile.sh"
     cp -f "$1" "${directory}/Main.cpp"
 
     cd "${directory}/"
@@ -25,7 +27,9 @@ function run-test() {
 
     {
         set +e
-        local header="================ ${name} ================"
+        local header="================================ ${name} ================================"
+
+        echo "::group::${name}"
 
         echo "${header}"
 
@@ -42,8 +46,10 @@ function run-test() {
         echo
 
         if [ ${exit_status} -gt 0 ]; then
-            cat "error" >./../../fail.txt
+            echo "error" >./../../fail.txt
         fi
+
+        echo "::endgroup::"
 
         set -e
     } >&./log.txt
@@ -52,8 +58,14 @@ function run-test() {
 
 export -f run-test
 
-find ./ -type f -name '*.test.cpp' -print0 |
-    xargs -0 "-P$(nproc)" -I {} bash -c 'run-test {}'
+if [[ "$#" -lt 2 ]]; then
+    find ./ -type f -name '*.test.cpp' -print0 |
+        xargs -0 -P0 -I {} bash -c 'run-test {}'
+else
+    shift
+
+    echo "$@" | xargs -d' ' "-P$(nproc)" -I {} bash -c 'run-test {}'
+fi
 
 FAIL=false
 

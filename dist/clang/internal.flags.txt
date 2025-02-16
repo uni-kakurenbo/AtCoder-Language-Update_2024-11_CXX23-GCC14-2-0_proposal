@@ -1,0 +1,6 @@
+-fexperimental-library
+-fuse-ld=lld
+-std=gnu++23
+-stdlib=libc++
+-w
+

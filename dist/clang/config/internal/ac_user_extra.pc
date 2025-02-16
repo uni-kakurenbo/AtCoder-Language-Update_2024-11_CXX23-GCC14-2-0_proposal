@@ -1,0 +1,5 @@
+Name: Extra user flags
+Description: advanced flags for judge
+Version: ""
+Cflags: -march=native -flto=auto -fconstexpr-depth=1024 -fconstexpr-steps=524288
+Libs: ""

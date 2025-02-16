@@ -1,0 +1,14 @@
+Name: Basic user flags
+Description: essential flags for judge
+Version: null
+
+Requires: ac_basic
+
+Cflags: >
+    -DONLINE_JUDGE
+    -DATCODER
+
+    -Wall
+    -Wextra
+
+    -O2

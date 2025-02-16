@@ -1,0 +1,6 @@
+Name: User building flags
+Description: flags specified in judge.
+Version: ""
+Requires: ac_user_basic ac_user_extra ac_user_library
+Cflags: ""
+Libs: ""

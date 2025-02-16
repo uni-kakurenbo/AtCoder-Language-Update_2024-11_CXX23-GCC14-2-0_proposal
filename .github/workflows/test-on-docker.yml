@@ -22,6 +22,11 @@ jobs:
         if: ${{ !github.event.workflow_run.conclusion || github.event.workflow_run.conclusion == 'success' }}
         runs-on: ${{ vars.RUNNER_IMAGE }}
 
+        strategy:
+            matrix:
+                variant: ["gcc", "clang"]
+            fail-fast: false
+
         steps:
             - name: Collect Workflow Telemetry
               uses: catchpoint/workflow-telemetry-action@v2
@@ -46,7 +51,7 @@ jobs:
               run: |
                   set -eu
 
-                  cat ../dist/config.toml >./installscript.toml
+                  cat ../dist/${{ matrix.variant }}/config.toml >./installscript.toml
                   cp ../test/00_plane/0000.test.cpp ./src/source
 
                   python3 ./src/parse.py
