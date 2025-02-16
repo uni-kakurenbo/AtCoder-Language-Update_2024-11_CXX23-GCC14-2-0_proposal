@@ -32,7 +32,7 @@ Libs: >
     -lboost_random
     -lboost_regex
     -lboost_serialization
-    -lboost_stacktrace_backtrace -lboost_stacktrace_from_exception
+    -lboost_stacktrace_from_exception
     -lboost_system
     -lboost_test_exec_monitor
     -lboost_thread
@@ -42,3 +42,10 @@ Libs: >
     -lboost_url
     -lboost_wave
     -lboost_wserialization
+
+variant:
+    GCC:
+        Libs: -lboost_stacktrace_backtrace
+
+    Clang:
+        Libs: -lboost_stacktrace_addr2line
