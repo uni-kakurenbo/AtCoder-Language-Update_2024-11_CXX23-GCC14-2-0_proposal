@@ -12,7 +12,7 @@ on:
             - pages/**
 
     workflow_run:
-        workflows: ["Expand Templates"]
+        workflows: ["Expand Templates", "Run Test within A Docker Container"]
         types: [completed]
         branches: [main]
 
