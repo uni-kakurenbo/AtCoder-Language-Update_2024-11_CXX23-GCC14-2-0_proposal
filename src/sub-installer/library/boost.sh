@@ -37,8 +37,6 @@ sudo ./b2 \
     threading=single \
     variant=release \
     cflags="-w" \
-    define="BOOST_STACKTRACE_USE_BACKTRACE" \
-    define="BOOST_STACKTRACE_BACKTRACE_INCLUDE_FILE='\"/usr/lib/gcc/x86_64-linux-gnu/14/include/backtrace.h\"'" \
     cxxflags="${BUILD_FLAGS[*]}" \
     --user-config="./user-config.jam" \
     -j"${PARALLEL}" -d0 \

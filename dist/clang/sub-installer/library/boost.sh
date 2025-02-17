@@ -4,9 +4,8 @@
 ####################################
 VERSION="1.86.0"
 
-set +u
-if [[ ${AC_NO_BUILD_boost} ]]; then exit 0; fi
 set -eu
+if "${AC_NO_BUILD_boost:-false}"; then exit 0; fi
 
 cd /tmp/ac_install/
 
@@ -43,8 +42,6 @@ sudo ./b2 \
     threading=single \
     variant=release \
     cflags="-w" \
-    define="BOOST_STACKTRACE_USE_BACKTRACE" \
-    define="BOOST_STACKTRACE_BACKTRACE_INCLUDE_FILE='\"/usr/lib/gcc/x86_64-linux-gnu/14/include/backtrace.h\"'" \
     cxxflags="${BUILD_FLAGS[*]}" \
     --user-config="./user-config.jam" \
     -j"${PARALLEL}" -d0 \

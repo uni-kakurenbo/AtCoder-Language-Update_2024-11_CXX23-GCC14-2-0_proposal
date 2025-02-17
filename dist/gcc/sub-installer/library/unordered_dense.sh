@@ -4,9 +4,8 @@
 ####################################
 VERSION="4.4.0"
 
-set +u
-if [[ ${AC_NO_BUILD_unordered_dense} ]]; then exit 0; fi
 set -eu
+if "${AC_NO_BUILD_unordered_dense:-false}"; then exit 0; fi
 
 cd /tmp/ac_install/
 

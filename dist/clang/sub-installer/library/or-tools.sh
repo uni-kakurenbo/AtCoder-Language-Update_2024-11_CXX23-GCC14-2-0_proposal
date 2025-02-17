@@ -4,9 +4,8 @@
 ####################################
 VERSION="9.11"
 
-set +u
-if [[ ${AC_NO_BUILD_or_tools} ]]; then exit 0; fi
 set -eu
+if "${AC_NO_BUILD_or_tools:-false}"; then exit 0; fi
 
 cd /tmp/ac_install/
 

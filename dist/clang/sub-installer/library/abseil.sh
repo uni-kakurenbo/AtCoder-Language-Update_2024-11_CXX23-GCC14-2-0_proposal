@@ -4,9 +4,8 @@
 ####################################
 VERSION="20240722.0"
 
-set +u
-if [[ ${AC_NO_BUILD_abseil} && ${AC_NO_BUILD_or_tools} ]]; then exit 0; fi
 set -eu
+if [[ "${AC_NO_BUILD_abseil:-false}" == true && "${AC_NO_BUILD_or_tools-false}" == true ]]; then exit 0; fi
 
 cd /tmp/ac_install/
 

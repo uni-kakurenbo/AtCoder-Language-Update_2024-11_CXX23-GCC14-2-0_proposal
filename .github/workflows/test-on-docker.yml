@@ -46,13 +46,16 @@ jobs:
                   repository: tatyam-prime/ALU2024_Dockerfile
                   path: ./.test-runner/
 
+            - name: Merge Tests
+              run: ./.github/workflows/internal/merge-tests.sh
+
             - name: Run
               working-directory: ./.test-runner/
               run: |
                   set -eu
 
                   cat ../dist/${{ matrix.variant }}/config.toml >./installscript.toml
-                  cp ../test/00_plane/0000.test.cpp ./src/source
+                  cp ../test/merged.test.cpp ./src/source
 
                   python3 ./src/parse.py
                   docker build --platform linux/amd64 -t atcoder -f ./src/Dockerfile .

@@ -6,7 +6,6 @@ export DIST_DIR="./dist/$1"
 chmod +x -R "${DIST_DIR}"
 
 cd ./test/
-mkdir -p ./test/tmp/
 
 function run-test() {
     set -eu

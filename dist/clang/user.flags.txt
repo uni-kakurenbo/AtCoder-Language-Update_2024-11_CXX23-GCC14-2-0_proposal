@@ -72,7 +72,6 @@
 -lboost_random
 -lboost_regex
 -lboost_serialization
--lboost_stacktrace_backtrace
 -lboost_stacktrace_from_exception
 -lboost_system
 -lboost_test_exec_monitor

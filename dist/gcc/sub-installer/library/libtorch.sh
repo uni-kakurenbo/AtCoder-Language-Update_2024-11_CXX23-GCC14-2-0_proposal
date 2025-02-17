@@ -4,9 +4,11 @@
 ####################################
 VERSION="2.6.0"
 
-set +u
-if [[ ${AC_NO_BUILD_libtorch} || "${AC_VARIANT}" == "clang" ]]; then exit 0; fi
 set -eu
+if [[ "${AC_NO_BUILD_libtorch:-false}" == true ||
+    "${AC_VARIANT:-false}" == "clang" ]]; then
+    exit 0
+fi
 
 cd /tmp/ac_install/
 

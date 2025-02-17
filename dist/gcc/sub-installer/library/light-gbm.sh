@@ -4,9 +4,8 @@
 ####################################
 VERSION="4.5.0"
 
-set +u
-if [[ ${AC_NO_BUILD_light_gbm} || "${AC_VARIANT}" == "clang" ]]; then exit 0; fi
 set -eu
+if [[ "${AC_NO_BUILD_light_gbm:-false}" == true || "${AC_VARIANT:-false}" == "clang" ]]; then exit 0; fi
 
 cd /tmp/ac_install/
 
