@@ -7,7 +7,7 @@ sudo mkdir -p /opt/ac_install/
 cd /tmp/ac_install/
 
 ### Compiler
-if [[ ! -v AC_VARIANT ]] || [[ "${AC_VARIANT}" == "gcc" ]]; then
+if [[ "${AC_VARIANT:-gcc}" == "gcc" ]]; then
     ./sub-installer/compiler/gcc.sh
 
     CC="gcc-14"

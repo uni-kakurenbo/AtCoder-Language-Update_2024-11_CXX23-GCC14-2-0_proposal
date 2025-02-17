@@ -6,7 +6,7 @@ DIST_DIR="$1"
 VARIANT="$(basename "${DIST_DIR}")"
 
 {
-    format() { sed -e 's/^/    "/' -e 's/$/"/'; }
+    format() { sed -e 's/^/"/' -e 's/$/"/'; }
 
     echo "${SHEBANG}"
     cat ./assets/warning.txt
@@ -21,6 +21,6 @@ VARIANT="$(basename "${DIST_DIR}")"
 
     TARGET="$(cat ./src/compile.sh)"
     echo "${TARGET//"${SHEBANG}"/}"
-} >"${DIST_DIR}/compile.sh"
+} | sed -E 's/^\s*//g' >"${DIST_DIR}/compile.sh"
 
 sudo chmod +x -R ./dist/

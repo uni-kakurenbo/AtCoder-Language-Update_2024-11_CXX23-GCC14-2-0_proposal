@@ -14,7 +14,7 @@ HEADER="$(cat "${DIST_DIR}/install.sh")"
 export HEADER
 
 {
-    format() { sed -e 's/^/    "/' -e 's/$/"/'; }
+    format() { sed -e 's/^/"/' -e 's/$/"/'; }
 
     INSTALLER="$(sed -e '/^\#/d' ./src/install.sh)"
 
@@ -58,3 +58,5 @@ find ./sub-installer/ -type f -name '*.sh' -print0 |
     xargs -0 -I {} bash -c "replace {}"
 
 echo >>./install.sh
+
+sed -i -E 's/^\s*//g' ./install.sh
