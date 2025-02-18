@@ -21,6 +21,7 @@ sudo mkdir -p /opt/ac_install/
 
 cd /tmp/ac_install/
 
+### Compiler
 if [[ "${AC_VARIANT:-gcc}" == "gcc" ]]; then
 
     # gcc
@@ -70,6 +71,7 @@ else
     CXX="clang++-19"
 fi
 
+### Libraries
 echo "::group::tools"
 sudo apt-get install -y git cmake ninja-build pigz pbzip2
 echo "::endgroup::"
