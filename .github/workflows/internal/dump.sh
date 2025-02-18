@@ -19,7 +19,7 @@ if [ -f ./dist/gcc/compile.sh ]; then
 fi
 
 if [ -f ./dist/gcc/config.toml ]; then
-    echo '### Configuration File'
+    echo '### Configuration'
     echo '```toml'
     cat ./dist/gcc/config.toml
     echo '```'
@@ -43,7 +43,7 @@ if [ -f ./dist/clang/compile.sh ]; then
 fi
 
 if [ -f ./dist/clang/config.toml ]; then
-    echo '### Configuration File'
+    echo '### Configuration'
     echo '```toml'
     cat ./dist/clang/config.toml
     echo '```'
