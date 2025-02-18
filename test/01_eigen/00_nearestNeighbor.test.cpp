@@ -1,7 +1,6 @@
 #include <iostream>
 #include <Eigen/Dense>
 
-using namespace std;
 using namespace Eigen;
 
 // ref: https://qiita.com/shiro-kuma/items/0faa02aa064a3c0a460b
@@ -18,6 +17,6 @@ int main() {
   MatrixXf::Index index;
   (m.colwise() - v).colwise().squaredNorm().minCoeff(&index);
 
-  cout << "Nearest neighbor is column " << index << ":" << endl;
-  cout << m.col(index) << endl;
+  std::cout << "Nearest neighbor is column " << index << ":" << std::endl;
+  std::cout << m.col(index) << std::endl;
 }
