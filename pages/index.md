@@ -1,18 +1,18 @@
-# AtCoder Language Update &ndash; Nov. 2024 <br /> C++23 (GCC 14.2.0) [proposal]
+# AtCoder Language Update &ndash; Nov. 2024 <br /> C++23 [proposal]
 
 [![workflows:expand-template]({{ site.github.repository_url }}/actions/workflows/expand.yml/badge.svg)]({{ site.github.repository_url }}/actions/workflows/expand.yml)
 [![workflows:generate-pages]({{ site.github.repository_url }}/actions/workflows/gh-pages.yml/badge.svg)]({{ site.github.repository_url }}/actions/workflows/gh-pages.yml)
 [![workflows:test-on-docker]({{ site.github.repository_url }}/actions/workflows/test-on-docker.yml/badge.svg)]({{ site.github.repository_url }}/actions/workflows/test-on-docker.yml)
 
-### GCC
-- [Install script]({{ site.github.repository_url }}/#install-script)
-- [Compile script]({{ site.github.repository_url }}/#compile-script)
-- [Configuration]({{ site.github.repository_url }}/#configuration)
+### GCC: `14.2.0`
+- [Install script](#install-script)
+- [Compile script](#compile-script)
+- [Configuration](#configuration)
 
-### Clang
-- [Install script]({{ site.github.repository_url }}/#install-script-1)
-- [Compile script]({{ site.github.repository_url }}/#compile-script-1)
-- [Configuration]({{ site.github.repository_url }}/#configuration-1)
+### Clang: `19.1.7`
+- [Install script](#install-script-1)
+- [Compile script](#compile-script-1)
+- [Configuration](#configuration-1)
 
 ## [Library]({{ site.github.repository_url }}/blob/main/src/sub-installer/library)
 
