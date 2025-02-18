@@ -16,7 +16,7 @@ export HEADER
 {
     format() { sed -e 's/^/"/' -e 's/$/"/'; }
 
-    INSTALLER="$(sed -e '/^\#/d' ./src/install.sh)"
+    INSTALLER="$(cat ./src/install.sh)"
 
     echo
     cat ./assets/parallel.sh
