@@ -21,6 +21,4 @@ VARIANT="$(basename "${DIST_DIR}")"
 
     TARGET="$(cat ./src/compile.sh)"
     echo "${TARGET//"${SHEBANG}"/}"
-} | sed -E 's/^\s*//g' >"${DIST_DIR}/compile.sh"
-
-sudo chmod +x -R ./dist/
+} | shfmt -i 4 >"${DIST_DIR}/compile.sh"

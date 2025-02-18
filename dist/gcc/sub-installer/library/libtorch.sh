@@ -5,7 +5,7 @@
 VERSION="2.6.0"
 
 set -eu
-if [[ "${AC_NO_BUILD_libtorch:-false}" == true ||
+if [[ "${AC_NO_BUILD_libtorch:-false}" == true || \
     "${AC_VARIANT:-false}" == "clang" ]]; then
     exit 0
 fi

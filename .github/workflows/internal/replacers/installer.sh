@@ -16,7 +16,7 @@ export HEADER
 {
     format() { sed -e 's/^/"/' -e 's/$/"/'; }
 
-    INSTALLER="$(sed -e '/^\#/d' ./src/install.sh)"
+    INSTALLER="$(cat ./src/install.sh)"
 
     echo
     cat ./assets/parallel.sh
@@ -59,4 +59,4 @@ find ./sub-installer/ -type f -name '*.sh' -print0 |
 
 echo >>./install.sh
 
-sed -i -E 's/^\s*//g' ./install.sh
+shfmt -i 4 -w ./install.sh

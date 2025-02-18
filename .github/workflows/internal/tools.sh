@@ -20,8 +20,12 @@ echo "::group::pkg-config"
 "${WORKING_DIRECTORY}/tools/pkg-config.sh"
 echo "::endgroup::"
 
+echo "::group::shfmt"
+"${WORKING_DIRECTORY}/tools/shfmt.sh"
+echo "::endgroup::"
+
 echo "::group::taplo"
 "${WORKING_DIRECTORY}/tools/taplo.sh"
 echo "::endgroup::"
 
-which ccache dasel jq pkg-config taplo | xargs -I {} cp {} /opt/ac_tools/bin/
+which ccache dasel jq pkg-config shfmt taplo | xargs -I {} cp {} /opt/ac_tools/bin/

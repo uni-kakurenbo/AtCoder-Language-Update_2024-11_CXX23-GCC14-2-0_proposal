@@ -1,3 +1,5 @@
+
+
 // ref: https://github.com/Z3Prover/z3/blob/master/examples/c%2B%2B/example.cpp
 
 /*++
@@ -1437,4 +1439,624 @@ int main() {
         std::cout << "unexpected error: " << ex << "\n";
     }
     Z3_finalize_memory();
+}
+
+#ifdef __clang__
+
+
+#pragma message("skipped")
+
+int main() {}
+
+
+#else
+
+
+#include <print>
+#include <omp.h>
+
+int main() {
+    std::println("max threads: {}", omp_get_max_threads());
+}
+
+
+#endif
+
+#include <coroutine>
+#include <print>
+
+
+#if !defined(__clang__)
+
+
+#include <generator>
+using std::generator;
+
+
+#else
+
+
+#include <utility>
+#include <exception>
+
+// ref: https://cpprefjp.github.io/lang/cpp20/coroutines.html
+template<class T>
+struct generator : std::ranges::view_interface<generator<T>> {
+    struct promise_type {
+        T _value;
+
+        auto get_return_object() {
+            return generator{ *this };
+        };
+
+        auto initial_suspend() {
+            return std::suspend_always{};
+        }
+
+        auto final_suspend() noexcept {
+            return std::suspend_always{};
+        }
+
+        auto yield_value(auto&& v) {
+            this->_value = v;
+            return std::suspend_always{};
+        }
+
+        void return_void() {}
+
+        void unhandled_exception() { std::terminate(); }
+    };
+
+    using _corohandle = std::coroutine_handle<promise_type>;
+
+    struct iterator {
+        _corohandle _coro;
+
+        bool _done;
+
+        iterator& operator++() {
+            this->_coro.resume();
+            _done = this->_coro.done();
+
+            return *this;
+        }
+
+        bool operator!=(const iterator& rhs) const {
+            return this->_done != rhs._done;
+        }
+
+        int operator*() const {
+            return this->_coro.promise()._value;
+        }
+    };
+
+    ~generator() {
+      if(this->_coro) this->_coro.destroy();
+    }
+
+    generator(generator const&) = delete;
+
+    generator(generator&& rhs) : _coro(std::exchange(rhs._coro, nullptr)) {}
+
+    iterator begin() {
+        this->_coro.resume();
+        return { this->_coro, this->_coro.done() };
+    }
+
+    iterator end() {
+        return { {}, true };
+    }
+
+  private:
+    explicit generator(promise_type& p) : _coro(_corohandle::from_promise(p)) {}
+
+    _corohandle _coro;
+};
+
+
+#endif
+
+
+template<class T>
+generator<T> iota(T end) {
+    for(T i = 0; i < end; ++i) {
+        co_yield i;
+    }
+}
+
+
+int main() {
+    for(auto v : iota<int>(10)) std::println("{}", v);
+}
+
+#ifdef __clang__
+
+
+#pragma message("skipped")
+
+int main() {}
+
+
+#else
+
+
+#include <print>
+#include <stacktrace>
+
+auto a() __attribute__((noinline, noclone));
+auto b() __attribute__((noinline, noclone));
+auto c() __attribute__((noinline, noclone));
+auto d() __attribute__((noinline, noclone));
+
+auto a() {
+  return std::stacktrace::current();
+}
+
+auto b() {
+    return a();
+}
+
+auto c() {
+    return b();
+}
+
+auto d() {
+    return c();
+}
+
+int main() {
+    std::println("{}", a());
+    std::println("{}", b());
+    std::println("{}", c());
+    std::println("{}", d());
+}
+
+
+#endif
+
+#include <print>
+
+struct X {
+    void f() const& {
+        std::println("f");
+    }
+
+    void g(this const X& self) {
+        std::println("g");
+
+        self.f();
+    }
+};
+
+int main() {
+    X x;
+    x.g();
+}
+
+#include <print>
+
+int main() {
+    std::println("Hello, world.");
+}
+
+#include <ranges>
+#include <print>
+#include <experimental/simd>
+
+
+int A[16], B[16], C[16];
+int main() {
+    for(const auto i : std::views::iota(0, 16)){
+        A[i] = i;
+        B[i] = i * 100;
+    }
+
+    std::experimental::fixed_size_simd<int,16> a(&A[0], std::experimental::element_aligned), b;
+    b.copy_from(&B[0], std::experimental::element_aligned);
+
+
+#   ifdef __clang__
+
+
+    auto d = a;
+
+
+#   else
+
+
+    auto c = a + b;
+
+    c.copy_to(&C[0], std::experimental::element_aligned);
+
+    for(const auto v : C) std::print("{} ", v);
+    std::println();
+
+    std::experimental::native_simd<double> d = 100, e([](int i){ return i * i * i * i; });
+    d += std::experimental::sqrt(e);
+
+
+#   endif
+
+
+    for(const auto i : std::views::iota(0) | std::views::take(d.size())) std::print("{} ", int(d[i]));
+    std::println();
+}
+
+#ifdef __clang__
+
+
+#pragma message("skipped")
+
+int main() {}
+
+
+#else
+
+
+#include <print>
+#include <LightGBM/c_api.h>
+
+int main() {
+    std::println("{}", LGBM_SetMaxThreads(2));
+}
+
+
+#endif
+
+// ref: https://developers.google.com/optimization/introduction/cpp
+// Minimal example to call the GLOP solver.
+#include <cstdlib>
+#include <memory>
+
+#include <absl/flags/flag.h>
+#include <absl/log/flags.h>
+#include <ortools/base/init_google.h>
+#include <ortools/base/logging.h>
+#include <ortools/init/init.h>
+#include <ortools/linear_solver/linear_solver.h>
+
+namespace operations_research {
+void BasicExample() {
+  LOG(INFO) << "Google OR-Tools version : " << OrToolsVersion::VersionString();
+
+  // Create the linear solver with the GLOP backend.
+  std::unique_ptr<MPSolver> solver(MPSolver::CreateSolver("GLOP"));
+  if (!solver) {
+    LOG(WARNING) << "Could not create solver GLOP";
+    return;
+  }
+
+  // Create the variables x and y.
+  MPVariable* const x = solver->MakeNumVar(0.0, 1, "x");
+  MPVariable* const y = solver->MakeNumVar(0.0, 2, "y");
+
+  LOG(INFO) << "Number of variables = " << solver->NumVariables();
+
+  // Create a linear constraint, x + y <= 2.
+  const double infinity = solver->infinity();
+  MPConstraint* const ct = solver->MakeRowConstraint(-infinity, 2.0, "ct");
+  ct->SetCoefficient(x, 1);
+  ct->SetCoefficient(y, 1);
+
+  LOG(INFO) << "Number of constraints = " << solver->NumConstraints();
+
+  // Create the objective function, 3 * x + y.
+  MPObjective* const objective = solver->MutableObjective();
+  objective->SetCoefficient(x, 3);
+  objective->SetCoefficient(y, 1);
+  objective->SetMaximization();
+
+  LOG(INFO) << "Solving with " << solver->SolverVersion();
+  const MPSolver::ResultStatus result_status = solver->Solve();
+
+  // Check that the problem has an optimal solution.
+  LOG(INFO) << "Status: " << result_status;
+  if (result_status != MPSolver::OPTIMAL) {
+    LOG(INFO) << "The problem does not have an optimal solution!";
+    if (result_status == MPSolver::FEASIBLE) {
+      LOG(INFO) << "A potentially suboptimal solution was found";
+    } else {
+      LOG(WARNING) << "The solver could not solve the problem.";
+      return;
+    }
+  }
+
+  LOG(INFO) << "Solution:";
+  LOG(INFO) << "Objective value = " << objective->Value();
+  LOG(INFO) << "x = " << x->solution_value();
+  LOG(INFO) << "y = " << y->solution_value();
+
+  LOG(INFO) << "Advanced usage:";
+  LOG(INFO) << "Problem solved in " << solver->wall_time() << " milliseconds";
+  LOG(INFO) << "Problem solved in " << solver->iterations() << " iterations";
+}
+}  // namespace operations_research
+
+int main(int argc, char *argv[]) {
+  InitGoogle(argv[0], &argc, &argv, true);
+  absl::SetFlag(&FLAGS_stderrthreshold, 0);
+  operations_research::BasicExample();
+}
+
+//  rational number example program  ----------------------------------------//
+
+//  (C) Copyright Paul Moore 1999. Permission to copy, use, modify, sell
+//  and distribute this software is granted provided this copyright notice
+//  appears in all copies. This software is provided "as is" without express or
+//  implied warranty, and with no claim as to its suitability for any purpose.
+
+//  Revision History
+//  14 Dec 99  Initial version
+
+#include <cassert>
+#include <iostream>
+#include <cassert>
+#include <cstdlib>
+#include <boost/config.hpp>
+#ifndef BOOST_NO_LIMITS
+#include <limits>
+#else
+#include <limits.h>
+#endif
+#include <exception>
+#include <boost/rational.hpp>
+
+using std::cout;
+using std::endl;
+using boost::rational;
+
+#ifdef BOOST_NO_ARGUMENT_DEPENDENT_LOOKUP
+// This is a nasty hack, required because MSVC does not implement "Koenig
+// Lookup". Basically, if I call abs(r), the C++ standard says that the
+// compiler should look for a definition of abs in the namespace which
+// contains r's class (in this case boost) - among other places.
+
+// Koenig Lookup is a relatively recent feature, and other compilers may not
+// implement it yet. If so, try including this line.
+
+using boost::abs;
+#endif
+
+int main () {
+    rational<int> half(1,2);
+    rational<int> one(1);
+    rational<int> two(2);
+
+    // Some basic checks
+    assert(half.numerator() == 1);
+    assert(half.denominator() == 2);
+    assert(boost::rational_cast<double>(half) == 0.5);
+
+    // Arithmetic
+    assert(half + half == one);
+    assert(one - half == half);
+    assert(two * half == one);
+    assert(one / half == two);
+
+    // With conversions to integer
+    assert(half+half == 1);
+    assert(2 * half == one);
+    assert(2 * half == 1);
+    assert(one / half == 2);
+    assert(1 / half == 2);
+
+    // Sign handling
+    rational<int> minus_half(-1,2);
+    assert(-half == minus_half);
+    assert(abs(minus_half) == half);
+
+    // Do we avoid overflow?
+#ifndef BOOST_NO_LIMITS
+    int maxint = std::numeric_limits<int>::max();
+#else
+    int maxint = INT_MAX;
+#endif
+    rational<int> big(maxint, 2);
+    assert(2 * big == maxint);
+
+    // Print some of the above results
+    cout << half << "+" << half << "=" << one << endl;
+    cout << one << "-" << half << "=" << half << endl;
+    cout << two << "*" << half << "=" << one << endl;
+    cout << one << "/" << half << "=" << two << endl;
+    cout << "abs(" << minus_half << ")=" << half << endl;
+    cout << "2 * " << big << "=" << maxint
+         << " (rational: " << rational<int>(maxint) << ")" << endl;
+
+    // Some extras
+    rational<int> pi(22,7);
+    cout << "pi = " << boost::rational_cast<double>(pi) << " (nearly)" << endl;
+
+    // Exception handling
+    try {
+        rational<int> r;        // Forgot to initialise - set to 0
+        r = 1/r;                // Boom!
+    }
+    catch (const boost::bad_rational &e) {
+        cout << "Bad rational, as expected: " << e.what() << endl;
+    }
+    catch (...) {
+        cout << "Wrong exception raised!" << endl;
+        assert(false);
+    }
+}
+
+#include <time.h>
+#include <gmp.h>
+
+int main() {
+    mpz_t a;
+    mpz_init(a);
+
+    gmp_randstate_t state;
+    gmp_randinit_default(state);
+
+    time_t rtime;
+    time(&rtime);
+    gmp_randseed_ui(state, rtime);
+
+    mpz_urandomb(a, state, 256);
+
+    gmp_printf("%Zx\n", a);
+
+    mpz_clear(a);
+    gmp_randclear(state);
+}
+
+#include <print>
+#include <ankerl/unordered_dense.h>
+
+int main() {
+    ankerl::unordered_dense::map<int, std::string> map;
+
+    map[31415] = "3.1415";
+    map[27182] = "2.7182";
+
+    for(const auto& [key, val] : map) {
+        println("{}: {}", key, val);
+    }
+}
+
+#include <iostream>
+#include <Eigen/Dense>
+
+using namespace std;
+using namespace Eigen;
+
+// ref: https://qiita.com/shiro-kuma/items/0faa02aa064a3c0a460b
+int main() {
+  Eigen::MatrixXf m(2,4);
+  Eigen::VectorXf v(2);
+
+  m << 1, 23, 6, 9,
+       3, 11, 7, 2;
+
+  v << 2,
+       3;
+
+  MatrixXf::Index index;
+  (m.colwise() - v).colwise().squaredNorm().minCoeff(&index);
+
+  cout << "Nearest neighbor is column " << index << ":" << endl;
+  cout << m.col(index) << endl;
+}
+
+// ref: https://abseil.io/docs/cpp/quickstart-cmake#creating-your-test-code
+#include <print>
+#include <string>
+#include <vector>
+#include <absl/strings/str_join.h>
+
+int main() {
+  const std::vector<std::string> v = {"foo", "bar", "baz"};
+  const auto s = absl::StrJoin(v, "-");
+
+  println("{}", s);
+}
+
+// ref: https://pytorch.org/cppdocs/installing.html
+
+#ifdef __clang__
+
+
+#pragma message("skipped")
+
+int main() {}
+
+
+#else
+
+
+#include <torch/torch.h>
+#include <iostream>
+
+int main() {
+  torch::Tensor tensor = torch::rand({2, 3});
+  std::cout << tensor << std::endl;
+}
+
+
+#endif
+
+#include <print>
+#include <atcoder/modint>
+
+int main() {
+    std::println("{}", atcoder::modint998244353(2).pow(10000).val());
+}
+
+#include <print>
+#include <string>
+#include <ranges>
+#include <range/v3/algorithm/for_each.hpp>
+#include <range/v3/view/concat.hpp>
+#include <range/v3/view/cycle.hpp>
+#include <range/v3/view/take.hpp>
+#include <range/v3/range/conversion.hpp>
+
+int main() {
+    const std::string a = "ABCD";
+    const std::string b = "1234";
+
+    std::println(
+        "{}",
+        ranges::views::concat(a, b) |
+            ranges::views::cycle |
+            std::views::drop(10) |
+            std::views::take(13) |
+            ranges::to<std::string>()
+    );
+}
+
+#include <print>
+#include <string>
+#include <range/v3/algorithm/for_each.hpp>
+
+int main() {
+    const std::string msg = "Hello, world.";
+
+    ranges::for_each(msg, [](auto c) { std::print("{} ", c); });
+    std::println();
+}
+
+#include <algorithm>
+#include <cassert>
+#include <ranges>
+
+#ifdef __clang__
+
+using namespace std;
+
+#else
+
+#include <range/v3/algorithm/starts_with.hpp>
+
+#endif
+
+int main() {
+    auto a = std::views::iota(0, 20);
+    auto b = std::views::iota(0, 10);
+
+    assert(ranges::starts_with(a, b));
+}
+int main(int argc, char* argv[]) {
+test_01_z3_00_example(argc, argv)
+test_01_open_mp_00_getMaxThreads(argc, argv)
+test_00_plane_02_generator(argc, argv)
+test_00_plane_03_stacktrace(argc, argv)
+test_00_plane_04_deducingThis(argc, argv)
+test_00_plane_00_println(argc, argv)
+test_00_plane_01_simd(argc, argv)
+test_01_light_gbm_00_setMaxThreads(argc, argv)
+test_01_or_tools_00_basicExample(argc, argv)
+test_01_boost_00_rational(argc, argv)
+test_01_gmp_00_mpz(argc, argv)
+test_01_unordered_dense_00_map(argc, argv)
+test_01_eigen_00_nearestNeighbor(argc, argv)
+test_01_abseil_00_strJoin(argc, argv)
+test_01_libtorch_00_tensorRand(argc, argv)
+test_01_ac_library_00_modint(argc, argv)
+test_01_range_v3_01_mixed(argc, argv)
+test_01_range_v3_00_forEach(argc, argv)
+test_02_other_00_startsWith(argc, argv)
 }

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu
-if [[ "${AC_NO_BUILD_eigen:-false}" == true &&
-    "${AC_NO_BUILD_light_gbm:-false}" == true &&
+if [[ "${AC_NO_BUILD_eigen:-false}" == true && \
+    "${AC_NO_BUILD_light_gbm:-false}" == true && \
     "${AC_NO_BUILD_or_tools:-false}" == true ]]; then
     exit 0
 fi

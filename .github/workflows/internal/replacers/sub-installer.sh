@@ -41,6 +41,8 @@ function replace() {
     echo "${SHEBANG}" >"${dist}"
     cat ./assets/warning.txt >>"${dist}"
     echo -e "${target/"${SHEBANG}"/"VERSION=${version}\n"}" >>"${dist}"
+
+    shfmt -i 4 -w "${dist}"
 }
 
 export -f replace

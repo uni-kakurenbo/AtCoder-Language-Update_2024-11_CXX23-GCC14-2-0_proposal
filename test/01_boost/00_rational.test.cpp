@@ -99,6 +99,4 @@ int main () {
         cout << "Wrong exception raised!" << endl;
         assert(false);
     }
-
-    return 0;
 }

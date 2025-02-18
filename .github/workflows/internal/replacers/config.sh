@@ -6,15 +6,15 @@ export DIST_DIR="$1"
 VARIANT="$(basename "${DIST_DIR}")"
 export VARIANT
 
-INSTALLER="$(sed -e '/^\#/d' "${DIST_DIR}/install.sh" | tr -s ' \n')"
-BUILDER="$(sed -e '/^\#/d' "${DIST_DIR}/compile.sh" | tr -s ' \n')"
+INSTALLER="$(sed -e '/^\#/d' "${DIST_DIR}/install.sh" | shfmt -mn)"
+COMPILER="$(sed -e '/^\#/d' "${DIST_DIR}/compile.sh" | shfmt -mn)"
 
 cat ./assets/warning.txt >"${DIST_DIR}/config.toml"
 echo >>"${DIST_DIR}/config.toml"
 
 dasel -r toml -w json <./src/config.toml |
     jq --arg installer "${INSTALLER}" '.install=$installer' |
-    jq --arg builder "${BUILDER}" '.compile=$builder' |
+    jq --arg compiler "${COMPILER}" '.compile=$compiler' |
     jq --arg variant "gcc" '. * .variant[$variant] | del(.variant)' |
     dasel -r json -w toml |
     tr -s ' \n' |

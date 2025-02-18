@@ -65,7 +65,7 @@ jobs:
                       tools-${{
                         hashFiles(
                           './.github/workflows/internal/tools.sh',
-                          './.github/workflows/internal/tools/**'
+                          './.github/workflows/internal/tools/**/*.sh'
                         )
                       }}
                   restore-keys: tools
