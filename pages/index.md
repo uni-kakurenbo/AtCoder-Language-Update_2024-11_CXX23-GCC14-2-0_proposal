@@ -5,14 +5,14 @@
 [![workflows:test-on-docker]({{ site.github.repository_url }}/actions/workflows/test-on-docker.yml/badge.svg)]({{ site.github.repository_url }}/actions/workflows/test-on-docker.yml)
 
 ### GCC: `14.2.0`
-- [Install script]({{ page.url }}#install-script)
-- [Compile script]({{ page.url }}#compile-script)
-- [Configuration]({{ page.url }}#configuration)
+- [Install script](#install-script)
+- [Compile script](#compile-script)
+- [Configuration](#configuration)
 
 ### Clang: `19.1.7`
-- [Install script]({{ page.url }}#install-script-1)
-- [Compile script]({{ page.url }}#compile-script-1)
-- [Configuration]({{ page.url }}#configuration-1)
+- [Install script](#install-script-1)
+- [Compile script](#compile-script-1)
+- [Configuration](#configuration-1)
 
 ## [Library]({{ site.github.repository_url }}/blob/main/src/sub-installer/library)
 
