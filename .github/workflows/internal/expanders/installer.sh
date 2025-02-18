@@ -9,7 +9,7 @@ source "${WORKING_DIRECTORY}/functions/flag-generator.sh" "${DIST_DIR}"
 
 "${WORKING_DIRECTORY}/replacers/pkg-config.sh" "${DIST_DIR}"
 
-gen-flags ac_internal | tr ' ' '\n' >"${DIST_DIR}/internal.flags.txt"
+gen-flags ac_internal | sed -e 's/ +/ /' | tr ' ' '\n' >"${DIST_DIR}/internal.flags.txt"
 cat "${DIST_DIR}/internal.flags.txt"
 
 "${WORKING_DIRECTORY}/replacers/sub-installer.sh" "${DIST_DIR}"
