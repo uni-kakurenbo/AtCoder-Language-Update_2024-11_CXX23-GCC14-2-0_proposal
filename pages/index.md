@@ -1,14 +1,20 @@
 # AtCoder Language Update &ndash; Nov. 2024 <br /> C++23 (GCC 14.2.0) [proposal]
 
-[![workflows:expand-template](https://github.com/uni-kakurenbo/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/actions/workflows/expand.yml/badge.svg)](https://github.com/uni-kakurenbo/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/actions/workflows/expand.yml)
-[![workflows:generate-pages](https://github.com/uni-kakurenbo/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/actions/workflows/gh-pages.yml/badge.svg)](https://github.com/uni-kakurenbo/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/actions/workflows/gh-pages.yml)
-[![workflows:test-on-docker](https://github.com/uni-kakurenbo/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/actions/workflows/test-on-docker.yml/badge.svg)](https://github.com/uni-kakurenbo/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/actions/workflows/test-on-docker.yml)
+[![workflows:expand-template]({{ site.github.repository_url }}/actions/workflows/expand.yml/badge.svg)]({{ site.github.repository_url }}/actions/workflows/expand.yml)
+[![workflows:generate-pages]({{ site.github.repository_url }}/actions/workflows/gh-pages.yml/badge.svg)]({{ site.github.repository_url }}/actions/workflows/gh-pages.yml)
+[![workflows:test-on-docker]({{ site.github.repository_url }}/actions/workflows/test-on-docker.yml/badge.svg)]({{ site.github.repository_url }}/actions/workflows/test-on-docker.yml)
 
-- [Install script](https://uni-kakurenbo.github.io/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/#install-script)
-- [Compile script](https://uni-kakurenbo.github.io/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/#compile-script)
-- [Configuration file](https://uni-kakurenbo.github.io/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/#configuration-file)
+### GCC
+- [Install script]({{ site.github.repository_url }}/#install-script)
+- [Compile script]({{ site.github.repository_url }}/#compile-script)
+- [Configuration]({{ site.github.repository_url }}/#configuration)
 
-## [Library](https://github.com/uni-kakurenbo/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/blob/main/src/sub-installer/library)
+### Clang
+- [Install script]({{ site.github.repository_url }}/#install-script-1)
+- [Compile script]({{ site.github.repository_url }}/#compile-script-1)
+- [Configuration]({{ site.github.repository_url }}/#configuration-1)
+
+## [Library]({{ site.github.repository_url }}/blob/main/src/sub-installer/library)
 
 ### Official
 - [AC Library](https://atcoder.github.io/ac-library/master/document_ja/): `1.5.1`
@@ -78,8 +84,8 @@ Arithmetic Library
 - [「現状提案されてるのは大体もう Python から使えることを考えると大きな影響はないのでは」](https://discord.com/channels/1245258617582653553/1293457974442070016/1307648262941179924)
 
 
-## [Compile flags](https://github.com/uni-kakurenbo/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/blob/main/config)
-Some other flags might be appended, depending on libraries that is to be installed; see also [compile script](https://uni-kakurenbo.github.io/AtCoder-Language-Update_2024-11_CXX23-GCC14-2-0_proposal/#compile-script), which appears below.
+## [Compile flags]({{ site.github.repository_url }}/blob/main/config)
+Some other flags might be appended, depending on libraries that is to be installed; see also [compile script]({{ site.github.repository_url }}/#compile-script), which appears below.
 
 ### Basic
 - `-std=gnu++23`
