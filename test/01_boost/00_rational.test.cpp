@@ -37,7 +37,7 @@ using boost::rational;
 using boost::abs;
 #endif
 
-int main () {
+int main() {
     rational<int> half(1,2);
     rational<int> one(1);
     rational<int> two(2);
