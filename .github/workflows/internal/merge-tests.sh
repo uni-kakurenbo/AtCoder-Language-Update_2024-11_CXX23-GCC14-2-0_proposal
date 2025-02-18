@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu
 
-export OUTPUT=./test/merged.test.cpp
+export OUTPUT="./test/merged.cpp"
 
 mkdir -p ./test/
 echo "" >"${OUTPUT}"
@@ -27,7 +27,7 @@ function replace() {
     {
         echo
         echo "${content}"
-    } | sed -E -e 's/^ +//g' | tr '\n' '\r' | sed -E -e 's/ +/ /g' -e 's/\r+/\r/g' | tr '\r' '\n' >>"${OUTPUT}"
+    } >>"${OUTPUT}"
 
     echo "${tag}"
 }
@@ -35,9 +35,9 @@ function replace() {
 export -f replace
 
 MAIN="$(
+    # shellcheck disable=SC2016
     find ./test/ -iname '*.test.cpp' -print0 |
-        xargs -0 -I {} bash -c "replace {}" |
-        xargs -I {} echo '{}(argc, argv);'
+        xargs -0 -I {} bash -c 'echo "$(replace {})(argc, argv)"'
 )"
 
 {

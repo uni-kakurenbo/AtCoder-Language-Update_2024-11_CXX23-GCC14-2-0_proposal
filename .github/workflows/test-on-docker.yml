@@ -55,7 +55,7 @@ jobs:
                   set -eu
 
                   cat ../dist/${{ matrix.variant }}/config.toml >./installscript.toml
-                  cp ../test/merged.test.cpp ./src/source
+                  cp ../test/merged.cpp ./src/source
 
                   python3 ./src/parse.py
                   docker build --platform linux/amd64 -t atcoder -f ./src/Dockerfile .
