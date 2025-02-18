@@ -6,8 +6,8 @@ export DIST_DIR="$1"
 VARIANT="$(basename "${DIST_DIR}")"
 export VARIANT
 
-INSTALLER="$(sed -e '/^\#/d' "${DIST_DIR}/install.sh" | shfmt -mn)"
-COMPILER="$(sed -e '/^\#/d' "${DIST_DIR}/compile.sh" | shfmt -mn)"
+INSTALLER="$(shfmt -mn "${DIST_DIR}/install.sh")"
+COMPILER="$(shfmt -mn "${DIST_DIR}/compile.sh")"
 
 cat ./assets/warning.txt >"${DIST_DIR}/config.toml"
 echo >>"${DIST_DIR}/config.toml"

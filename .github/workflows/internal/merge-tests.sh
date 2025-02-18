@@ -37,7 +37,7 @@ export -f replace
 MAIN="$(
     # shellcheck disable=SC2016
     find ./test/ -iname '*.test.cpp' -print0 |
-        xargs -0 -I {} bash -c 'echo "$(replace {})(argc, argv)"'
+        xargs -0 -I {} bash -c 'echo "$(replace {})(argc, argv);"'
 )"
 
 {
