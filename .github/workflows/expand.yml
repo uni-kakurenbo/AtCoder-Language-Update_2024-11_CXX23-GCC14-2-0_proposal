@@ -383,7 +383,7 @@ jobs:
               run: |
                   set -eu
 
-                  if [[ "${{ matrix.variant == 'clang' }}" ]]; then
+                  if "${{ matrix.variant == 'clang' }}"; then
                     sudo apt-get install -y clang-18 libc++-19-dev
 
                     sudo ln -s /usr/bin/clang-18 /usr/bin/clang-19

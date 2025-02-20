@@ -2,7 +2,7 @@
 #include <print>
 
 
-#if !defined(__clang__)
+#ifndef __clang__
 
 
 #include <generator>
@@ -15,7 +15,9 @@ using std::generator;
 #include <utility>
 #include <exception>
 
+
 // ref: https://cpprefjp.github.io/lang/cpp20/coroutines.html
+
 template<class T>
 struct generator : std::ranges::view_interface<generator<T>> {
     struct promise_type {

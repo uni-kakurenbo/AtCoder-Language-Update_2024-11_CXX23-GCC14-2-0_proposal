@@ -4,8 +4,6 @@ set -eu
 sudo mkdir -p /tmp/ac_install/
 sudo mkdir -p /opt/ac_install/
 
-cd /tmp/ac_install/
-
 ### Compiler
 if [[ "${AC_VARIANT:-gcc}" == "gcc" ]]; then
     ./sub-installer/compiler/gcc.sh
@@ -14,6 +12,13 @@ if [[ "${AC_VARIANT:-gcc}" == "gcc" ]]; then
     CXX="g++-14"
 else
     ./sub-installer/compiler/clang.sh
+
+    { # generate 'slack' bits/stdc++.h
+        sudo mkdir -p /opt/ac_install/include/bits/
+
+        find /usr/lib/llvm-19/include/c++/v1 -maxdepth 1 -type f ! -iname '__**' ! -iname '**.**' -exec echo '#include <{}>' \; |
+            sudo tee /opt/ac_install/include/bits/stdc++.h
+    }
 
     CC="clang-19"
     CXX="clang++-19"

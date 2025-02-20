@@ -17,6 +17,6 @@ int main() {
             ranges::views::cycle |
             std::views::drop(10) |
             std::views::take(13) |
-            ranges::to<std::string>()
+            std::ranges::to<std::string>()
     );
 }

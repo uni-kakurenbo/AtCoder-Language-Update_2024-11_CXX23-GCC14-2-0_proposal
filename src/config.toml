@@ -55,42 +55,6 @@ version = '19.1.7'
     ]
 
 
-[variant.gcc.library.libtorch]
-    version = '2.6.0'
-
-[[variant.gcc.library.libtorch.license]]
-    name = 'BSD-3-Clause'
-    url = 'https://github.com/pytorch/pytorch/blob/main/LICENSE'
-
-[[variant.gcc.library.libtorch.license]]
-    name = 'BSD-2-Clause'
-    url = 'https://github.com/pytorch/pytorch/blob/main/NOTICE#L8-L50'
-
-[[variant.gcc.library.libtorch.license]]
-    name = 'BSD-2-Clause-Views'
-    url = 'https://github.com/pytorch/pytorch/blob/main/NOTICE#L53-L103'
-
-[[variant.gcc.library.libtorch.license]]
-    name = 'Apache-2.0'
-    url = 'https://github.com/pytorch/pytorch/blob/main/NOTICE#L105-L285'
-
-[[variant.gcc.library.libtorch.license]]
-    name = 'BSD-3-Clause'
-    url = 'https://github.com/pytorch/pytorch/blob/main/NOTICE#L287-L321'
-
-[[variant.gcc.library.libtorch.license]]
-    name = 'BSD-3-Clause'
-    url = 'https://github.com/pytorch/pytorch/blob/main/NOTICE#L324-L360'
-
-[[variant.gcc.library.libtorch.license]]
-    name = 'BSL-1.0'
-    url = 'https://github.com/pytorch/pytorch/blob/main/NOTICE#L362-L418'
-
-[[variant.gcc.library.libtorch.license]]
-    name = 'MIT-CMU'
-    url = 'https://github.com/pytorch/pytorch/blob/main/NOTICE#L420-L456'
-
-
 [library.light-gbm]
     version = '4.5.0'
     license = [
@@ -253,3 +217,39 @@ version = '19.1.7'
     license = [
         { name = 'MIT', url = 'https://github.com/Z3Prover/z3/blob/z3-4.13.3/LICENSE.txt' }
     ]
+
+
+[variant.gcc.library.libtorch]
+    version = '2.6.0'
+
+[[variant.gcc.library.libtorch.license]]
+    name = 'BSD-3-Clause'
+    url = 'https://github.com/pytorch/pytorch/blob/main/LICENSE'
+
+[[variant.gcc.library.libtorch.license]]
+    name = 'BSD-2-Clause'
+    url = 'https://github.com/pytorch/pytorch/blob/main/NOTICE#L8-L50'
+
+[[variant.gcc.library.libtorch.license]]
+    name = 'BSD-2-Clause-Views'
+    url = 'https://github.com/pytorch/pytorch/blob/main/NOTICE#L53-L103'
+
+[[variant.gcc.library.libtorch.license]]
+    name = 'Apache-2.0'
+    url = 'https://github.com/pytorch/pytorch/blob/main/NOTICE#L105-L285'
+
+[[variant.gcc.library.libtorch.license]]
+    name = 'BSD-3-Clause'
+    url = 'https://github.com/pytorch/pytorch/blob/main/NOTICE#L287-L321'
+
+[[variant.gcc.library.libtorch.license]]
+    name = 'BSD-3-Clause'
+    url = 'https://github.com/pytorch/pytorch/blob/main/NOTICE#L324-L360'
+
+[[variant.gcc.library.libtorch.license]]
+    name = 'BSL-1.0'
+    url = 'https://github.com/pytorch/pytorch/blob/main/NOTICE#L362-L418'
+
+[[variant.gcc.library.libtorch.license]]
+    name = 'MIT-CMU'
+    url = 'https://github.com/pytorch/pytorch/blob/main/NOTICE#L420-L456'

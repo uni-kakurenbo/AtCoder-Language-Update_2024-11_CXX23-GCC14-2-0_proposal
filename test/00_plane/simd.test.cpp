@@ -4,6 +4,8 @@
 
 
 int A[16], B[16], C[16];
+
+
 int main() {
     for(const auto i : std::views::iota(0, 16)){
         A[i] = i;

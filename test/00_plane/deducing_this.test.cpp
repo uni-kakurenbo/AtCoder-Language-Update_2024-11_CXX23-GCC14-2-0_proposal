@@ -1,5 +1,9 @@
 #include <print>
 
+
+namespace deducing_this {
+
+
 struct X {
     void f() const& {
         std::println("f");
@@ -12,7 +16,12 @@ struct X {
     }
 };
 
+
+} // namespace deducing_this
+
+
 int main() {
-    X x;
-    x.g();
+    using namespace deducing_this;
+
+    X{}.g();
 }
