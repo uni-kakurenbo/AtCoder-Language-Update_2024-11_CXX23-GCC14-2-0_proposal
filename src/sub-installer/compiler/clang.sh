@@ -2,6 +2,8 @@
 set -eu
 if "${AC_NO_BUILD_COMPILER:-false}"; then exit 0; fi
 
+cd /tmp/ac_install/
+
 echo "::group::Clang"
 
 sudo apt-get install -y lsb-release software-properties-common gnupg
