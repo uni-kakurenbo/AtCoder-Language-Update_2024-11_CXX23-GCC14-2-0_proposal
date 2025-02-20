@@ -55,41 +55,6 @@ version = '19.1.7'
     ]
 
 
-[library.light-gbm]
-    version = '4.5.0'
-    license = [
-        { name = 'MIT', url = 'https://github.com/microsoft/light-gbm/blob/master/LICENSE' }
-    ]
-
-
-[library.compute]
-    indirect = true
-
-[[library.compute.license]]
-    name = 'BSL-1.0'
-    url = 'https://github.com/boostorg/compute/blob/36350b7de849300bd3d72a05d8bf890ca405a014/LICENSE_1_0.txt'
-
-
-[library.fast_double_parser]
-    indirect = true
-
-[[library.fast_double_parser.license]]
-    name = 'Apache-2.0'
-    url = 'https://github.com/lemire/fast_double_parser/blob/efec03532ef65984786e5e32dbc81f6e6a55a115/LICENSE'
-
-[[library.fast_double_parser.license]]
-    name = 'BSL-1.0'
-    url = 'https://github.com/lemire/fast_double_parser/blob/efec03532ef65984786e5e32dbc81f6e6a55a115/LICENSE.BSL'
-
-
-[library.fmt]
-    indirect = true
-
-[[library.fmt.license]]
-    name = 'X11-distribute-modifications-variant'
-    url = 'https://github.com/fmtlib/fmt/blob/f5e54359df4c26b6230fc61d38aa294581393084/LICENSE.rst'
-
-
 [library.range-v3]
     version = '0.12.0'
 
@@ -253,3 +218,38 @@ version = '19.1.7'
 [[variant.gcc.library.libtorch.license]]
     name = 'MIT-CMU'
     url = 'https://github.com/pytorch/pytorch/blob/main/NOTICE#L420-L456'
+
+
+[variant.gcc.library.light-gbm]
+    version = '4.5.0'
+    license = [
+        { name = 'MIT', url = 'https://github.com/microsoft/light-gbm/blob/master/LICENSE' }
+    ]
+
+
+[variant.gcc.library.compute]
+    indirect = true
+
+[[variant.gcc.library.compute.license]]
+    name = 'BSL-1.0'
+    url = 'https://github.com/boostorg/compute/blob/36350b7de849300bd3d72a05d8bf890ca405a014/LICENSE_1_0.txt'
+
+
+[variant.gcc.library.fast_double_parser]
+    indirect = true
+
+[[variant.gcc.library.fast_double_parser.license]]
+    name = 'Apache-2.0'
+    url = 'https://github.com/lemire/fast_double_parser/blob/efec03532ef65984786e5e32dbc81f6e6a55a115/LICENSE'
+
+[[variant.gcc.library.fast_double_parser.license]]
+    name = 'BSL-1.0'
+    url = 'https://github.com/lemire/fast_double_parser/blob/efec03532ef65984786e5e32dbc81f6e6a55a115/LICENSE.BSL'
+
+
+[variant.gcc.library.fmt]
+    indirect = true
+
+[[variant.gcc.library.fmt.license]]
+    name = 'X11-distribute-modifications-variant'
+    url = 'https://github.com/fmtlib/fmt/blob/f5e54359df4c26b6230fc61d38aa294581393084/LICENSE.rst'
