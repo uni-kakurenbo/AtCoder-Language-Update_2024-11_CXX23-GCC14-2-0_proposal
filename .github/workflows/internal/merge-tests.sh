@@ -8,14 +8,10 @@ echo "" >"${OUTPUT}"
 function replace() {
     local target="$1"
 
-    local category
-    category="$(basename "$(dirname "${target}")")"
-
-    local name
-    name="$(basename "${target}")"
-    name="${name//.test.cpp/}"
-
-    local tag="test_${category}_${name}"
+    local tag="${target}"
+    tag="${tag//.test.cpp/}"
+    tag="${tag//.\//}"
+    tag="${tag//\//_}"
     tag="${tag//-/_}"
 
     local content
