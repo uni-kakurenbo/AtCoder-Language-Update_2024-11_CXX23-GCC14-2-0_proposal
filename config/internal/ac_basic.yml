@@ -12,6 +12,10 @@ variant:
 
     clang:
         Cflags: >
-            -stdlib=libc++
             -fuse-ld=lld
+
+            -stdlib=libc++
             -fexperimental-library
+
+            -rtlib=compiler-rt
+            -unwindlib=libunwind

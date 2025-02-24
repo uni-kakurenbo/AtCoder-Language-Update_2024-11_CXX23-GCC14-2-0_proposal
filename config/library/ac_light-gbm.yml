@@ -3,10 +3,10 @@ Description: links LightGBM.
 Version: null
 
 Cflags: >
-    -I/opt/ac_install/include/
+    -I/opt/ac_install/include
 
 Libs: >
-    -L/opt/ac_install/lib/
-    -Wl,-R/opt/ac_install/lib/
+    -L/opt/ac_install/lib
+    -Wl,-R/opt/ac_install/lib
 
     -l_lightgbm

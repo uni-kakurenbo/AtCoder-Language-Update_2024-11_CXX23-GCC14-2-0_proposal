@@ -3,4 +3,4 @@ Description: links Eigen3.
 Version: null
 
 Cflags: >
-    -I/opt/ac_install/include/
+    -I/opt/ac_install/include

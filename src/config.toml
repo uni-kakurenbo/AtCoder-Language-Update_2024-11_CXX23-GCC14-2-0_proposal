@@ -253,3 +253,4 @@ version = '19.1.7'
 [[variant.gcc.library.fmt.license]]
     name = 'X11-distribute-modifications-variant'
     url = 'https://github.com/fmtlib/fmt/blob/f5e54359df4c26b6230fc61d38aa294581393084/LICENSE.rst'
+

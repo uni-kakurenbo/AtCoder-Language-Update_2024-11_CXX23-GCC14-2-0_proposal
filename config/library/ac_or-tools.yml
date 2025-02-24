@@ -5,11 +5,11 @@ Version: null
 Requires: protobuf re2
 
 Cflags: >
-    -I/opt/ac_install/include/
+    -I/opt/ac_install/include
 
 Libs: >
-    -L/opt/ac_install/lib/
-    -Wl,-R/opt/ac_install/lib/
+    -L/opt/ac_install/lib
+    -Wl,-R/opt/ac_install/lib
 
     -lortools
     -lCbc

@@ -5,5 +5,5 @@ Version: null
 Requires: z3
 
 Libs: >
-    -L/opt/ac_install/lib/
-    -Wl,-R/opt/ac_install/lib/
+    -L/opt/ac_install/lib
+    -Wl,-R/opt/ac_install/lib
